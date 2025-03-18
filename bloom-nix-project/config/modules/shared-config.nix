@@ -1,0 +1,115 @@
+# config/modules/shared-config.nix
+# Shared configuration between ISO and installed system
+{ config, pkgs, lib, ... }:
+
+{
+  # System identity
+  system.nixos.distroName = "Bloom Nix";
+  
+  # Package management settings
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowBroken = false;
+  };
+  
+  # Nix package manager optimizations
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
+  };
+  
+  # Core packages used by both live system and installation
+  environment.systemPackages = with pkgs; [
+    # CLI essentials
+    vim nano wget curl git
+    htop lsof pciutils usbutils
+    zip unzip file tree rsync
+    
+    # Desktop environment support
+    libsForQt5.packagekit-qt
+    libsForQt5.qt5.qtgraphicaleffects
+    kdePackages.dolphin
+    
+    # Browsers
+    brave
+    ungoogled-chromium
+    
+    # Filesystem tools
+    ntfs3g fuse exfat
+    
+    # Development
+    libgcc rustup
+  ];
+  
+  # Locale and internationalization
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    supportedLocales = [
+      "en_US.UTF-8/UTF-8"
+      "en_GB.UTF-8/UTF-8"
+      "de_DE.UTF-8/UTF-8"
+      "fr_FR.UTF-8/UTF-8"
+      "es_ES.UTF-8/UTF-8"
+    ];
+  };
+  
+  # Console configuration
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "us";
+  };
+  
+  # Common X11 display settings - desktop environment gets imported separately
+  services.xserver = {
+    enable = true;
+    displayManager.lightdm.enable = true;
+  };
+  
+  # Audio with PipeWire
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
+  
+  # Font configuration
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      ubuntu_font_family
+      dejavu_fonts
+    ];
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "Fira Code" "DejaVu Sans Mono" ];
+        sansSerif = [ "Noto Sans" "Liberation Sans" ];
+        serif = [ "Noto Serif" "Liberation Serif" ];
+      };
+    };
+  };
+  
+  # Basic networking configuration
+  networking = {
+    networkmanager.enable = true;
+  };
+  
+  # Time zone
+  time.timeZone = "UTC";
+  
+  # System state version
+  system.stateVersion = "23.11";
+}

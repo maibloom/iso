@@ -1,75 +1,109 @@
 # config/configuration.nix
+# Main configuration for installed Bloom Nix system
 { config, pkgs, lib, ... }:
 
 {
-  # allowing unfree apps, so users would be able to download and install apps like vscode and drivers.
-  nixpkgs.config.allowUnfree = true;
-  
-  imports = [ 
+  imports = [
+    # Include hardware configuration
     ./hardware-configuration.nix
-    ../modules/branding
+    
+    # Include shared configuration
+    ./modules/shared-config.nix
+    
+    # Include desktop environment
     ../modules/desktop/xfce.nix
+    
+    # Include branding
+    ../modules/branding
+    
+    # Include installer (will be removed after installation)
     ../modules/installer/calamares.nix
   ];
 
-  # Modern boot configuration with renamed options
-  boot.loader = {
-    timeout = lib.mkForce 5;  # Fixed option name
+  # Boot loader configuration - CONDITIONAL to avoid ISO conflicts
+  # This is the key change to prevent conflicts when building the ISO
+  boot.loader = lib.mkIf (!config.system.build ? isoImage) {
+    timeout = 5;
     grub = {
-      enable = lib.mkForce true;
-      efiSupport = lib.mkDefault true;
-      device = lib.mkDefault "nodev";
+      enable = true;
+      efiSupport = true;
+      device = "nodev";
       useOSProber = true;
-      timeoutStyle = "hidden";
-      # timeout is now at boot.loader.timeout
       theme = ../branding/grub/theme;
       backgroundColor = "#454d6e";
-      extraConfig = ''
-        set default=0
-        set timeout_style=hidden
-      '';
     };
-    efi.canTouchEfiVariables = lib.mkDefault true;
+    efi.canTouchEfiVariables = true;
   };
 
-  # Networking configuration
+  # Hostname for installed system
   networking.hostName = "bloom-nix";
-  networking.networkmanager.enable = true;
-  time.timeZone = "UTC";
- 
-  # System packages
+  
+  # Installed-system specific packages
   environment.systemPackages = with pkgs; [
-    vim wget git libgcc rustup brave
-    ungoogled-chromium
-    # Additional KDE packages
-    libsForQt5.packagekit-qt
-    libsForQt5.qt5.qtgraphicaleffects
-    kdePackages.dolphin
+    # System administration tools for installed system only
+    gparted
+    firefox
+    thunderbird
+    libreoffice
+    neofetch
+    vlc
+    gimp
+    
+    # Additional system utilities
+    gnome.gnome-disk-utility
+    gnome.gnome-system-monitor
+    xfce.thunar-archive-plugin
+    xfce.thunar-volman
   ];
 
-  # Enable sound with PipeWire (better for KDE)
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
-  services.openssh.enable = true;
- 
+  # User account setup for installed system
   users.users.bloom = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" ];
-    initialPassword = "password";
+    extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
+    initialPassword = "bloom";
   };
-
-  # Set the system name
-  system.nixos.distroName = "Bloom Nix";
-
-
-  # Kernel parameters for boot splash
-  boot.kernelParams = [ "quiet" "splash" "vga=current" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" ];
-
-  system.stateVersion = "23.11";
+  
+  # Security settings for installed system
+  security.sudo = {
+    enable = true;
+    wheelNeedsPassword = true; # Password required on installed system
+  };
+  
+  # Enable OpenSSH only in installed system
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+      X11Forwarding = false;
+    };
+  };
+  
+  # Enable automatic updates
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = false;
+    dates = "04:00";
+    flake = "github:your-username/bloom-nix-project";
+  };
+  
+  # Install recommended documentation
+  documentation = {
+    enable = true;
+    dev.enable = true;
+    doc.enable = true;
+    info.enable = true;
+    man.enable = true;
+    nixos.enable = true;
+  };
+  
+  # Default applications
+  xdg.mime.defaultApplications = {
+    "text/plain" = "org.xfce.mousepad.desktop";
+    "application/pdf" = "org.gnome.Evince.desktop";
+    "image/jpeg" = "org.gnome.eog.desktop";
+    "image/png" = "org.gnome.eog.desktop";
+    "video/mp4" = "vlc.desktop";
+    "audio/mp3" = "vlc.desktop";
+  };
 }

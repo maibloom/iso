@@ -1,25 +1,23 @@
-# modules/desktop/xfce.nix
 { config, lib, pkgs, ... }:
 
 {
-  # Enable X11 windowing system with XFCE
-  services.xserver = {
-    enable = true;
-    
-    # Enable XFCE
-    displayManager.lightdm.enable = true;
-    desktopManager.xfce.enable = true;
-    
-    # Set default session
-    displayManager.defaultSession = "xfce";
-  };
-  
-  # Install a comprehensive set of packages for a modern XFCE experience
+  #######################################################################
+  # X Server and Desktop Environment Setup
+  #######################################################################
+  # Enable X11 and choose XFCE as the default desktop session.
+  services.xserver.enable = true;
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.displayManager.defaultSession = "xfce";
+  services.xserver.desktopManager.xfce.enable = true;
+
+  #######################################################################
+  # System Packages for a Modern XFCE Experience
+  #######################################################################
   environment.systemPackages = with pkgs; [
-    # XFCE core improvements
+    # -- XFCE Core Plugins and Utilities --
     xfce.thunar-archive-plugin
     xfce.thunar-volman
-    xfce.tumbler  # For thumbnails
+    xfce.tumbler                # Thumbnail support
     xfce.xfce4-battery-plugin
     xfce.xfce4-clipman-plugin
     xfce.xfce4-cpugraph-plugin
@@ -28,65 +26,68 @@
     xfce.xfce4-notes-plugin
     xfce.xfce4-sensors-plugin
     xfce.xfce4-weather-plugin
-    xfce.xfce4-whiskermenu-plugin  # Modern application menu
+    xfce.xfce4-whiskermenu-plugin  # Modern app menu
     xfce.xfce4-pulseaudio-plugin
     xfce.xfce4-screenshooter
     xfce.xfce4-systemload-plugin
-    # xfce.xfce4-places-plugin
-    
-    # Modern XFCE themes
+    # (Optional: xfce.xfce4-places-plugin can be added if desired)
+
+    # -- Themes and Appearance --
     arc-theme
     paper-icon-theme
     papirus-icon-theme
-    
-    # Additional desktop utilities for improved user experience
-    plank  # Dock
-    ulauncher  # Modern application launcher
-    volumeicon  # Volume control in system tray
-    networkmanagerapplet  # Network management
-    blueman  # Bluetooth management
-    
-    # Modern applications
+    lxappearance               # Theme configuration tool
+
+    # -- Additional Desktop Utilities --
+    plank                      # Dock
+    ulauncher                  # Modern application launcher
+    volumeicon                 # System tray volume control
+    networkmanagerapplet       # Network indicator
+    blueman                    # Bluetooth management
+
+    # -- Modern Applications --
     firefox
     ungoogled-chromium
     brave
     thunderbird
     libreoffice
-    evince  # PDF viewer
-    gnome.eog  # Image viewer
-    vlc  # Video player
-    celluloid  # Modern GTK video player
-    foliate  # E-book reader
-    gnome.gnome-calculator
-    gnome.gnome-calendar
-    gnome.gnome-disk-utility
-    gnome.gnome-system-monitor
-    
-    # File management improvements
-    gvfs  # For trash and network mounts
-    gnome.file-roller  # Archive manager
-    gnome.gnome-font-viewer
-    
-    # Development tools
+    evince                     # PDF viewer
+    eog                        # Image viewer
+    vlc                        # Video player
+    celluloid                  # GTK-based video player
+    foliate                    # E-book reader
+    gnome-calculator
+    gnome-calendar
+    gnome-disk-utility
+    gnome-system-monitor
+
+    # -- File Management and Misc --
+    gvfs                       # Trash and network mounts
+    file-roller                # Archive manager
+    gnome-font-viewer
+
+    # -- Development Tools --
     vscode
     vim wget git
     libgcc rustup
-    
-    # System utilities
-    # gufw  # Firewall configuration
-    gparted  # Disk partitioning
-    htop  # System monitor
-    inxi  # System information
-    neofetch  # System info with logo
-    
-    # For creating a cohesive look
+
+    # -- System Utilities --
+    gparted                    # Partitioning tool
+    htop                       # System monitor
+    inxi                       # Detailed system info
+    neofetch                   # System info with logo
+
+    # -- Misc Appearance Helpers --
     gtk-engine-murrine
     gtk_engines
     gsettings-desktop-schemas
-    lxappearance  # Theme configuration
   ];
-  
-  # Configure a modern theme for XFCE with Bloom Nix colors
+
+  #######################################################################
+  # XFCE Core Settings (XML configuration files)
+  #######################################################################
+  # These files are written to /etc/xdg/xfce4/xfconf/xfce-perchannel-xml so that
+  # XFCE loads our system-wide defaults.
   environment.etc."xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml".text = ''
     <?xml version="1.0" encoding="UTF-8"?>
     <channel name="xsettings" version="1.0">
@@ -124,8 +125,12 @@
       </property>
     </channel>
   '';
-  
-  # Configure modern panel layout
+
+  #######################################################################
+  # Panel, Whisker Menu, and Thunar Configurations
+  #######################################################################
+  # The following sections create XML files for the XFCE panel layout, the Whisker Menu,
+  # and Thunar file manager defaults.
   environment.etc."xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml".text = ''
     <?xml version="1.0" encoding="UTF-8"?>
     <channel name="xfce4-panel" version="1.0">
@@ -176,8 +181,7 @@
       </property>
     </channel>
   '';
-  
-  # Configure Whisker Menu
+
   environment.etc."xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-whiskermenu-plugin.xml".text = ''
     <?xml version="1.0" encoding="UTF-8"?>
     <channel name="xfce4-whiskermenu-plugin" version="1.0">
@@ -204,8 +208,7 @@
       <property name="launcher-show-name" type="bool" value="true"/>
     </channel>
   '';
-  
-  # Configure Thunar file manager
+
   environment.etc."xdg/xfce4/xfconf/xfce-perchannel-xml/thunar.xml".text = ''
     <?xml version="1.0" encoding="UTF-8"?>
     <channel name="thunar" version="1.0">
@@ -226,8 +229,10 @@
       <property name="misc-directory-specific-settings" type="bool" value="true"/>
     </channel>
   '';
-  
-  # Configure desktop background and icons
+
+  #######################################################################
+  # Desktop Background & Icon Settings
+  #######################################################################
   environment.etc."xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml".text = ''
     <?xml version="1.0" encoding="UTF-8"?>
     <channel name="xfce4-desktop" version="1.0">
@@ -253,8 +258,10 @@
       </property>
     </channel>
   '';
-  
-  # Configure the window manager
+
+  #######################################################################
+  # XFWM4 (Window Manager) Settings
+  #######################################################################
   environment.etc."xdg/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml".text = ''
     <?xml version="1.0" encoding="UTF-8"?>
     <channel name="xfwm4" version="1.0">
@@ -266,7 +273,7 @@
         <property name="button_layout" type="string" value="O|SHMC"/>
         <property name="button_offset" type="int" value="0"/>
         <property name="button_spacing" type="int" value="0"/>
-        <property name="click_to_focus" type="bool" value="true"/>
+        <property name="click_to-focus" type="bool" value="true"/>
         <property name="cycle_apps_only" type="bool" value="false"/>
         <property name="cycle_draw_frame" type="bool" value="true"/>
         <property name="cycle_hidden" type="bool" value="true"/>
@@ -345,10 +352,14 @@
       </property>
     </channel>
   '';
-  
-  # Create a custom Gtk theme based on Bloom Nix colors
+
+  #######################################################################
+  # Custom GTK Theme and GTK3 Settings
+  #######################################################################
+  # Here we create a custom GTK CSS file to override parts of the Arc-Dark theme
+  # with Bloom Nix–inspired colors.
   environment.etc."bloom-nix/gtk-theme/gtk.css".text = ''
-    /* Bloom Nix GTK3 Theme customizations */
+    /* Bloom Nix GTK3 Theme Customizations */
     @define-color bg_color #454d6e;
     @define-color fg_color #f1efee;
     @define-color base_color #353d5e;
@@ -359,47 +370,35 @@
     @define-color tooltip_fg_color #f1efee;
     @define-color accent_color #999a5e;
     @define-color secondary_color #989cad;
-    
-    /* Override Arc-Dark theme with our colors */
+
     .thunar .standard-view .view {
       background-color: @base_color;
       color: @text_color;
     }
-    
     .thunar .sidebar {
       background-color: @bg_color;
     }
-    
     .xfce4-panel {
       background-color: @bg_color;
     }
-    
     window.xfce4-panel widget > box > button {
       color: @fg_color;
     }
-    
     .xfce4-panel button:hover {
       background-color: shade(@bg_color, 1.2);
     }
-    
     #whiskermenu-button {
       background-color: @accent_color;
       color: @fg_color;
       padding: 3px;
     }
-    
-    /* Improve selected items visibility */
     .view:selected {
       background-color: @selected_bg_color;
       color: @selected_fg_color;
     }
-    
-    /* Fix links color */
     *:link {
       color: @accent_color;
     }
-    
-    /* Improve buttons appearance */
     button {
       background-image: none;
       background-color: @bg_color;
@@ -408,17 +407,13 @@
       border-radius: 4px;
       padding: 4px 8px;
     }
-    
     button:hover {
       background-color: shade(@bg_color, 1.1);
     }
-    
     button:active {
       background-color: @accent_color;
       color: @fg_color;
     }
-    
-    /* Make headerbar match our colors */
     headerbar, .titlebar {
       background-color: @bg_color;
       color: @fg_color;
@@ -426,8 +421,8 @@
       padding: 6px;
     }
   '';
-  
-  # Add a custom gtk-3.0 settings file to load our theme
+
+  # GTK 3 settings (for loading our theme)
   environment.etc."xdg/gtk-3.0/settings.ini".text = ''
     [Settings]
     gtk-application-prefer-dark-theme=1
@@ -447,8 +442,10 @@
     gtk-xft-hintstyle=hintslight
     gtk-xft-rgba=rgb
   '';
-  
-  # Customize lightdm greeter with Bloom Nix branding
+
+  #######################################################################
+  # LightDM Greeter Customization (Bloom Nix Branding)
+  #######################################################################
   services.xserver.displayManager.lightdm.greeters.gtk = {
     enable = true;
     theme.name = "Arc-Dark";
@@ -473,14 +470,14 @@
       indicators = ~host;~spacer;~clock;~spacer;~layout;~session;~a11y;~power
       user-background = false
       hide-user-image = false
-      
+
       [greeter-hotkeys]
       mod-key = meta
       shutdown-key = s
       restart-key = r
       hibernate-key = h
       suspend-key = u
-      
+
       [greeter-theme]
       panel-bg-color = #454d6e
       panel-fg-color = #f1efee
@@ -492,8 +489,11 @@
       panel-success-color = #999a5e
     '';
   };
-  
-  # Set up Plank dock for a more modern feel
+
+  #######################################################################
+  # Plank Dock Configuration
+  #######################################################################
+  # Autostart entry for Plank:
   environment.etc."xdg/autostart/plank.desktop".text = ''
     [Desktop Entry]
     Type=Application
@@ -505,125 +505,95 @@
     NoDisplay=false
     X-GNOME-Autostart-enabled=true
   '';
-  
-  # Configure default Plank settings
+
+  # Default settings for the Plank dock:
   environment.etc."xdg/plank/dock1/settings".text = ''
     [PlankDockPreferences]
-    #Whether to show only windows of the current workspace.
     CurrentWorkspaceOnly=false
-    #The size of dock icons (in pixels).
     IconSize=48
-    #If 0, the dock won't hide. If 1, the dock intelligently hides. If 2, the dock auto-hides. If 3, the dock dodges active maximized windows. If 4, the dock dodges every window.
     HideMode=1
-    #Time (in ms) to wait before hiding the dock.
     HideDelay=500
-    #Time (in ms) to wait before showing the dock.
     ShowDelay=200
-    #The monitor number for the dock. If -1, primary monitor is used.
     Monitor=-1
-    #List of *.dockitem files on this dock. DO NOT MODIFY
     DockItems=firefox.dockitem;;thunar.dockitem;;xfce4-terminal.dockitem;;libreoffice-writer.dockitem;;xfce4-settings-manager.dockitem
-    #The position for the dock on the monitor. If 0, left. If 1, right. If 2, top. If 3, bottom.
     Position=3
-    #The dock's position offset from center (in percent).
     Offset=0
-    #The name of the dock's theme to use.
     Theme=Bloom
-    #The alignment for the dock on the monitor's edge. If 0, panel-mode (left or right edge). If 1, left-aligned. If 2, right-aligned. If 3, centered.
     Alignment=3
-    #Whether to prevent drag'n'drop actions and lock items on the dock.
     LockItems=false
-    #Whether to use pressure-based revealing of the dock if the support is available.
     PressureReveal=false
-    #Whether to show only pinned applications.
     PinnedOnly=false
-    #Whether to automatically pin an application if it seems useful to do.
     AutoPinning=true
-    #Whether to show the item for the dock itself.
     ShowDockItem=false
-    #Whether the dock will zoom when hovered.
     ZoomEnabled=true
-    #The dock's icon-zoom (in percent).
     ZoomPercent=150
   '';
-  
-  # Create custom Plank theme
+
+  # Custom Plank theme for Bloom Nix:
   environment.etc."xdg/plank/themes/Bloom/dock.theme".text = ''
     [PlankTheme]
-    #The roundness of the top corners.
     TopRoundness=4
-    #The roundness of the bottom corners.
     BottomRoundness=0
-    #The thickness (in pixels) of lines drawn.
     LineWidth=1
-    #The color (RGBA) of the outer stroke.
     OuterStrokeColor=0;;0;;0;;100
-    #The starting color (RGBA) of the fill gradient.
     FillStartColor=69;;77;;110;;215
-    #The ending color (RGBA) of the fill gradient.
     FillEndColor=53;;61;;94;;215
-    #The color (RGBA) of the inner stroke.
     InnerStrokeColor=69;;77;;110;;245
   '';
-  
-  # Create Plank launcher items for common applications
+
+  # Launcher items for Plank – common applications:
   environment.etc."xdg/plank/dock1/launchers/firefox.dockitem".text = ''
     [PlankDockItemPreferences]
     Launcher=file:///run/current-system/sw/share/applications/firefox.desktop
   '';
-  
   environment.etc."xdg/plank/dock1/launchers/thunar.dockitem".text = ''
     [PlankDockItemPreferences]
     Launcher=file:///run/current-system/sw/share/applications/thunar.desktop
   '';
-  
   environment.etc."xdg/plank/dock1/launchers/xfce4-terminal.dockitem".text = ''
     [PlankDockItemPreferences]
     Launcher=file:///run/current-system/sw/share/applications/xfce4-terminal.desktop
   '';
-  
   environment.etc."xdg/plank/dock1/launchers/libreoffice-writer.dockitem".text = ''
     [PlankDockItemPreferences]
     Launcher=file:///run/current-system/sw/share/applications/libreoffice-writer.desktop
   '';
-  
   environment.etc."xdg/plank/dock1/launchers/xfce4-settings-manager.dockitem".text = ''
     [PlankDockItemPreferences]
     Launcher=file:///run/current-system/sw/share/applications/xfce4-settings-manager.desktop
   '';
-  
-  # Configure sound properly
+
+  #######################################################################
+  # Miscellaneous Settings and Activation Scripts
+  #######################################################################
+  # Disable system-wide PulseAudio – users may run a per-user instance instead.
   hardware.pulseaudio.enable = false;
-  
-  # Set default browser
+
+  # Set default browser environment variables.
   environment.variables = {
     BROWSER = "brave";
     DEFAULT_BROWSER = "brave";
   };
-  
-  # Create custom backgrounds directory
+
+  # Activation script to create custom backgrounds and icons if not present.
   system.activationScripts.bloombrandingXfce = ''
     mkdir -p /etc/bloom-nix/backgrounds
     mkdir -p /etc/bloom-nix/icons
-    
-    # Create a simple colored background if none exists yet
+
     if [ ! -f /etc/bloom-nix/backgrounds/default.jpg ]; then
       ${pkgs.imagemagick}/bin/convert -size 1920x1080 canvas:#454d6e /etc/bloom-nix/backgrounds/default.jpg
     fi
-    
+
     if [ ! -f /etc/bloom-nix/backgrounds/login.jpg ]; then
       ${pkgs.imagemagick}/bin/convert -size 1920x1080 canvas:#353d5e /etc/bloom-nix/backgrounds/login.jpg
     fi
-    
-    # Create a simple Bloom Nix logo if none exists
+
     if [ ! -f /etc/bloom-nix/icons/bloom-nix-logo.png ]; then
       ${pkgs.imagemagick}/bin/convert -size 128x128 canvas:#353d5e -fill "#f1efee" -draw "circle 64,64 64,32" -fill "#ab6470" -draw "circle 64,64 32,64" /etc/bloom-nix/icons/bloom-nix-logo.png
     fi
-    
-    # Copy logo to system locations
+
     cp -f /etc/bloom-nix/icons/bloom-nix-logo.png /usr/share/icons/hicolor/128x128/apps/ || true
-    
-    # Load our custom GTK CSS
+
     mkdir -p /etc/xdg/gtk-3.0/
     if [ -f /etc/bloom-nix/gtk-theme/gtk.css ]; then
       cat /etc/bloom-nix/gtk-theme/gtk.css >> /etc/xdg/gtk-3.0/gtk.css
