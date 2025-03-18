@@ -54,6 +54,83 @@
     gnome.gnome-system-monitor
     xfce.thunar-archive-plugin
     xfce.thunar-volman
+
+    # Calamares dependencies
+    qt5.qtbase
+    qt5.qtsvg
+    qt5.qtquickcontrols2
+    kpmcore
+    parted
+    gptfdisk
+    pkgs.python3Full
+    python3Packages.pyqt5
+    libsForQt5.kpmcore
+
+     # Core X11 components
+    xorg.xorgserver
+    xorg.xinit
+    xorg.xauth
+    xorg.xrdb
+    xorg.xmodmap
+    xorg.xrandr
+    xorg.xinput
+    
+    # Input device drivers
+    xorg.xf86inputevdev
+    xorg.xf86inputlibinput
+    xorg.xf86inputsynaptics
+    
+    # Video drivers (include all common ones)
+    xorg.xf86videointel
+    xorg.xf86videoati
+    xorg.xf86videofbdev
+    xorg.xf86videovesa  # Basic fallback driver
+    xorg.xf86videonouveau  # Open-source NVIDIA
+    
+    # OpenGL and 3D acceleration
+    mesa
+    mesa_drivers
+    glxinfo
+    
+    # Display manager (LightDM)
+    lightdm
+    lightdm-gtk-greeter
+    
+    # XFCE desktop environment essentials
+    xfce.xfce4-session
+    xfce.xfdesktop
+    xfce.xfwm4
+    xfce.xfce4-panel
+    xfce.xfce4-settings
+    xfce.thunar
+    xfce.xfce4-terminal
+    
+    # Fonts
+    dejavu_fonts
+    noto-fonts
+    liberation_ttf
+    
+    # Themes
+    gnome.adwaita-icon-theme
+    hicolor-icon-theme
+    
+    # System utilities
+    pciutils  # For lspci
+    usbutils  # For lsusb
+    file      # For file type detection
+    psmisc    # For pstree and killall
+    
+    # Debugging tools
+    strace
+    lsof
+    
+    # Terminal tools
+    bash
+    coreutils
+    
+    # Network tools
+    inetutils
+
   ];
 
   # User account setup for installed system
