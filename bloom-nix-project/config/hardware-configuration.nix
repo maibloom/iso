@@ -1,3 +1,5 @@
+# hardware-configuration.nix
+
 { config, lib, pkgs, modulesPath, ... }:
 
 {
