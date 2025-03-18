@@ -1,186 +1,68 @@
-# config/configuration.nix
-# Main configuration for installed Bloom Nix system
+# config/build-iso.nix
+# Configuration for building the Bloom Nix live ISO image
 { config, pkgs, lib, ... }:
 
 {
+  nixpkgs.config.allowBroken = true;
+
   imports = [
-    # Include hardware configuration
-    ./hardware-configuration.nix
-    
-    # Include shared configuration
+    # Base ISO configuration from nixpkgs
+    <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix>
+
+    # Import shared configuration
     ./modules/shared-config.nix
-    
-    # Include desktop environment
-    ../modules/desktop/xfce.nix
-    
-    # Include branding
+
+    # Import branding and desktop environment
     ../modules/branding
-    
-    # Include installer (will be removed after installation)
-    ../modules/installer/calamares.nix
+    ../modules/desktop/xfce.nix
+
+    # Import hardware support
+    ../modules/hardware-support.nix
   ];
 
-  # Boot loader configuration - CONDITIONAL to avoid ISO conflicts
-  # This is the key change to prevent conflicts when building the ISO
-  boot.loader = lib.mkIf (!config.system.build ? isoImage) {
-    timeout = 5;
-    grub = {
+  # ISO-specific configuration
+  isoImage = {
+    # Set ISO filename and volume ID
+    isoName = lib.mkForce "bloom-nix.iso";
+    volumeID = lib.mkForce "BLOOM_NIX";
+
+    # Make the ISO bootable via both BIOS and UEFI
+    makeEfiBootable = true;
+    makeUsbBootable = true;
+
+    # Set splash screen
+    splashImage = lib.mkForce ../branding/splash.png;
+
+    # Add build information to the ISO label
+    appendToMenuLabel = " Live";
+  };
+
+  # Live environment user experience
+  security.sudo.wheelNeedsPassword = false;
+
+  # Auto-login for live environment
+  services.xserver.displayManager = lib.mkForce {
+    autoLogin = {
       enable = true;
-      efiSupport = true;
-      device = "nodev";
-      useOSProber = true;
-      theme = ../branding/grub/theme;
-      backgroundColor = "#454d6e";
+      user = "nixos";
     };
-    efi.canTouchEfiVariables = true;
+    defaultSession = "xfce";
+
+    # Enable SDDM and disable LightDM
+    sddm.enable = true;
+    lightdm.enable = false;
   };
 
-  # Hostname for installed system
-  networking.hostName = "bloom-nix";
-  
-  # Installed-system specific packages
-  environment.systemPackages = with pkgs; [
-    # System administration tools for installed system only
-    gparted
-    firefox
-    thunderbird
-    libreoffice
-    neofetch
-    vlc
-    gimp
-    
-    # Additional system utilities
-    gnome.gnome-disk-utility
-    gnome.gnome-system-monitor
-    xfce.thunar-archive-plugin
-    xfce.thunar-volman
+  # Boot settings
+  boot.loader.timeout = lib.mkForce 5;
+  boot.loader.grub.timeoutStyle = lib.mkForce "menu";
+  boot.plymouth.enable = true;  # Enable Plymouth for a nicer boot experience
+  boot.supportedFilesystems = lib.mkForce [ "vfat" "ext4" "btrfs" "xfs" "ntfs" ];
+  isoImage.squashfsCompression = "gzip";
 
-    # Calamares dependencies
-    qt5.qtbase
-    qt5.qtsvg
-    qt5.qtquickcontrols2
-    kpmcore
-    parted
-    gptfdisk
-    pkgs.python3Full
-    python3Packages.pyqt5
-    libsForQt5.kpmcore
+  # Ensure better hardware support
+  hardware.enableAllFirmware = true;
 
-     # Core X11 components
-    xorg.xorgserver
-    xorg.xinit
-    xorg.xauth
-    xorg.xrdb
-    xorg.xmodmap
-    xorg.xrandr
-    xorg.xinput
-    
-    # Input device drivers
-    xorg.xf86inputevdev
-    xorg.xf86inputlibinput
-    xorg.xf86inputsynaptics
-    
-    # Video drivers (include all common ones)
-    xorg.xf86videointel
-    xorg.xf86videoati
-    xorg.xf86videofbdev
-    xorg.xf86videovesa  # Basic fallback driver
-    xorg.xf86videonouveau  # Open-source NVIDIA
-    
-    # OpenGL and 3D acceleration
-    mesa
-    mesa_drivers
-    glxinfo
-    
-    # Display manager (LightDM)
-    lightdm
-    lightdm-gtk-greeter
-    
-    # XFCE desktop environment essentials
-    xfce.xfce4-session
-    xfce.xfdesktop
-    xfce.xfwm4
-    xfce.xfce4-panel
-    xfce.xfce4-settings
-    xfce.thunar
-    xfce.xfce4-terminal
-    
-    # Fonts
-    dejavu_fonts
-    noto-fonts
-    liberation_ttf
-    
-    # Themes
-    gnome.adwaita-icon-theme
-    hicolor-icon-theme
-    
-    # System utilities
-    pciutils  # For lspci
-    usbutils  # For lsusb
-    file      # For file type detection
-    psmisc    # For pstree and killall
-    
-    # Debugging tools
-    strace
-    lsof
-    
-    # Terminal tools
-    bash
-    coreutils
-    
-    # Network tools
-    inetutils
-
-  ];
-
-  # User account setup for installed system
-  users.users.bloom = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
-    initialPassword = "bloom";
-  };
-  
-  # Security settings for installed system
-  security.sudo = {
-    enable = true;
-    wheelNeedsPassword = true; # Password required on installed system
-  };
-  
-  # Enable OpenSSH only in installed system
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      PermitRootLogin = "no";
-      X11Forwarding = false;
-    };
-  };
-  
-  # Enable automatic updates
-  system.autoUpgrade = {
-    enable = true;
-    allowReboot = false;
-    dates = "04:00";
-    flake = "github:your-username/bloom-nix-project";
-  };
-  
-  # Install recommended documentation
-  documentation = {
-    enable = true;
-    dev.enable = true;
-    doc.enable = true;
-    info.enable = true;
-    man.enable = true;
-    nixos.enable = true;
-  };
-  
-  # Default applications
-  xdg.mime.defaultApplications = {
-    "text/plain" = "org.xfce.mousepad.desktop";
-    "application/pdf" = "org.gnome.Evince.desktop";
-    "image/jpeg" = "org.gnome.eog.desktop";
-    "image/png" = "org.gnome.eog.desktop";
-    "video/mp4" = "vlc.desktop";
-    "audio/mp3" = "vlc.desktop";
-  };
+  # System state version
+  system.stateVersion = "23.11";
 }

@@ -1,88 +1,140 @@
 # modules/installer/calamares.nix
+# Enhanced Calamares configuration for Bloom Nix
 { config, lib, pkgs, ... }:
 
-let
-  calamares-custom = pkgs.calamares.overrideAttrs (oldAttrs: {
-    # Add debug output
-    configureFlags = (oldAttrs.configureFlags or []) ++ [
-      "-DCMAKE_BUILD_TYPE=Debug"
-    ];
-    
-    # Ensure we have all needed dependencies
-    buildInputs = (oldAttrs.buildInputs or []) ++ (with pkgs; [
-      libsForQt5.kpmcore
-      libsForQt5.kparts
-      libsForQt5.kservice
-      libsForQt5.kpackage
-      parted
-      gptfdisk
-      e2fsprogs
-      dosfstools
-      ntfs3g
-      xfsprogs
-    ]);
-    
-    # Customize the installer
-    postInstall = ''
-      mkdir -p $out/share/calamares
-      cp -R ${../../modules/installer/calamares}/* $out/share/calamares/
-      
-      # Create a launcher script with proper environment
-      mkdir -p $out/bin
-      mv $out/bin/calamares $out/bin/calamares-real
-      cat > $out/bin/calamares << EOF
-#!/bin/sh
-# Set proper environment variables
-export QT_QPA_PLATFORM=xcb
-export QT_PLUGIN_PATH=${pkgs.libsForQt5.qt5.qtbase}/lib/qt-5/plugins
-export QT_QUICK_CONTROLS_STYLE=org.kde.breeze
-
-# Run installer with proper permissions
-exec pkexec $out/bin/calamares-real -d "\$@" > /tmp/calamares.log 2>&1
-EOF
-      chmod +x $out/bin/calamares
-    '';
-  });
-in {
-  # Add Calamares to system packages
+{
+  # Enable the Calamares installer
+  services.xserver.displayManager.sddm.enable = true;
+  
+  # Ensure we have all required dependencies
   environment.systemPackages = with pkgs; [
-    calamares-custom
-    # These packages help with hardware detection and installation
-    gparted
-    ntfs3g
-    exfat
-    dosfstools
-    btrfs-progs
-    f2fs-tools
-    xfsprogs
+    calamares-nixos
+    
+    # Qt dependencies
+    libsForQt5.full
+    libsForQt5.kpmcore
+    qt5.qttools
+    qt5.qtquickcontrols2
+    
+    # Filesystem tools
     parted
     gptfdisk
-    polkit  # Ensure polkit is available for authentication
+    e2fsprogs
+    dosfstools
+    ntfs3g
+    
+    # Python dependencies
+    python3
+    python3Packages.pyqt5
+    python3Packages.pyyaml
   ];
   
-  # Ensure polkit is configured properly
-  security.polkit.enable = true;
-  security.polkit.extraConfig = ''
-    polkit.addRule(function(action, subject) {
-      if (action.id == "org.freedesktop.policykit.exec" &&
-          action.lookup("program") == "/run/current-system/sw/bin/calamares-real") {
-        return polkit.Result.YES;
-      }
-    });
+  # Ensure the installer has proper branding
+  environment.etc."calamares/branding/bloom-nix/branding.desc".text = ''
+    ---
+    componentName:  bloom-nix
+    
+    strings:
+        productName:         Bloom Nix
+        shortProductName:    Bloom Nix
+        version:             1.0.0
+        shortVersion:        1.0
+        versionedName:       Bloom Nix 1.0
+        shortVersionedName:  Bloom Nix 1.0
+        bootloaderEntryName: Bloom Nix
+        productUrl:          https://github.com/yourusername/bloom-nix
+        supportUrl:          https://github.com/yourusername/bloom-nix/issues
+        knownIssuesUrl:      https://github.com/yourusername/bloom-nix/wiki/Known-Issues
+        releaseNotesUrl:     https://github.com/yourusername/bloom-nix/wiki/Release-Notes
+    
+    images:
+        productLogo:         "logo.png"
+        productIcon:         "icon.png"
+        productWelcome:      "welcome.png"
+        productWallpaper:    "wallpaper.png"
+    
+    slideshow:               "slideshow.qml"
+    
+    style:
+        sidebarBackground:    "#454d6e"
+        sidebarText:          "#FFFFFF"
+        sidebarTextHighlight: "#5e96fe"
   '';
   
-  # Create desktop entry for Calamares with debugging
-  environment.etc."xdg/autostart/calamares.desktop".text = ''
+  # Make sure Calamares knows what partitioning tools to use
+  environment.etc."calamares/modules/partition.conf".text = ''
+    ---
+    efiSystemPartition:     "/boot/efi"
+    userSwapChoices:        true
+    
+    # Default partitioning scheme
+    defaultPartitionTableType: gpt
+    
+    # Names of additional packages to be installed with Bloom Nix
+    initialPackages:
+        - calamares
+        - grub
+        - os-prober
+        - ntfs-3g
+  '';
+  
+  # Set up proper module loading
+  environment.etc."calamares/settings.conf".text = ''
+    ---
+    modules-search: [ local, /etc/calamares/modules ]
+    
+    sequence:
+      - show:
+        - welcome
+        - locale
+        - keyboard
+        - partition
+        - users
+        - summary
+      - exec:
+        - partition
+        - mount
+        - unpackfs
+        - machineid
+        - fstab
+        - locale
+        - keyboard
+        - localecfg
+        - users
+        - networkcfg
+        - hwclock
+        - services-systemd
+        - bootloader-config
+        - bootloader
+        - umount
+      - show:
+        - finished
+        
+    branding: bloom-nix
+    
+    prompt-install: true
+    
+    dont-chroot: false
+  '';
+  
+  # Create a startup script to fix potential issues with Calamares
+  environment.etc."xdg/autostart/calamares-debug.desktop".text = ''
     [Desktop Entry]
     Type=Application
-    Version=1.0
-    Name=Install Bloom Nix
-    GenericName=System Installer
-    Comment=Bloom Nix System Installer
-    Exec=sh -c "calamares || xterm -e 'echo \"Installer failed. See logs at /tmp/calamares.log\"; cat /tmp/calamares.log; read -p \"Press Enter to close...\"'"
-    Icon=calamares
+    Name=Calamares Debug Helper
+    Comment=Fixes Calamares configuration issues on boot
+    Exec=/usr/bin/env bash -c 'sleep 5; mkdir -p ~/.config/calamares; ln -sf /etc/calamares/* ~/.config/calamares/ || true'
     Terminal=false
-    StartupNotify=true
-    Categories=Qt;System;
+    Hidden=false
   '';
+  
+  # Add a helper script to run Calamares with debug output
+  environment.systemPackages = with pkgs; [
+    (writeShellScriptBin "calamares-debug" ''
+      #!/bin/sh
+      mkdir -p ~/.config/calamares
+      ln -sf /etc/calamares/* ~/.config/calamares/ || true
+      calamares -d
+    '')
+  ];
 }
