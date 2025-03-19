@@ -1,7 +1,10 @@
+# modules/desktop/plasma.nix
+
 { config, lib, pkgs, ... }:
 
 {
   imports = [
+    # Import theme configuration
     ./plasma-theme.nix
   ];
 
@@ -28,47 +31,47 @@
     kdePackages.systemsettings
 
     # Essential KDE applications
-    kdePackages.dolphin           # File manager
-    kdePackages.konsole           # Terminal
-    kdePackages.kate              # Text editor
-    kdePackages.ark               # Archive manager
-    kdePackages.spectacle         # Screenshot tool
-    kdePackages.okular            # Document viewer
-    kdePackages.elisa             # Music player
-    kdePackages.discover          # Software center
+    kdePackages.dolphin       # File manager
+    kdePackages.konsole       # Terminal
+    kdePackages.kate          # Text editor
+    kdePackages.ark           # Archive manager
+    kdePackages.spectacle     # Screenshot tool
+    kdePackages.okular        # Document viewer
+    kdePackages.elisa         # Music player
+    kdePackages.discover      # Software center
 
     # Desktop functionality
-    kdePackages.plasma-nm         # Network manager
-    kdePackages.plasma-pa         # Audio volume
+    kdePackages.plasma-nm     # Network manager
+    kdePackages.plasma-pa     # Audio volume
     kdePackages.plasma-workspace-wallpapers
     kdePackages.plasma-browser-integration
-    kdePackages.kwallet-pam       # Wallet/Keyring
-    kdePackages.kio               # KDE IO slaves
-    kdePackages.print-manager     # Printer management
+    kdePackages.kwallet-pam   # Wallet/Keyring
+    kdePackages.kio           # KDE IO slaves
+    kdePackages.print-manager # Printer management
 
     # Useful utilities
-    kdePackages.filelight         # Disk usage viewer
-    kdePackages.kcalc             # Calculator
-    kdePackages.kinfocenter       # System information
-    kdePackages.ksystemstats      # System monitor
-    kdePackages.kgpg              # GnuPG frontend
-    kdePackages.kdeconnect-kde    # Phone integration
+    kdePackages.filelight     # Disk usage viewer
+    kdePackages.kcalc         # Calculator
+    kdePackages.kinfocenter   # System information
+    kdePackages.ksystemstats  # System monitor
+    kdePackages.kgpg          # GnuPG frontend
+    kdePackages.kdeconnect-kde # Phone integration
 
     # Media and appearance
-    kdePackages.gwenview          # Image viewer
-    kdePackages.breeze-icons      # Icon theme
-    kdePackages.breeze-gtk        # GTK theme matching
+    kdePackages.gwenview      # Image viewer
+    kdePackages.breeze-icons  # Icon theme
+    kdePackages.breeze-gtk    # GTK theme matching
     kdePackages.plasma-integration # Better desktop integration
 
     # Multimedia support
-    ffmpeg                        # Multimedia backend
-    libdvdcss                     # DVD support
-    gst_all_1.gstreamer           # Media framework
+    ffmpeg                    # Multimedia backend
+    libdvdcss                 # DVD support
+    gst_all_1.gstreamer       # Media framework
     gst_all_1.gst-plugins-base
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-bad
     gst_all_1.gst-plugins-ugly
-    gst_all_1.gst-libav           # Media codecs
+    gst_all_1.gst-libav       # Media codecs
   ];
 
   # Enable important KDE-specific services
@@ -97,4 +100,16 @@
   };
 
   programs.dconf.enable = true;  # Needed for proper GTK integration
+  
+  # Set default applications for common file types
+  xdg.mime.defaultApplications = {
+    "application/pdf" = "okularApplication_pdf.desktop";
+    "image/jpeg" = "org.kde.gwenview.desktop";
+    "image/png" = "org.kde.gwenview.desktop";
+    "text/plain" = "org.kde.kate.desktop";
+    "application/x-compressed-tar" = "org.kde.ark.desktop";
+    "application/zip" = "org.kde.ark.desktop";
+    "video/mp4" = "org.kde.haruna.desktop";
+    "audio/mpeg" = "org.kde.elisa.desktop";
+  };
 }

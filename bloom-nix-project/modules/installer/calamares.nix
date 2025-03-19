@@ -1,4 +1,3 @@
-
 # modules/installer/calamares.nix
 # Enhanced Calamares configuration for Bloom Nix with KDE integration
 { config, lib, pkgs, ... }:
