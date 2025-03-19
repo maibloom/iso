@@ -1,10 +1,7 @@
-# config/build-iso.nix
-# Configuration for building the Bloom Nix live ISO image with KDE Plasma 6
+# Configuration for building the Bloom Nix live ISO image
 { config, pkgs, lib, ... }:
 
 {
-  nixpkgs.config.allowBroken = true;
-
   imports = [
     # Base ISO configuration from nixpkgs
     <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix>
@@ -40,35 +37,24 @@
     squashfsCompression = "gzip";
   };
 
-  # Force KDE Plasma as the desktop environment and override any conflicting settings
-  services.xserver = {
+  # Force SDDM as the display manager - critical to resolve the conflict
+  services.displayManager.execCmd = lib.mkForce "exec /run/current-system/sw/bin/sddm";
+
+  # Configure autologin
+  services.displayManager.autoLogin = {
     enable = true;
-    
-    # Ensure desktop manager settings are consistent
-    desktopManager = {
-      plasma6.enable = lib.mkForce true;
-      xfce.enable = lib.mkForce false;
-      xterm.enable = false;
-    };
-    
-    # Fix display manager conflict by using only SDDM (recommended for KDE)
-    displayManager = {
-      sddm.enable = lib.mkForce true;
-      lightdm.enable = lib.mkForce false;
-      
-      # Auto-login configuration
-      autoLogin = {
-        enable = true;
-        user = "nixos";
-      };
-      defaultSession = lib.mkForce "plasma";
-    };
+    user = "nixos";
   };
+  services.displayManager.defaultSession = "plasma";
+
+  # Enable KDE Plasma
+  services.desktopManager.plasma6.enable = true;
+  services.xserver.enable = true;
 
   # Live environment user experience
   security.sudo.wheelNeedsPassword = false;
 
-  # Create desktop shortcuts appropriate for KDE
+  # Create desktop shortcuts
   environment.etc = {
     "skel/Desktop/install.desktop".text = ''
       [Desktop Entry]
@@ -96,9 +82,9 @@
   # Boot settings
   boot.loader.timeout = lib.mkForce 5;
   boot.loader.grub.timeoutStyle = lib.mkForce "menu";
-  boot.plymouth.enable = true;  # Enable Plymouth for a nicer boot experience
+  boot.plymouth.enable = true;
   boot.supportedFilesystems = lib.mkForce [ "vfat" "ext4" "btrfs" "xfs" "ntfs" ];
-  
+ 
   # Ensure better hardware support
   hardware.enableAllFirmware = true;
 

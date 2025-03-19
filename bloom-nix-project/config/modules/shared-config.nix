@@ -37,9 +37,8 @@
     libsForQt5.qt5.qtgraphicaleffects
     kdePackages.dolphin
     
-    # Browsers
+    # Browser
     brave
-    ungoogled-chromium
     
     # Filesystem tools
     ntfs3g fuse exfat
