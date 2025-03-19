@@ -1,5 +1,5 @@
 # config/build-iso.nix
-# Configuration for building the Bloom Nix live ISO image with XFCE
+# Configuration for building the Bloom Nix live ISO image with KDE Plasma 6
 { config, pkgs, lib, ... }:
 
 {
@@ -14,7 +14,7 @@
 
     # Import branding and desktop environment
     ../modules/branding
-    ../modules/desktop/xfce.nix
+    ../modules/desktop/plasma.nix
 
     # Import hardware support
     ../modules/hardware-support.nix
@@ -40,38 +40,35 @@
     squashfsCompression = "gzip";
   };
 
-  # Ensure XFCE is properly installed and configured
+  # Force KDE Plasma as the desktop environment and override any conflicting settings
   services.xserver = {
     enable = true;
     
-    # Force XFCE as the desktop environment
+    # Ensure desktop manager settings are consistent
     desktopManager = {
-      xfce.enable = lib.mkForce true;
+      plasma6.enable = lib.mkForce true;
+      xfce.enable = lib.mkForce false;
       xterm.enable = false;
     };
     
-    # Fix display manager conflict by using only one
+    # Fix display manager conflict by using only SDDM (recommended for KDE)
     displayManager = {
-      # Choose which display manager to use (pick ONE)
-      lightdm = {
-        enable = lib.mkForce true;  # We'll use LightDM for better compatibility
-        background = ../branding/sddm-background.png;
-      };
-      sddm.enable = lib.mkForce false;  # Explicitly disable SDDM
+      sddm.enable = lib.mkForce true;
+      lightdm.enable = lib.mkForce false;
       
       # Auto-login configuration
       autoLogin = {
         enable = true;
         user = "nixos";
       };
-      defaultSession = "xfce";
+      defaultSession = lib.mkForce "plasma";
     };
   };
 
   # Live environment user experience
   security.sudo.wheelNeedsPassword = false;
 
-  # Create desktop shortcuts
+  # Create desktop shortcuts appropriate for KDE
   environment.etc = {
     "skel/Desktop/install.desktop".text = ''
       [Desktop Entry]
@@ -89,7 +86,7 @@
       Type=Application
       Name=Terminal
       Comment=Access the command line
-      Exec=xfce4-terminal
+      Exec=konsole
       Icon=utilities-terminal
       Terminal=false
       Categories=System;
@@ -101,8 +98,7 @@
   boot.loader.grub.timeoutStyle = lib.mkForce "menu";
   boot.plymouth.enable = true;  # Enable Plymouth for a nicer boot experience
   boot.supportedFilesystems = lib.mkForce [ "vfat" "ext4" "btrfs" "xfs" "ntfs" ];
-  # boot.zfs.enabled = lib.mkForce false;  # Explicitly disable ZFS
-
+  
   # Ensure better hardware support
   hardware.enableAllFirmware = true;
 
