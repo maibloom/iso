@@ -127,8 +127,8 @@
   # Additional branding assets configuration
   environment.etc = {
     # Make sure no entries overlap with plasma-theme.nix
-    "bloom-nix/backgrounds/default.jpg".source = ../../branding/background.png;
-    "bloom-nix/backgrounds/login.jpg".source = ../../branding/sddm-background.png;
+    "bloom-nix/backgrounds/default.png".source = ../../branding/background.png;
+    "bloom-nix/backgrounds/login.png".source = ../../branding/sddm-background.png;
   };
   
   # Configure SDDM for optimal Plasma experience
@@ -140,7 +140,7 @@
         CursorTheme = "breeze_cursors";
         Font = "Noto Sans,10,-1,5,50,0,0,0,0,0";
         # Use custom background
-        Background = "/etc/bloom-nix/backgrounds/login.jpg";
+        Background = "../../branding/background.png";
       };
       # Better user experience settings
       Autologin = {

@@ -46,6 +46,11 @@
     
     # Development
     libgcc rustup
+
+    # Plasma packages
+    plasma5Packages.breeze-gtk
+    plasma5Packages.breeze-icons
+    plasma5Packages.kde-gtk-config
   ];
   
   # Locale and internationalization
