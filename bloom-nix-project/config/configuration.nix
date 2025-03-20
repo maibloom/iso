@@ -30,9 +30,6 @@
     makeEfiBootable = true;
     makeUsbBootable = true;
 
-    # Set splash screen
-    splashImage = lib.mkForce ../branding/splash.png;
-
     # Add build information to the ISO label
     appendToMenuLabel = " Live";
   };
@@ -46,7 +43,7 @@
       enable = true;
       user = "nixos";
     };
-    defaultSession = "xfce";
+    defaultSession = "plasma";
 
     # Enable SDDM and disable LightDM
     sddm.enable = true;
