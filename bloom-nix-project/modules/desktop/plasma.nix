@@ -3,12 +3,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [
-    # Import theme configuration
-    ./plasma-theme.nix
-  ];
-
-  # Enable KDE Plasma 6 desktop environment
+   # Enable KDE Plasma 6 desktop environment
   services.xserver = {
     enable = true;
 
@@ -112,4 +107,9 @@
     "video/mp4" = "org.kde.haruna.desktop";
     "audio/mpeg" = "org.kde.elisa.desktop";
   };
+  
+  imports = [
+    # Import theme configuration
+    ./plasma-theme.nix
+  ];
 }
