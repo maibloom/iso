@@ -33,7 +33,7 @@
     "acpi_osi=Linux"
   ];
 
-  # Graphics for Wayland
+  # Graphics for Wayland - consolidated all graphics settings here
   hardware.graphics = {
     enable = true;
     enable32Bit = true; # If you need 32-bit support
@@ -41,6 +41,11 @@
       mesa
       libdrm
       libglvnd
+      # Add additional graphics packages
+      vaapiIntel 
+      vaapiVdpau 
+      libvdpau-va-gl 
+      intel-media-driver
     ];
   };
 
@@ -102,15 +107,6 @@
   #######################################################################
   # Graphics and Display
   #######################################################################
- 
-  # OpenGL support - using updated option names
-  # OpenGL/graphics settings are now consolidated under hardware.graphics.*
-  # The old hardware.opengl.* settings generate deprecation warnings
-  
-  # Additional graphics packages for specific use cases
-  hardware.graphics.extraPackages = with pkgs; [
-    vaapiIntel vaapiVdpau libvdpau-va-gl intel-media-driver
-  ];
  
   # NVIDIA support
   hardware.nvidia = {
