@@ -56,7 +56,7 @@
 
   # Add the Bloom installer to the system
   environment.systemPackages = with pkgs; [
-    calamares-framework
+    # calamares-framework
     # Add any other ISO-specific packages here
     gparted
     parted
