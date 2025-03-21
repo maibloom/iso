@@ -29,7 +29,7 @@
   environment.systemPackages = with pkgs; [
     # CLI essentials
     vim nano wget curl git
-    htop lsof pciutils usbutil
+    htop lsof pciutils pkgs.usbutils
     zip unzip file tree rsync
     
     # Desktop environment support
@@ -42,6 +42,12 @@
     
     # Filesystem tools
     ntfs3g fuse exfat
+
+    # liberoffice
+    libreoffice
+    
+    # video tool
+    vlc
     
     # Development
     libgcc rustup
@@ -69,15 +75,7 @@
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
-  
-  # Common X11 display settings - desktop environment gets imported separately
-  services.xserver = {
-    enable = true;
 
-    # is commented because it is going to be set by config/deskop/gnome.nix
-    # displayManager.lightdm.enable = true;
-  };
-  
   # Audio with PipeWire
   security.rtkit.enable = true;
   services.pipewire = {
@@ -86,26 +84,6 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
-  };
-  
-  # Font configuration
-  fonts = {
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-emoji
-      liberation_ttf
-      fira-code
-      ubuntu_font_family
-      dejavu_fonts
-    ];
-    fontconfig = {
-      defaultFonts = {
-        monospace = [ "Fira Code" "DejaVu Sans Mono" ];
-        sansSerif = [ "Noto Sans" "Liberation Sans" ];
-        serif = [ "Noto Serif" "Liberation Serif" ];
-      };
-    };
   };
   
   # Basic networking configuration

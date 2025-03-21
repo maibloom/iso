@@ -3,10 +3,14 @@
 {
   imports = [
     <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix>
-    ./modules/shared-config.nix
-    ../modules/branding
-    ../modules/desktop/gnome.nix
-    ../modules/hardware-support.nix
+
+    ./configuration.nix
+    ./shared-config.nix
+    ./modules/branding/default.nix
+    ./modules/boot/grub-theme.nix
+    ./modules/boot/plymouth.nix
+    ./modules/desktop/plasma.nix
+    ./modules/hardware-support.nix
   ];
 
   isoImage = {
@@ -18,24 +22,6 @@
     appendToMenuLabel = " Live";
     squashfsCompression = "gzip";
   };
-
-  # Correct display manager configuration
-  services.xserver = {
-    enable = true;
-    displayManager = {
-      gdm = {
-        enable = true;
-        wayland = lib.mkDefault true;
-      };
-      autoLogin = {
-        enable = true;
-        user = "nixos";
-      };
-    };
-    desktopManager.gnome.enable = true;
-  };
-
-  services.displayManager.defaultSession = "gnome";
 
   security.sudo.wheelNeedsPassword = false;
 
@@ -67,15 +53,6 @@
     loader.grub.timeoutStyle = lib.mkForce "menu";
     plymouth.enable = true;
     supportedFilesystems = lib.mkForce [ "vfat" "ext4" "btrfs" "xfs" "ntfs" ];
-  };
-
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      vaapiVdpau
-      libvdpau-va-gl
-    ];
   };
 
   system.stateVersion = "23.11";

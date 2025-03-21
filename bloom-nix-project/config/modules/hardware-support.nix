@@ -30,6 +30,18 @@
     "acpi_osi=Linux" 
   ];
 
+  # Graphics for Wayland
+  
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true; # If you need 32-bit support
+  hardware.graphics.extraPackages = with pkgs; [
+    mesa
+    libdrm
+    libglvnd
+  ];
+
+
+
   # Re-enable standard kernel module detection
   boot.initrd.includeDefaultModules = true;
   
