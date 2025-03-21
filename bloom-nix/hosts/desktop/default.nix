@@ -1,5 +1,5 @@
-# Configuration for installed Bloom Nix systems
-{ config, pkgs, lib, ... }:
+# Configuration for installed Bloom Nix systems - Flake compatible
+{ config, pkgs, lib, inputs, outputs, ... }:
 
 {
   # Boot loader configuration

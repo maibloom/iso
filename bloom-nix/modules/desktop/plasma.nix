@@ -1,11 +1,11 @@
-# KDE Plasma desktop environment configuration for Bloom Nix
-{ config, lib, pkgs, ... }:
+# KDE Plasma desktop environment configuration for Bloom Nix - Flake compatible
+{ config, lib, pkgs, inputs, outputs, ... }:
 
 {
   # Enable X server (still required for KDE Plasma)
   services.xserver.enable = true;
 
-  # Configure display manager
+  # Configure display manager - using updated option paths
   services.displayManager = {
     sddm = {
       enable = true;

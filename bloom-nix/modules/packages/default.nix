@@ -1,5 +1,5 @@
-# Core packages for Bloom Nix
-{ config, pkgs, lib, ... }:
+# Core packages for Bloom Nix - Flake compatible
+{ config, pkgs, lib, inputs, outputs, ... }:
 
 {
   # System packages that should be available on all installations

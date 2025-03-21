@@ -1,11 +1,13 @@
-# Hardware support configuration for Bloom Nix
-{ config, lib, pkgs, modulesPath, inputs, ... }:
+# Hardware support configuration for Bloom Nix - Flake compatible
+{ config, lib, pkgs, inputs, outputs, ... }:
 
 {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
-    # Add hardware-specific imports here
-    # Example: inputs.nixos-hardware.nixosModules.dell-xps-15-9500
+    # Use modulesPath from the flake context
+    "${inputs.nixpkgs}/nixos/modules/profiles/qemu-guest.nix"
+    
+    # You can add hardware-specific imports here, e.g.:
+    # inputs.nixos-hardware.nixosModules.dell-xps-15-9500
   ];
 
   #######################################################################
@@ -94,7 +96,7 @@
   hardware.cpu.intel.updateMicrocode = true;
   hardware.cpu.amd.updateMicrocode = true;
  
-  # Additional firmware
+  # Additional firmware - get from nixpkgs
   hardware.firmware = with pkgs; [ linux-firmware firmwareLinuxNonfree ];
  
   #######################################################################

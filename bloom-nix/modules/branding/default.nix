@@ -1,5 +1,5 @@
-# Bloom Nix branding configuration
-{ config, lib, pkgs, ... }:
+# Bloom Nix branding configuration - Flake compatible
+{ config, lib, pkgs, inputs, outputs, ... }:
 
 let
   # Brand colors

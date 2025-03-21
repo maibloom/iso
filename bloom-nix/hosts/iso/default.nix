@@ -1,5 +1,5 @@
-# ISO-specific configuration for Bloom Nix
-{ config, pkgs, lib, ... }:
+# ISO-specific configuration for Bloom Nix - Flake compatible
+{ config, pkgs, lib, inputs, outputs, ... }:
 
 {
   # ISO-specific configuration
@@ -29,7 +29,7 @@
   # Allow sudo without password for live environment
   security.sudo.wheelNeedsPassword = false;
 
-  # Desktop shortcuts
+  # Desktop shortcuts - create these in the appropriate location
   environment.etc = {
     "skel/Desktop/install.desktop".text = ''
       [Desktop Entry]
@@ -72,4 +72,9 @@
 
   # Enable SSH for remote installation assistance (optional)
   # services.openssh.enable = true;
+  
+  # Import appropriate modules for ISO - flake style
+  imports = [
+    # You can specify additional imports here if needed
+  ];
 }

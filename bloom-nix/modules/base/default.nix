@@ -1,5 +1,5 @@
-# Common base configuration for Bloom Nix
-{ config, pkgs, lib, ... }:
+# Base module for Bloom Nix - Flake compatible
+{ config, pkgs, lib, inputs, outputs, ... }:
 
 {
   # System identity
@@ -11,12 +11,26 @@
     allowBroken = false;
   };
 
-  # Nix package manager optimizations
+  # Nix package manager optimizations - flakes-specific
   nix = {
     settings = {
       auto-optimise-store = true;
+      # Enable flakes and nix-command by default
       experimental-features = [ "nix-command" "flakes" ];
+      # Trust the flake registry by default
+      trusted-public-keys = lib.mkDefault [];
+      substituters = lib.mkDefault [];
     };
+    
+    # Registry entries for this flake
+    registry = lib.mapAttrs (_: flake: { inherit flake; }) inputs;
+    
+    # Make nixpkgs available in the NIX_PATH
+    nixPath = lib.mkForce [
+      "nixpkgs=${inputs.nixpkgs}"
+    ];
+    
+    # Garbage collection
     gc = {
       automatic = true;
       dates = "weekly";
@@ -24,15 +38,15 @@
     };
   };
 
-  # System state version - update when making significant changes
+  # System state version
   system.stateVersion = "23.11";
 
-  # Networking configuration
+  # Basic networking configuration
   networking = {
     networkmanager.enable = true;
   };
  
-  # Time zone - this can be changed during installation
+  # Time zone
   time.timeZone = "UTC";
  
   # Locale and internationalization
@@ -79,10 +93,4 @@
     tree 
     rsync
   ];
-
-  # Boot loader configuration (shared across systems)
-  boot.loader.grub.useOSProber = true;
-
-  # Enable fwupd for firmware updates
-  services.fwupd.enable = true;
 }
