@@ -29,7 +29,7 @@
   environment.systemPackages = with pkgs; [
     # CLI essentials
     vim nano wget curl git
-    htop lsof pciutils usbutils
+    htop lsof pciutils usbutil
     zip unzip file tree rsync
     
     # Desktop environment support
@@ -73,7 +73,9 @@
   # Common X11 display settings - desktop environment gets imported separately
   services.xserver = {
     enable = true;
-    displayManager.lightdm.enable = true;
+
+    # is commented because it is going to be set by config/deskop/gnome.nix
+    # displayManager.lightdm.enable = true;
   };
   
   # Audio with PipeWire

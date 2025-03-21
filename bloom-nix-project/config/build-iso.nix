@@ -1,60 +1,44 @@
-# Configuration for building the Bloom Nix live ISO image
 { config, pkgs, lib, ... }:
 
 {
   imports = [
-    # Base ISO configuration from nixpkgs
     <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix>
-
-    # Import shared configuration
     ./modules/shared-config.nix
-
-    # Import branding and desktop environment
     ../modules/branding
-    ../modules/desktop/plasma.nix
-
-    # Import hardware support
+    ../modules/desktop/gnome.nix
     ../modules/hardware-support.nix
   ];
 
-  # ISO-specific configuration
   isoImage = {
-    # Set ISO filename and volume ID
     isoName = lib.mkForce "bloom-nix.iso";
     volumeID = lib.mkForce "BLOOM_NIX";
-
-    # Make the ISO bootable via both BIOS and UEFI
     makeEfiBootable = true;
     makeUsbBootable = true;
-
-    # Set splash screen
     splashImage = lib.mkForce ../branding/splash.png;
-
-    # Add build information to the ISO label
     appendToMenuLabel = " Live";
-    
-    # Use gzip compression for better compatibility
     squashfsCompression = "gzip";
   };
 
-  # Force SDDM as the display manager - critical to resolve the conflict
-  services.displayManager.execCmd = lib.mkForce "exec /run/current-system/sw/bin/sddm";
-
-  # Configure autologin
-  services.displayManager.autoLogin = {
+  # Correct display manager configuration
+  services.xserver = {
     enable = true;
-    user = "nixos";
+    displayManager = {
+      gdm = {
+        enable = true;
+        wayland = lib.mkDefault true;
+      };
+      autoLogin = {
+        enable = true;
+        user = "nixos";
+      };
+    };
+    desktopManager.gnome.enable = true;
   };
-  services.displayManager.defaultSession = "plasma";
 
-  # Enable KDE Plasma
-  services.desktopManager.plasma6.enable = true;
-  services.xserver.enable = true;
+  services.displayManager.defaultSession = "gnome";
 
-  # Live environment user experience
   security.sudo.wheelNeedsPassword = false;
 
-  # Create desktop shortcuts
   environment.etc = {
     "skel/Desktop/install.desktop".text = ''
       [Desktop Entry]
@@ -66,28 +50,33 @@
       Terminal=false
       Categories=System;
     '';
-
     "skel/Desktop/terminal.desktop".text = ''
       [Desktop Entry]
       Type=Application
       Name=Terminal
       Comment=Access the command line
-      Exec=konsole
+      Exec=gnome-terminal
       Icon=utilities-terminal
       Terminal=false
       Categories=System;
     '';
   };
 
-  # Boot settings
-  boot.loader.timeout = lib.mkForce 5;
-  boot.loader.grub.timeoutStyle = lib.mkForce "menu";
-  boot.plymouth.enable = true;
-  boot.supportedFilesystems = lib.mkForce [ "vfat" "ext4" "btrfs" "xfs" "ntfs" ];
- 
-  # Ensure better hardware support
-  hardware.enableAllFirmware = true;
+  boot = {
+    loader.timeout = lib.mkForce 5;
+    loader.grub.timeoutStyle = lib.mkForce "menu";
+    plymouth.enable = true;
+    supportedFilesystems = lib.mkForce [ "vfat" "ext4" "btrfs" "xfs" "ntfs" ];
+  };
 
-  # System state version
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+    extraPackages = with pkgs; [
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+  };
+
   system.stateVersion = "23.11";
 }
