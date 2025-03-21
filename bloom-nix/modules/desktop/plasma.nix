@@ -16,7 +16,7 @@
 
   # Enable KDE Plasma
   services.xserver.desktopManager.plasma5.enable = true; 
-  # Note: Use plasma6.enable for newer NixOS versions if needed
+  # Note: Switch to plasma6.enable for newer NixOS versions in the future
 
   # Core KDE Plasma packages and applications
   environment.systemPackages = with pkgs; [
@@ -41,14 +41,14 @@
     plasma5Packages.breeze-icons
     plasma5Packages.kde-gtk-config
     
-    # Essential applications
-    konsole      # Terminal
-    dolphin      # File manager
-    okular       # Document viewer
-    kate         # Text editor
-    ark          # Archive manager
-    spectacle    # Screenshot tool
-    gwenview     # Image viewer
+    # Essential applications - using correct package paths
+    libsForQt5.konsole      # Terminal (Qt5 version)
+    libsForQt5.dolphin      # File manager
+    libsForQt5.okular       # Document viewer
+    libsForQt5.kate         # Text editor
+    libsForQt5.ark          # Archive manager
+    libsForQt5.spectacle    # Screenshot tool
+    libsForQt5.gwenview     # Image viewer
     
     # Fonts
     noto-fonts

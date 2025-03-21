@@ -103,14 +103,14 @@
   # Graphics and Display
   #######################################################################
  
-  # OpenGL support
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-    extraPackages = with pkgs; [
-      vaapiIntel vaapiVdpau libvdpau-va-gl intel-media-driver
-    ];
-  };
+  # OpenGL support - using updated option names
+  # OpenGL/graphics settings are now consolidated under hardware.graphics.*
+  # The old hardware.opengl.* settings generate deprecation warnings
+  
+  # Additional graphics packages for specific use cases
+  hardware.graphics.extraPackages = with pkgs; [
+    vaapiIntel vaapiVdpau libvdpau-va-gl intel-media-driver
+  ];
  
   # NVIDIA support
   hardware.nvidia = {

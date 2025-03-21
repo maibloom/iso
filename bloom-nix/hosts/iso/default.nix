@@ -47,7 +47,7 @@
       Type=Application
       Name=Terminal
       Comment=Access the command line
-      Exec=konsole
+      Exec=${lib.getBin pkgs.libsForQt5.konsole}/bin/konsole
       Icon=utilities-terminal
       Terminal=false
       Categories=System;
@@ -56,7 +56,7 @@
 
   # Add the Bloom installer to the system
   environment.systemPackages = with pkgs; [
-    # calamares-framework
+    calamares-framework
     # Add any other ISO-specific packages here
     gparted
     parted
