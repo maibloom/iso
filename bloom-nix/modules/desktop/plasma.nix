@@ -29,9 +29,8 @@ in {
 
   # Core KDE Plasma 6 packages and applications
   environment.systemPackages = with pkgs; [
-    # Core KDE Packages - with correct package names
+    # Core KDE Packages
     kdePackages.plasma-workspace
-    # kdePackages.plasma-framework # Removed as it seems to be missing
     kdePackages.kwayland
     kdePackages.kwin
     
@@ -54,7 +53,10 @@ in {
     kdePackages.kate           # Text editor
     kdePackages.ark            # Archive manager
     kdePackages.spectacle      # Screenshot tool
-    kdePackages.gwenview       # Image viewer
+    kdePackages.gwenview      # Image viewer
+    
+    # Additional tools for panel customization
+    plasma-panel-colorizer   # For panel coloring (make sure this package exists)
     
     # Fonts
     noto-fonts
@@ -105,26 +107,90 @@ in {
     programs.plasma = {
       enable = true;
       
-      # Global theme settings - very minimal to start with
+      # Global theme settings
       workspace = {
         lookAndFeel = "org.kde.breezedark.desktop";
+        wallpaper = "${config._module.args.bloomBranding}/default.jpg";
       };
 
-      # Configure a basic panel with core KDE functionality
+      # Configure a bottom panel with the requested layout and color
       panels = [
         {
-          location = "bottom";
-          height = 44;
+          # Panel position and dimensions
+          location = "bottom";     # Place at the bottom of the screen
+          height = 44;             # 44px tall
+          alignment = "center";    # Center the panel contents
+          floating = true;         # Use floating style (looks more modern)
+          
+          # Panel appearance
+          opacity = "opaque";      # Make panel fully opaque
+          
+          # Panel widgets in left-to-right order:
+          # Icon-Only Task Manager -> Panel Spacer -> Digital Clock -> 
+          # Application Dashboard -> Panel Spacer -> System Tray
           widgets = [
-            "org.kde.plasma.kickoff"
-            "org.kde.plasma.icontasks"
-            "org.kde.plasma.systemtray"
-            "org.kde.plasma.digitalclock"
+            # 1. Icon-Only Task Manager (left side)
+            {
+              name = "org.kde.plasma.icontasks";
+              config = {
+                General = {
+                  launchers = [
+                    "applications:org.kde.dolphin.desktop"
+                    "applications:org.kde.konsole.desktop"
+                    "applications:brave-browser.desktop"
+                    "applications:org.kde.kate.desktop"
+                  ];
+                  maxStripes = 1;
+                  showOnlyCurrentScreen = true;
+                };
+              };
+            }
+            
+            # 2. Panel Spacer
+            "org.kde.plasma.panelspacer"
+            
+            # 3. Digital Clock (center)
+            {
+              name = "org.kde.plasma.digitalclock";
+              config = {
+                General = {
+                  showDate = true;
+                  showSeconds = false;
+                  use24hFormat = false;
+                };
+              };
+            }
+            
+            # 4. Application Dashboard/Kickoff (to the right of center)
+            {
+              name = "org.kde.plasma.kickoff";
+              config = {
+                General = {
+                  icon = "bloom-nix-logo";
+                  favoritesPortedToKAstats = true;
+                };
+              };
+            }
+            
+            # 5. Panel Spacer
+            "org.kde.plasma.panelspacer"
+            
+            # 6. System Tray (right side)
+            {
+              name = "org.kde.plasma.systemtray";
+              config = {
+                General = {
+                  extraItems = "org.kde.plasma.battery,org.kde.plasma.networkmanagement,org.kde.plasma.bluetooth,org.kde.plasma.volume";
+                  knownItems = "org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.mediacontroller,org.kde.plasma.networkmanagement,org.kde.plasma.notifications,org.kde.plasma.volume,org.kde.plasma.bluetooth";
+                };
+              };
+            }
           ];
         }
       ];
       
-      # Configure the most basic settings directly through config files
+      # Add panel colorizer widget to set the panel color to #f1efee
+      # Using the officially supported method through plasma-panel-colorizer
       configFile = {
         # Disable Baloo indexing for better performance
         baloofilerc = {
@@ -140,6 +206,32 @@ in {
           };
           KDE = {
             SingleClick = false;  # Double-click to open files
+          };
+        };
+        
+        # Set panel color to #f1efee through panel colorizer
+        plasmarc = {
+          Theme = {
+            name = "breeze-dark"; # Use Breeze Dark theme
+          };
+        };
+        
+        # Configure the panel colorizer
+        "plasma-org.kde.plasma.desktop-appletsrc" = {
+          "Containments" = {
+            "1" = {
+              "Applets" = {
+                "panel-colorizer" = {
+                  "Configuration" = {
+                    "General" = {
+                      backgroundColor = "#f1efee";
+                      backgroundOpacity = 100; # 100% opacity
+                    };
+                  };
+                  "Plugin" = "luisbocanegra.panel.colorizer";
+                };
+              };
+            };
           };
         };
       };
