@@ -78,7 +78,7 @@
       environment.systemPackages = with pkgs; [
         kdePackages.elisa  # KDE music player
         kdePackages.kdenlive  # Video editor
-        kdePackages.krita  # Image editor
+        pkgs.krita  # Image editor
         vlc
         gimp
       ];

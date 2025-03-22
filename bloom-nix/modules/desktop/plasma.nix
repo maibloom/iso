@@ -29,9 +29,9 @@ in {
 
   # Core KDE Plasma 6 packages and applications
   environment.systemPackages = with pkgs; [
-    # Core KDE Packages
+    # Core KDE Packages - with correct package names
     kdePackages.plasma-workspace
-    kdePackages.plasma-framework
+    # kdePackages.plasma-framework # Removed as it seems to be missing
     kdePackages.kwayland
     kdePackages.kwin
     
@@ -55,7 +55,6 @@ in {
     kdePackages.ark            # Archive manager
     kdePackages.spectacle      # Screenshot tool
     kdePackages.gwenview       # Image viewer
-    kdePackages.elisa          # Music player
     
     # Fonts
     noto-fonts
@@ -90,8 +89,6 @@ in {
     "text/plain" = "org.kde.kate.desktop";
     "application/x-compressed-tar" = "org.kde.ark.desktop";
     "application/zip" = "org.kde.ark.desktop";
-    "video/mp4" = "org.kde.elisa.desktop";
-    "audio/mpeg" = "org.kde.elisa.desktop";
   };
  
   # Set up system-wide wallpaper paths (used by Plasma)
@@ -154,4 +151,3 @@ in {
     };
   };
 }
-
