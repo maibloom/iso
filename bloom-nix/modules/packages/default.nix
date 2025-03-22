@@ -34,7 +34,7 @@
         zip unzip file tree rsync
         
         # Desktop environment support
-        kdePackages.qt6.qtgraphicaleffects
+        kdePackages.qt6ct.qtgraphicaleffects
         kdePackages.packagekit-qt
         
         # Filesystem tools
