@@ -191,12 +191,9 @@ in {
         }
       ];
       
-      # Configure desktop behavior and appearance
+      # Configure window behavior and appearance
       kwin = {
-        # Enable nice animations
-        animations.enable = true;
-        
-        # Set up some sensible window behaviors
+        # Set up some sensible window rules
         rules = [
           {
             description = "Application Settings";
@@ -253,7 +250,7 @@ in {
             Rows = 1;
           };
           
-          # Configure effect animations
+          # Configure effect animations - proper structure
           Plugins = {
             blurEnabled = true;
             contrastEnabled = true;
