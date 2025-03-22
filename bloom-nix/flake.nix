@@ -27,20 +27,10 @@
       # System architecture
       systems = [ "x86_64-linux" ];
       forAllSystems = lib.genAttrs systems;
-      
-      # Helper function to create a NixOS configuration
-      mkNixosConfig = { system ? "x86_64-linux", modules ? [] }: 
-        lib.nixosSystem {
-          inherit system;
-          modules = modules;
-          specialArgs = { 
-            inherit inputs; 
-            inherit (self) outputs; 
-          };
-        };
     in {
       # ISO image configuration
-      nixosConfigurations.iso = mkNixosConfig {
+      nixosConfigurations.iso = lib.nixosSystem {
+        system = "x86_64-linux";
         modules = [
           # ISO image creation module from nixpkgs
           "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
@@ -62,10 +52,15 @@
           # ISO-specific configurations
           ./hosts/iso/default.nix
         ];
+        specialArgs = { 
+          inherit inputs; 
+          inherit (self) outputs; 
+        };
       };
       
       # Installed system configuration
-      nixosConfigurations.desktop = mkNixosConfig {
+      nixosConfigurations.desktop = lib.nixosSystem {
+        system = "x86_64-linux";
         modules = [
           # Include home-manager as a NixOS module
           home-manager.nixosModules.home-manager
@@ -84,6 +79,10 @@
           # Desktop-specific configurations
           ./hosts/desktop/default.nix
         ];
+        specialArgs = { 
+          inherit inputs; 
+          inherit (self) outputs; 
+        };
       };
       
       # Make ISO image available as a package
@@ -91,23 +90,5 @@
         iso = self.nixosConfigurations.iso.config.system.build.isoImage;
         default = self.packages.${system}.iso;
       });
-      
-      # Add devShell for development environment (optional)
-      devShells = forAllSystems (system: 
-        let 
-          pkgs = nixpkgs.legacyPackages.${system};
-        in {
-          default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              git
-              nixpkgs-fmt  # Nix formatter
-            ];
-            shellHook = ''
-              echo "Bloom Nix development environment"
-              echo "Run 'nix build .#iso' to build the ISO"
-            '';
-          };
-        }
-      );
     };
 }

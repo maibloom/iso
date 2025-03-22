@@ -29,7 +29,7 @@ in {
 
   # Core KDE Plasma 6 packages and applications
   environment.systemPackages = with pkgs; [
-    # Core KDE Packages (using kdePackages instead of plasma5Packages)
+    # Core KDE Packages
     kdePackages.plasma-workspace
     kdePackages.plasma-framework
     kdePackages.kwayland
@@ -108,158 +108,50 @@ in {
     programs.plasma = {
       enable = true;
       
-      # Global theme settings
+      # Global theme settings - very minimal to start with
       workspace = {
-        theme = "breeze-dark";
-        colorScheme = "BreezeDark";
         lookAndFeel = "org.kde.breezedark.desktop";
-        
-        # Use the branded wallpaper from Bloom Nix
-        wallpaper = "${config._module.args.bloomBranding}/default.jpg";
-        
-        # Icon and cursor themes
-        iconTheme = "breeze-dark";
-        cursor = {
-          theme = "Breeze";
-          size = 24;
-        };
       };
 
-      # Define panels - one centered dock at the bottom (macOS/Windows 11 style)
+      # Configure a basic panel with core KDE functionality
       panels = [
         {
           location = "bottom";
-          height = 44;  # A bit taller for better touch targets
-          floating = true;  # Make it float like macOS
-          alignment = "center";  # Center the panel
+          height = 44;
           widgets = [
-            # Application launcher (start menu)
-            {
-              name = "org.kde.plasma.kickoff";
-              config = {
-                General = {
-                  icon = "bloom-nix-logo";  # Use Bloom Nix logo
-                  favoritesPortedToKAstats = true;
-                };
-              };
-            }
-            
-            # Centered task manager (like macOS/Windows 11)
-            {
-              name = "org.kde.plasma.icontasks";
-              config = {
-                General = {
-                  launchers = [
-                    "applications:org.kde.dolphin.desktop"
-                    "applications:org.kde.konsole.desktop"
-                    "applications:brave-browser.desktop"
-                    "applications:org.kde.kate.desktop"
-                  ];
-                  indicateAudioStreams = true;
-                  fill = false;  # Don't let it fill the whole panel
-                  maxStripes = 1;  # Single row of icons
-                  showOnlyCurrentScreen = true;
-                  showOnlyCurrentDesktop = false;
-                  showToolTips = true;
-                };
-              };
-            }
-            
-            # System tray with frequently used items
-            {
-              name = "org.kde.plasma.systemtray";
-              config = {
-                General = {
-                  extraItems = "org.kde.plasma.battery,org.kde.plasma.networkmanagement,org.kde.plasma.bluetooth,org.kde.plasma.volume";
-                  knownItems = "org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.mediacontroller,org.kde.plasma.networkmanagement,org.kde.plasma.notifications,org.kde.plasma.volume,org.kde.plasma.bluetooth";
-                };
-              };
-            }
-            
-            # Digital clock
-            {
-              name = "org.kde.plasma.digitalclock";
-              config = {
-                General = {
-                  showDate = true;
-                  showSeconds = false;
-                  use24hFormat = false;
-                };
-              };
-            }
+            "org.kde.plasma.kickoff"
+            "org.kde.plasma.icontasks"
+            "org.kde.plasma.systemtray"
+            "org.kde.plasma.digitalclock"
           ];
         }
       ];
       
-      # Configure window behavior and appearance
-      kwin = {
-        # Set up some sensible window rules
-        rules = [
-          {
-            description = "Application Settings";
-            types = ["normal"];
-            properties = {
-              # Modern minimalist window decoration
-              borderSize = 1;
-              windowRadius = 8;
-            };
-          }
-        ];
-      };
-      
-      # Configure shortcuts
-      shortcuts = {
-        kwin = {
-          "Expose" = "Meta+Tab";  # Overview with Meta+Tab
-          "Show Desktop" = "Meta+D";
-          "Switch to Next Desktop" = "Meta+Right";
-          "Switch to Previous Desktop" = "Meta+Left";
-        };
-      };
-      
-      # Configure low-level settings directly
+      # Configure the most basic settings directly through config files
       configFile = {
         # Disable Baloo indexing for better performance
-        baloofilerc."Basic Settings"."Indexing-Enabled" = false;
+        baloofilerc = {
+          "Basic Settings" = {
+            "Indexing-Enabled" = false;
+          };
+        };
         
-        # Configure the Breeze Dark theme
+        # Set dark theme
         kdeglobals = {
           General = {
             ColorScheme = "BreezeDark";
-            accentColorFromWallpaper = false;
           };
-          "KDE".SingleClick = false;  # Double-click to open files
-        };
-        
-        # Configure desktop effects
-        kwinrc = {
-          Compositing = {
-            GLCore = true;
-            Backend = "OpenGL";
-            Enabled = true;
-            LatencyPolicy = "Low";
-          };
-          
-          # Configure virtual desktops
-          Desktops = {
-            Name_1 = "Main";
-            Name_2 = "Work";
-            Name_3 = "Web";
-            Name_4 = "Media";
-            Number = 4;
-            Rows = 1;
-          };
-          
-          # Configure effect animations - proper structure
-          Plugins = {
-            blurEnabled = true;
-            contrastEnabled = true;
-            slidingpopupsEnabled = true;
-            kwin4_effect_fadeEnabled = true;
-            kwin4_effect_fadedesktopEnabled = true;
+          KDE = {
+            SingleClick = false;  # Double-click to open files
           };
         };
       };
     };
+    
+    # Create a simple home directory so home-manager doesn't complain
+    home = {
+      stateVersion = "23.11";
+    };
   };
 }
+

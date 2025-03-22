@@ -1,4 +1,4 @@
-# ISO-specific configuration for Bloom Nix - Using custom Plasma 6
+# ISO-specific configuration for Bloom Nix
 { config, pkgs, lib, inputs, outputs, ... }:
 
 {
@@ -62,42 +62,11 @@
     parted
     ntfs3g
     dosfstools
-    
-    # Additional tools that might be useful in the live environment
-    wget
-    curl
-    git
-    htop
   ];
 
-  # Automatically log in the live user to the Wayland session
+  # Automatically log in the live user
   services.displayManager.autoLogin = {
     enable = true;
     user = "nixos";
   };
-
-  # Configure Bloom branding in the SDDM login screen
-  services.displayManager.sddm.settings = {
-    Theme = {
-      Current = "breeze";
-      CursorTheme = "breeze_cursors";
-      Font = "Noto Sans,10,-1,50,0,0,0,0,0,0,0";
-    };
-    Users = {
-      MaximumUid = 60000;
-      MinimumUid = 1000;
-    };
-    General = {
-      DisplayServer = "wayland";
-      InputMethod = "";
-    };
-  };
-
-  # Ensure the desktop gets our custom configurations
-  services.xserver.desktopManager.plasma6 = {
-    enable = true;
-  };
-
-  # Make sure that file manager has enhanced functionality
-  programs.kdeconnect.enable = true;
 }
