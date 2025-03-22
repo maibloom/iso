@@ -1,23 +1,35 @@
-# Base module for Bloom Nix - Flake compatible
-{ config, pkgs, lib, inputs, outputs, ... }:
+# Basic configuration module for Bloom Nix
+{ config, pkgs, lib, inputs, ... }:
 
 {
   # System identity
   system.nixos.distroName = "Bloom Nix";
- 
+  networking.hostName = "bloomnix";
+  
+  # Configure user accounts
+  users.users.bloomnix = {
+    isNormalUser = true;
+    description = "Bloom Nix User";
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
+    # No password required for login
+    initialPassword = "";
+    hashedPassword = "";
+  };
+  
+  # Allow sudo without password
+  security.sudo.wheelNeedsPassword = false;
+  
   # Package management settings
   nixpkgs.config = {
     allowUnfree = true;
     allowBroken = false;
   };
 
-  # Nix package manager optimizations - flakes-specific
+  # Nix package manager optimizations
   nix = {
     settings = {
       auto-optimise-store = true;
-      # Enable flakes and nix-command by default
       experimental-features = [ "nix-command" "flakes" ];
-      # Trust the flake registry by default
       trusted-public-keys = lib.mkDefault [];
       substituters = lib.mkDefault [];
     };
@@ -44,6 +56,11 @@
   # Basic networking configuration
   networking = {
     networkmanager.enable = true;
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 22 ]; # SSH
+      allowedUDPPorts = [];
+    };
   };
  
   # Time zone
@@ -92,5 +109,70 @@
     file 
     tree 
     rsync
+    
+    # System utilities
+    lshw
+    pciutils
+    usbutils
+    dmidecode
+    
+    # Network utilities
+    inetutils
+    traceroute
+    nmap
+    
+    # Power management
+    powertop
+    tlp
   ];
+  
+  # Font configuration
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+    ];
+    
+    fontconfig = {
+      defaultFonts = {
+        serif = [ "Noto Serif" "Liberation Serif" ];
+        sansSerif = [ "Noto Sans" "Liberation Sans" ];
+        monospace = [ "Fira Code" "Liberation Mono" ];
+        emoji = [ "Noto Color Emoji" ];
+      };
+    };
+  };
+  
+  # System services
+  services = {
+    # SSH for remote management
+    openssh = {
+      enable = true;
+      settings = {
+        PermitRootLogin = "no";
+        PasswordAuthentication = true;
+      };
+    };
+    
+    # Time synchronization
+    timesyncd.enable = true;
+    
+    # Automatic updates
+    fwupd.enable = true;
+  };
+  
+  # Improve system security
+  security = {
+    polkit.enable = true;
+    pam.loginLimits = [{
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "4096";
+    }];
+  };
 }

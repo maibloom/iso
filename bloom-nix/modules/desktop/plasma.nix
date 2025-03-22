@@ -3,7 +3,7 @@
 
 let
   # Default user for the live system and initial setup
-  defaultUser = "nixos";
+  defaultUser = "bloomnix";
 in {
   # Enable X server and Wayland
   services.xserver.enable = true;
@@ -14,15 +14,19 @@ in {
       enable = true;
       wayland.enable = true;  # Enable Wayland support in SDDM
       theme = "breeze";
+      # Enable automatic login without password
+      autoLogin = {
+        enable = true;
+        user = defaultUser;
+      };
     };
     # Default to Plasma on Wayland for modern experience
     defaultSession = "plasma"; 
-    # Auto-login for the live system
-    autoLogin = {
-      enable = lib.mkDefault true;
-      user = lib.mkDefault defaultUser;
-    };
   };
+
+  # Allow automatic login without password
+  security.pam.services.sddm.enableKwallet = true;
+  security.pam.services.sddm.gnupg.enable = true;
 
   # Enable KDE Plasma 6
   services.xserver.desktopManager.plasma6.enable = true;
@@ -54,6 +58,9 @@ in {
     kdePackages.ark            # Archive manager
     kdePackages.spectacle      # Screenshot tool
     kdePackages.gwenview      # Image viewer
+    
+    # Panel Colorizer (from KDE Store)
+    kdePackages.plasma-applet-panel-colorizer
     
     # Fonts
     noto-fonts
@@ -156,7 +163,8 @@ in {
               name = "org.kde.plasma.kickoff";
               config = {
                 General = {
-                  icon = "bloom-nix-logo";
+                  # Use the KDE logo for the launcher
+                  icon = "kde";
                 };
               };
             }
@@ -166,6 +174,17 @@ in {
             
             # 6. System Tray (right side)
             "org.kde.plasma.systemtray"
+            
+            # 7. Add the Panel Colorizer for the deep purple color #3C0061
+            {
+              name = "luisbocanegra.panel.colorizer";
+              config = {
+                General = {
+                  backgroundColor = "#3C0061";
+                  backgroundOpacity = 100;
+                };
+              };
+            }
           ];
         }
       ];
@@ -188,10 +207,17 @@ in {
             SingleClick = false;  # Double-click to open files
           };
         };
+
+        # Set panel colorizer configuration
+        plasmarc = {
+          Theme = {
+            name = "breeze-dark";
+          };
+        };
       };
     };
     
-    # Create a simple home directory so home-manager doesn't complain
+    # Create a simple home directory configuration
     home = {
       stateVersion = "23.11";
     };
