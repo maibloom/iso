@@ -1,4 +1,4 @@
-# ISO-specific configuration for Bloom Nix - Flake compatible
+# ISO-specific configuration for Bloom Nix - Using custom Plasma 6
 { config, pkgs, lib, inputs, outputs, ... }:
 
 {
@@ -47,7 +47,7 @@
       Type=Application
       Name=Terminal
       Comment=Access the command line
-      Exec=${lib.getBin pkgs.libsForQt5.konsole}/bin/konsole
+      Exec=${lib.getBin pkgs.kdePackages.konsole}/bin/konsole
       Icon=utilities-terminal
       Terminal=false
       Categories=System;
@@ -56,25 +56,48 @@
 
   # Add the Bloom installer to the system
   environment.systemPackages = with pkgs; [
-    # calamares-framework
+    calamares-framework
     # Add any other ISO-specific packages here
     gparted
     parted
     ntfs3g
     dosfstools
+    
+    # Additional tools that might be useful in the live environment
+    wget
+    curl
+    git
+    htop
   ];
 
-  # Automatically log in the live user
+  # Automatically log in the live user to the Wayland session
   services.displayManager.autoLogin = {
     enable = true;
     user = "nixos";
   };
 
-  # Enable SSH for remote installation assistance (optional)
-  # services.openssh.enable = true;
-  
-  # Import appropriate modules for ISO - flake style
-  imports = [
-    # You can specify additional imports here if needed
-  ];
+  # Configure Bloom branding in the SDDM login screen
+  services.displayManager.sddm.settings = {
+    Theme = {
+      Current = "breeze";
+      CursorTheme = "breeze_cursors";
+      Font = "Noto Sans,10,-1,50,0,0,0,0,0,0,0";
+    };
+    Users = {
+      MaximumUid = 60000;
+      MinimumUid = 1000;
+    };
+    General = {
+      DisplayServer = "wayland";
+      InputMethod = "";
+    };
+  };
+
+  # Ensure the desktop gets our custom configurations
+  services.xserver.desktopManager.plasma6 = {
+    enable = true;
+  };
+
+  # Make sure that file manager has enhanced functionality
+  programs.kdeconnect.enable = true;
 }

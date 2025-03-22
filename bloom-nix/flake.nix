@@ -5,9 +5,22 @@
     # Core Nix inputs
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    
+    # Home Manager for user configurations
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    # Plasma Manager for KDE customization
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, ... }@inputs: 
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, plasma-manager, ... }@inputs: 
     let
       lib = nixpkgs.lib;
       
@@ -32,6 +45,13 @@
           # ISO image creation module from nixpkgs
           "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
           
+          # Include home-manager as a NixOS module
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+          }
+          
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
@@ -47,6 +67,13 @@
       # Installed system configuration
       nixosConfigurations.desktop = mkNixosConfig {
         modules = [
+          # Include home-manager as a NixOS module
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+          }
+          
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix

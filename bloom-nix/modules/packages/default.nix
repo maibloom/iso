@@ -1,4 +1,4 @@
-# Core packages for Bloom Nix - Flake compatible
+# Core packages for Bloom Nix - Using Plasma 6
 { config, pkgs, lib, inputs, outputs, ... }:
 
 {
@@ -23,8 +23,7 @@
     };
   };
   
-  # All configuration settings must be inside the 'config' attribute
-  # when the module defines options
+  # All configuration settings inside the 'config' attribute
   config = lib.mkMerge [
     # System packages that should be available on all installations
     {
@@ -35,8 +34,8 @@
         zip unzip file tree rsync
         
         # Desktop environment support
-        libsForQt5.packagekit-qt
-        libsForQt5.qt5.qtgraphicaleffects
+        kdePackages.qt6.qtgraphicaleffects
+        kdePackages.packagekit-qt
         
         # Filesystem tools
         ntfs3g fuse exfat
@@ -59,7 +58,7 @@
     # Office applications
     (lib.mkIf config.bloom.packages.office {
       environment.systemPackages = with pkgs; [
-        libreoffice
+        libreoffice-qt
       ];
     })
     
@@ -77,6 +76,9 @@
     # Multimedia applications
     (lib.mkIf config.bloom.packages.multimedia {
       environment.systemPackages = with pkgs; [
+        kdePackages.elisa  # KDE music player
+        kdePackages.kdenlive  # Video editor
+        kdePackages.krita  # Image editor
         vlc
         gimp
       ];
