@@ -55,9 +55,6 @@ in {
     kdePackages.spectacle      # Screenshot tool
     kdePackages.gwenview      # Image viewer
     
-    # Additional tools for panel customization
-    plasma-panel-colorizer   # For panel coloring (make sure this package exists)
-    
     # Fonts
     noto-fonts
     noto-fonts-cjk-sans
@@ -111,19 +108,16 @@ in {
       workspace = {
         lookAndFeel = "org.kde.breezedark.desktop";
         wallpaper = "${config._module.args.bloomBranding}/default.jpg";
+        theme = "breeze-dark";
       };
 
-      # Configure a bottom panel with the requested layout and color
+      # Configure a bottom panel with the requested layout
       panels = [
         {
           # Panel position and dimensions
           location = "bottom";     # Place at the bottom of the screen
           height = 44;             # 44px tall
-          alignment = "center";    # Center the panel contents
           floating = true;         # Use floating style (looks more modern)
-          
-          # Panel appearance
-          opacity = "opaque";      # Make panel fully opaque
           
           # Panel widgets in left-to-right order:
           # Icon-Only Task Manager -> Panel Spacer -> Digital Clock -> 
@@ -140,8 +134,6 @@ in {
                     "applications:brave-browser.desktop"
                     "applications:org.kde.kate.desktop"
                   ];
-                  maxStripes = 1;
-                  showOnlyCurrentScreen = true;
                 };
               };
             }
@@ -155,8 +147,6 @@ in {
               config = {
                 General = {
                   showDate = true;
-                  showSeconds = false;
-                  use24hFormat = false;
                 };
               };
             }
@@ -167,7 +157,6 @@ in {
               config = {
                 General = {
                   icon = "bloom-nix-logo";
-                  favoritesPortedToKAstats = true;
                 };
               };
             }
@@ -176,21 +165,12 @@ in {
             "org.kde.plasma.panelspacer"
             
             # 6. System Tray (right side)
-            {
-              name = "org.kde.plasma.systemtray";
-              config = {
-                General = {
-                  extraItems = "org.kde.plasma.battery,org.kde.plasma.networkmanagement,org.kde.plasma.bluetooth,org.kde.plasma.volume";
-                  knownItems = "org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.mediacontroller,org.kde.plasma.networkmanagement,org.kde.plasma.notifications,org.kde.plasma.volume,org.kde.plasma.bluetooth";
-                };
-              };
-            }
+            "org.kde.plasma.systemtray"
           ];
         }
       ];
       
-      # Add panel colorizer widget to set the panel color to #f1efee
-      # Using the officially supported method through plasma-panel-colorizer
+      # Basic configuration file settings
       configFile = {
         # Disable Baloo indexing for better performance
         baloofilerc = {
@@ -206,32 +186,6 @@ in {
           };
           KDE = {
             SingleClick = false;  # Double-click to open files
-          };
-        };
-        
-        # Set panel color to #f1efee through panel colorizer
-        plasmarc = {
-          Theme = {
-            name = "breeze-dark"; # Use Breeze Dark theme
-          };
-        };
-        
-        # Configure the panel colorizer
-        "plasma-org.kde.plasma.desktop-appletsrc" = {
-          "Containments" = {
-            "1" = {
-              "Applets" = {
-                "panel-colorizer" = {
-                  "Configuration" = {
-                    "General" = {
-                      backgroundColor = "#f1efee";
-                      backgroundOpacity = 100; # 100% opacity
-                    };
-                  };
-                  "Plugin" = "luisbocanegra.panel.colorizer";
-                };
-              };
-            };
           };
         };
       };
