@@ -114,7 +114,7 @@
   '';
 
   # Add the packagechooser module to the Calamares execution sequence
-  environment.etc."calamares/modules/packagechooserq.conf".text = lib.mkAfter ''
+  environment.etc."calamares/modules/exec.conf".text = lib.mkAfter ''
     # Add packagechooser to the execution sequence before packages
     - id: packagechooser
       module: packagechooser
