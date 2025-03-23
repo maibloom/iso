@@ -6,7 +6,8 @@
   # Install Calamares and essential dependencies
   environment.systemPackages = with pkgs; [
     # The installer itself
-    calamares
+    pkgs.calamares
+    pkgs.calamares-nixos-extensions
 
     # Essential dependencies
     parted
