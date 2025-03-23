@@ -81,7 +81,7 @@ in {
       nixos-install-tools   # NixOS installation utilities
       rsync                 # For copying files
       git                   # For managing configurations
-      konsole               # Terminal for launching installer
+      kdePackages.konsole   # Terminal for launching installer
     ];
 
     # Generate a script to copy project files
@@ -197,7 +197,7 @@ in {
         Name=Install Bloom Nix
         GenericName=System Installer
         Comment=Install Bloom Nix to your computer
-        Exec=konsole -e sudo /etc/bloom-installer/run-installer.sh
+        Exec=${pkgs.kdePackages.konsole}/bin/konsole -e sudo /etc/bloom-installer/run-installer.sh
         Icon=system-software-install
         Terminal=false
         StartupNotify=true
@@ -222,7 +222,7 @@ in {
           Name=Install Bloom Nix
           GenericName=System Installer
           Comment=Install Bloom Nix to your computer
-          Exec=konsole -e sudo /etc/bloom-installer/run-installer.sh
+          Exec=${pkgs.kdePackages.konsole}/bin/konsole -e sudo /etc/bloom-installer/run-installer.sh
           Icon=system-software-install
           Terminal=false
           StartupNotify=true
@@ -270,7 +270,7 @@ in {
           
           # If notification is clicked, launch installer
           if [ $? -eq 0 ]; then
-            konsole -e sudo /etc/bloom-installer/run-installer.sh &
+            ${pkgs.kdePackages.konsole}/bin/konsole -e sudo /etc/bloom-installer/run-installer.sh &
           fi
         '';
       };
@@ -290,7 +290,7 @@ in {
             touch "$HOME/.bloom-installer-seen"
             
             # Launch installer in a terminal
-            konsole -e sudo /etc/bloom-installer/run-installer.sh &
+            ${pkgs.kdePackages.konsole}/bin/konsole -e sudo /etc/bloom-installer/run-installer.sh &
           fi
         '';
       };

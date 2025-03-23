@@ -31,13 +31,12 @@
 
   # Desktop shortcuts - create these in the appropriate location
   environment.etc = {
-
     "skel/Desktop/terminal.desktop".text = ''
       [Desktop Entry]
       Type=Application
       Name=Terminal
       Comment=Access the command line
-      Exec=${lib.getBin pkgs.libsForQt5.konsole}/bin/konsole
+      Exec=${lib.getBin pkgs.kdePackages.konsole}/bin/konsole
       Icon=utilities-terminal
       Terminal=false
       Categories=System;
@@ -87,10 +86,24 @@
     });
   '';
 
+  # Import the custom TUI installer module
   imports = [
     ../../modules/installer
   ];
 
-  services.calamares.enable = true;
-
+  # Enable and configure the Bloom Nix TUI installer
+  services.bloom-installer = {
+    enable = true;
+    
+    # Configure paths to project structure
+    projectRoot = ../../.;
+    modulePaths = {
+      base = ../../modules/base;
+      desktop = ../../modules/desktop;
+      hardware = ../../modules/hardware;
+      packages = ../../modules/packages;
+      branding = ../../modules/branding;
+    };
+    installedSystem.hostConfig = ../../hosts/desktop;
+  };
 }
