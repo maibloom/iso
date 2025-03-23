@@ -1,5 +1,5 @@
 # ISO-specific configuration for Bloom Nix - Flake compatible
-{ config, pkgs, lib, inputs, outputs, ... }:
+{ config, lib, pkgs, inputs, outputs, ... }:
 
 {
   # ISO-specific configuration
@@ -54,14 +54,25 @@
     '';
   };
 
-  # Add the Bloom installer to the system
+  # Add disk utilities for the installation process
   environment.systemPackages = with pkgs; [
-    pkgs.calamares
-    # Add any other ISO-specific packages here
+    # Disk utilities needed by the installer
     gparted
     parted
     ntfs3g
     dosfstools
+    e2fsprogs
+    btrfs-progs
+    xfsprogs
+    cryptsetup
+    lvm2
+    
+    # Other useful utilities
+    firefox
+    git
+    wget
+    curl
+    htop
   ];
 
   # Automatically log in the live user
@@ -70,11 +81,37 @@
     user = "nixos";
   };
 
-  # Enable SSH for remote installation assistance (optional)
-  # services.openssh.enable = true;
+  # Enable the needed polkit rules for disk mounting and system installation
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (
+        subject.isInGroup("wheel") &&
+        (
+          action.id.indexOf("org.freedesktop.udisks2.") == 0 ||
+          action.id.indexOf("org.freedesktop.login1.") == 0 ||
+          action.id.indexOf("org.freedesktop.systemd1.") == 0
+        )
+      ) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
+
+  # Enable SSH for remote installation assistance (useful for debugging)
+  services.openssh = {
+    enable = true;
+    settings.permitRootLogin = "prohibit-password";
+  };
   
-  # Import appropriate modules for ISO - flake style
-  imports = [
-    # You can specify additional imports here if needed
-  ];
+  # Create an autostart entry for Calamares installer reminder
+  environment.etc."xdg/autostart/calamares-reminder.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Bloom Installer Reminder
+    Exec=sh -c 'zenity --info --title="Bloom NixOS" --text="Welcome to Bloom NixOS!\n\nYou can install the system by clicking on the installer icon on the desktop." --icon-name=system-software-install'
+    Icon=system-software-install
+    Terminal=false
+    StartupNotify=true
+    X-KDE-autostart-phase=application
+  '';
 }

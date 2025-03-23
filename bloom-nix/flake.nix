@@ -23,18 +23,18 @@
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, plasma-manager, nix-colors, ... }@inputs: 
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, plasma-manager, nix-colors, ... }@inputs:
     let
       lib = nixpkgs.lib;
-      
+     
       # System architecture
       systems = [ "x86_64-linux" ];
       forAllSystems = lib.genAttrs systems;
-      
+     
       # Function to create a NixOS configuration
-      mkNixosConfig = { 
+      mkNixosConfig = {
         system ? "x86_64-linux",
-        modules ? [] 
+        modules ? []
       }: lib.nixosSystem {
           inherit system;
           modules = [
@@ -43,14 +43,14 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { 
+              home-manager.extraSpecialArgs = {
                 inherit inputs;
                 inherit (self) outputs;
               };
             }
           ] ++ modules;  # Properly concatenate the module lists
-          specialArgs = { 
-            inherit inputs; 
+          specialArgs = {
+            inherit inputs;
             inherit (self) outputs;
           };
         };
@@ -60,7 +60,7 @@
         modules = [
           # ISO image creation module from nixpkgs
           "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
-          
+         
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
@@ -68,11 +68,14 @@
           ./modules/branding/default.nix
           ./modules/packages/default.nix
           
+          # Calamares installer modules
+          ./modules/calamares
+          
           # ISO-specific configurations
           ./hosts/iso/default.nix
         ];
       };
-      
+     
       # Installed system configuration
       nixosConfigurations.desktop = mkNixosConfig {
         modules = [
@@ -82,21 +85,21 @@
           ./modules/desktop/plasma.nix
           ./modules/branding/default.nix
           ./modules/packages/default.nix
-          
+         
           # Desktop-specific configurations
           ./hosts/desktop/default.nix
         ];
       };
-      
+     
       # Make ISO image available as a package
       packages = forAllSystems (system: {
         iso = self.nixosConfigurations.iso.config.system.build.isoImage;
         default = self.packages.${system}.iso;
       });
-      
+     
       # Add devShell for development environment
-      devShells = forAllSystems (system: 
-        let 
+      devShells = forAllSystems (system:
+        let
           pkgs = nixpkgs.legacyPackages.${system};
         in {
           default = pkgs.mkShell {
