@@ -86,4 +86,11 @@
       }
     });
   '';
+
+  imports = [
+    ../../modules/calamares
+  ]
+
+  services.calamares.enable = true;
+
 }
