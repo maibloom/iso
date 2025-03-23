@@ -88,7 +88,7 @@
   '';
 
   imports = [
-    ../../modules/calamares
+    ../../modules/installer
   ];
 
   services.calamares.enable = true;
