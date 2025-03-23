@@ -96,12 +96,6 @@
       }
     });
   '';
-
-  # Enable SSH for remote installation assistance (useful for debugging)
-  services.openssh = {
-    enable = true;
-    settings.permitRootLogin = "prohibit-password";
-  };
   
   # Create an autostart entry for Calamares installer reminder
   environment.etc."xdg/autostart/calamares-reminder.desktop".text = ''
