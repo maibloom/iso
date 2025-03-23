@@ -86,12 +86,12 @@
     });
   '';
 
-  # Import the custom TUI installer module
+  # Import the web-based installer module
   imports = [
     ../../modules/installer
   ];
 
-  # Enable and configure the Bloom Nix TUI installer
+  # Enable and configure the Bloom Nix web installer
   services.bloom-installer = {
     enable = true;
     
