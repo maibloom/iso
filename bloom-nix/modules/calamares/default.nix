@@ -102,102 +102,11 @@ in {
             - packages
             - umount
           
-          # Use our custom branding
-          branding: bloom-nix
+          # Use default branding
+          branding: default
           
           # No custom settings, using defaults
           settings: {}
-        '';
-        mode = "0644";
-      };
-      
-      # Custom branding configuration
-      "calamares/branding/bloom-nix/branding.desc" = {
-        text = ''
-          ---
-          componentName: bloom-nix
-          
-          strings:
-              productName:         Bloom NixOS
-              shortProductName:    Bloom
-              version:             1.0.0
-              shortVersion:        1.0
-              versionedName:       Bloom NixOS 1.0.0
-              shortVersionedName:  Bloom 1.0
-              bootloaderEntryName: Bloom NixOS
-              productUrl:          https://github.com/yourusername/bloom-nix
-              supportUrl:          https://github.com/yourusername/bloom-nix/issues
-          
-          images:
-              productLogo:         "logo.png"
-              productIcon:         "logo.png"
-              # Uncomment and add a welcome image when available:
-              # productWelcome:    "welcome.png"
-          
-          slideshow:             "show.qml"
-          
-          style:
-              sidebarBackground:    "#FF5733"
-              sidebarText:          "#FFFFFF"
-              sidebarTextSelect:    "#000d33"
-              sidebarTextHighlight: "#000d33"
-          
-          # These options are for the Welcome page
-          welcomeStyleCalamares:    false
-          welcomeExpandingLogo:     true
-        '';
-        mode = "0644";
-      };
-      
-      # Simple QML slideshow
-      "calamares/branding/bloom-nix/show.qml" = {
-        text = ''
-          import QtQuick 2.0;
-          import calamares.slideshow 1.0;
-
-          Presentation {
-              id: presentation
-
-              Timer {
-                  interval: 20000
-                  running: true
-                  repeat: true
-                  onTriggered: presentation.goToNextSlide()
-              }
-
-              Slide {
-                  Image {
-                      id: background1
-                      source: "logo.png" // Using logo since welcome.png is not available yet
-                      width: 800
-                      height: 600
-                      fillMode: Image.PreserveAspectFit
-                      anchors.centerIn: parent
-                  }
-                  Text {
-                      anchors.horizontalCenter: parent.horizontalCenter
-                      anchors.top: background1.bottom
-                      text: "Welcome to Bloom NixOS"
-                      wrapMode: Text.WordWrap
-                      width: 800
-                      horizontalAlignment: Text.Center
-                      color: "#000d33"
-                      font.pixelSize: 24
-                  }
-              }
-
-              Slide {
-                  Text {
-                      anchors.centerIn: parent
-                      text: "Thank you for choosing Bloom NixOS.\n\nThe installation will begin shortly."
-                      wrapMode: Text.WordWrap
-                      width: 800
-                      horizontalAlignment: Text.Center
-                      color: "#000d33"
-                      font.pixelSize: 22
-                  }
-              }
-          }
         '';
         mode = "0644";
       };
@@ -243,7 +152,7 @@ in {
       %wheel ALL=(ALL) NOPASSWD: ${pkgs.calamares-nixos}/bin/calamares
     '';
     
-    # Create a first boot service to set up desktop shortcut and copy branding assets
+    # Create a first boot service to set up desktop shortcut
     systemd.services.calamares-setup = {
       description = "Setup for Calamares installer";
       wantedBy = [ "multi-user.target" ];
@@ -273,25 +182,6 @@ in {
           if id nixos &>/dev/null; then
             chown -R nixos:users /home/nixos/Desktop/calamares.desktop
           fi
-          
-          # Create branding directory 
-          mkdir -p /etc/calamares/branding/bloom-nix
-          
-          # Find the module's branding assets directory
-          ASSETS_DIR=$(find /nix/store -path "*/modules/branding/assets" -type d | head -n 1)
-          
-          if [ -n "$ASSETS_DIR" ] && [ -f "$ASSETS_DIR/logo.png" ]; then
-            # Copy logo to Calamares branding directory
-            cp "$ASSETS_DIR/logo.png" /etc/calamares/branding/bloom-nix/logo.png
-            echo "Successfully copied logo from $ASSETS_DIR to Calamares branding directory"
-          else
-            echo "Warning: Could not find logo.png in the modules/branding/assets directory"
-          fi
-          
-          # Note: Welcome image handling has been removed as it's commented out in the config
-          
-          # Set proper permissions
-          chmod -R 644 /etc/calamares/branding/bloom-nix/*
         '';
       };
     };
