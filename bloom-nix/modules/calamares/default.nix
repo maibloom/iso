@@ -4,15 +4,33 @@ with lib;
 
 let
   cfg = config.services.calamares;
+  
+  # Create a desktop item for Calamares
+  calamaresDesktopItem = pkgs.makeDesktopItem {
+    name = "calamares";
+    desktopName = "Install Bloom NixOS";
+    genericName = "System Installer";
+    comment = "Install Bloom NixOS to your computer";
+    exec = "pkexec ${pkgs.calamares-nixos}/bin/calamares";
+    icon = "calamares";
+    terminal = false;
+    categories = [ "Qt" "System" ];
+  };
 in {
   options.services.calamares = {
     enable = mkEnableOption "Calamares installer";
   };
 
   config = mkIf cfg.enable {
-    # 1. Install Calamares and its dependencies
+    # Install Calamares and its dependencies
     environment.systemPackages = with pkgs; [
-      calamares-framework
+      # Main Calamares package for NixOS
+      calamares-nixos
+      
+      # Optional: additional NixOS-specific extensions
+      calamares-nixos-extensions
+      
+      # Dependencies for partitioning and filesystem operations
       parted
       gptfdisk
       cryptsetup
@@ -20,13 +38,16 @@ in {
       ntfs3g
       xfsprogs
       btrfs-progs
+      
+      # Our custom desktop launcher
+      calamaresDesktopItem
     ];
 
-    # 2. Make sure the user can run Calamares
+    # Make sure the user can run Calamares with proper permissions
     security.polkit.enable = true;
     security.sudo.enable = true;
     
-    # 3. Basic Calamares configuration (using defaults)
+    # Basic Calamares configuration (using defaults)
     environment.etc = {
       # Main Calamares configuration file
       "calamares/settings.conf" = {
@@ -34,9 +55,7 @@ in {
           # Configuration file for Calamares
           # Syntax is YAML 1.2
           ---
-          # Modules can be job modules (with different interfaces) and view modules.
-          # They can be used in the exec and show phases of the sequence, and both
-          # phases are split into weighted sequences.
+          # Define module search paths
           modules-search: [ local, /run/current-system/sw/lib/calamares/modules ]
 
           # Phase 1: show UI and prepare for installation
@@ -79,29 +98,15 @@ in {
         mode = "0644";
       };
       
-      # Install script for NixOS
-      "calamares/modules/nixos-install.conf" = {
-        text = ''
-          ---
-          # NixOS installation script configuration
-          rootMountPoint: /target
-          script:
-            - command: "nixos-generate-config --root /target"
-            - command: "nixos-install --root /target --no-root-passwd"
-            - command: "sync"
-        '';
-        mode = "0644";
-      };
-      
-      # Desktop file to launch Calamares
-      "xdg/autostart/calamares.desktop" = {
+      # Autostart entry for Calamares
+      "xdg/autostart/calamares-installer.desktop" = {
         text = ''
           [Desktop Entry]
           Type=Application
-          Name=Install System
+          Name=Install Bloom NixOS
           GenericName=System Installer
-          Comment=Calamares System Installer
-          Exec=pkexec calamares
+          Comment=Install Bloom NixOS to your computer
+          Exec=pkexec ${pkgs.calamares-nixos}/bin/calamares
           Icon=calamares
           Terminal=false
           StartupNotify=true
@@ -111,44 +116,35 @@ in {
       };
     };
     
-    # 4. Configure Plasma to auto-start Calamares and pin to taskbar
-    # This assumes KDE Plasma is your desktop environment
-    plasma.configFile."plasma-org.kde.plasma.desktop-appletsrc" = {
-      group = "Containments";
-      key = "taskmanager";
-      value = {
-        launchers = "applications:calamares.desktop";
-        pinnedLaunchers = "applications:calamares.desktop";
-      };
-    };
-    
-    # 5. Make Calamares run on startup (first boot only)
-    systemd.user.services.calamares-autostart = {
-      description = "Autostart Calamares installer";
-      wantedBy = [ "graphical-session.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.calamares-framework}/bin/calamares";
-        RemainAfterExit = false;
-      };
-    };
-    
-    # 6. Build customization for first boot only
-    systemd.services.calamares-firstboot = {
-      description = "First boot setup for Calamares";
+    # Create a first boot service to set up desktop shortcut
+    systemd.services.calamares-setup = {
+      description = "Setup for Calamares installer";
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = pkgs.writeShellScript "calamares-firstboot" ''
-          # Only run on first boot
-          if [ ! -f /var/lib/calamares-firstboot-done ]; then
-            # Ensure Calamares starts on first boot
-            mkdir -p /etc/xdg/autostart
-            cp /etc/xdg/autostart/calamares.desktop /etc/xdg/autostart/
-            
-            # Mark as done
-            touch /var/lib/calamares-firstboot-done
+        ExecStart = pkgs.writeShellScript "calamares-setup" ''
+          # Create desktop icon on first boot
+          mkdir -p /home/nixos/Desktop
+          cat > /home/nixos/Desktop/calamares.desktop << EOF
+          [Desktop Entry]
+          Type=Application
+          Name=Install Bloom NixOS
+          GenericName=System Installer
+          Comment=Install Bloom NixOS to your computer
+          Exec=pkexec ${pkgs.calamares-nixos}/bin/calamares
+          Icon=calamares
+          Terminal=false
+          StartupNotify=true
+          Categories=Qt;System;
+          EOF
+          
+          # Make it executable
+          chmod +x /home/nixos/Desktop/calamares.desktop
+          
+          # Set ownership if nixos user exists
+          if id nixos &>/dev/null; then
+            chown -R nixos:users /home/nixos/Desktop/calamares.desktop
           fi
         '';
       };
