@@ -68,9 +68,6 @@
           ./modules/branding/default.nix
           ./modules/packages/default.nix
 
-          # Calamares installer modules
-          ./modules/calamares
-
           # ISO-specific configurations
           ./hosts/iso/default.nix
         ];
