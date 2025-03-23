@@ -31,16 +31,6 @@
 
   # Desktop shortcuts - create these in the appropriate location
   environment.etc = {
-    "skel/Desktop/install.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=Install Bloom Nix
-      Comment=Install the operating system to your computer
-      Exec=calamares
-      Icon=calamares
-      Terminal=false
-      Categories=System;
-    '';
 
     "skel/Desktop/terminal.desktop".text = ''
       [Desktop Entry]
@@ -95,18 +85,5 @@
         return polkit.Result.YES;
       }
     });
-  '';
-
-
-  # Create an autostart entry for Calamares installer reminder
-  environment.etc."xdg/autostart/calamares-reminder.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Name=Bloom Installer Reminder
-    Exec=sh -c 'zenity --info --title="Bloom NixOS" --text="Welcome to Bloom NixOS!\n\nYou can install the system by clicking on the installer icon on the desktop." --icon-name=system-software-install'
-    Icon=system-software-install
-    Terminal=false
-    StartupNotify=true
-    X-KDE-autostart-phase=application
   '';
 }
