@@ -6,6 +6,7 @@ A streamlined web-based installer that uses NixOS's declarative approach with di
 
 import streamlit as st
 import os
+import sys
 import json
 import subprocess
 import logging
