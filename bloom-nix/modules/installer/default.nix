@@ -193,7 +193,7 @@ in {
           
           # If notification is clicked, launch installer
           if [ $? -eq 0 ]; then
-            sudo /etc/bloom-installer/launch-installer.sh &
+            sudo /etc/bloom-installer/launch-installer.sh
           fi
         '';
       };

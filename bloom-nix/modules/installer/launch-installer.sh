@@ -15,7 +15,7 @@ export BLOOM_ENABLE_PLASMA6="true"
 if [ -f /tmp/bloom-installer-running ]; then
   echo "Installer is already running."
   # Use xdg-open instead of directly launching firefox for better desktop compatibility
-  xdg-open http://localhost:8501
+  firefox http://localhost:8501
   exit 0
 fi
 
@@ -57,7 +57,7 @@ echo "Installer is ready!"
 
 # Launch browser explicitly with a delay
 sleep 1
-xdg-utils http://localhost:8501
+firefox http://localhost:8501
 
 # Keep script running to maintain child process
 wait
