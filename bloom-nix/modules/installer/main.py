@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Bloom Nix Installer
-A streamlined web-based installer for Bloom Nix
+Bloom Nix Declarative Installer
+A streamlined web-based installer that uses NixOS's declarative approach with disko
 """
 
 import streamlit as st
@@ -11,6 +11,8 @@ import subprocess
 import logging
 import time
 import random
+import socket
+import urllib.request
 from pathlib import Path
 
 # Configure logging
@@ -42,6 +44,23 @@ def rerun_app():
             st.session_state.random_rerun_key = random.randint(0, 1000000)
             # This forces a rerun because the session state changed
 
+def check_internet_connection():
+    """Check for internet connectivity - returns (is_connected, error_message)"""
+    # First, try DNS resolution
+    try:
+        # Try to resolve a well-known domain
+        socket.gethostbyname("nixos.org")
+        
+        # If that succeeds, try to connect to a server
+        try:
+            # Try to connect to the NixOS website with a 5-second timeout
+            urllib.request.urlopen("https://nixos.org", timeout=5)
+            return True, ""
+        except Exception as e:
+            return False, f"Could not connect to nixos.org: {str(e)}"
+    except Exception as e:
+        return False, f"DNS resolution failed: {str(e)}"
+
 # Create marker file to indicate the installer is running
 Path(MARKER_PATH).touch(exist_ok=True)
 
@@ -54,6 +73,53 @@ MODULE_PACKAGES = os.environ.get("BLOOM_MODULE_PACKAGES", "")
 MODULE_BRANDING = os.environ.get("BLOOM_MODULE_BRANDING", "")
 HOST_CONFIG = os.environ.get("BLOOM_HOST_CONFIG", "")
 ENABLE_PLASMA6 = os.environ.get("BLOOM_ENABLE_PLASMA6", "true").lower() == "true"
+
+# Checking, debugging and precting possible issue...
+# if PROJECT_ROOT is not set:
+if not PROJECT_ROOT:
+    # Try to find it based on the script location
+    logger.info("PROJECT_ROOT not set, attempting to detect automatically")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    potential_paths = [
+        os.path.abspath(os.path.join(script_dir, "../..")),
+        os.path.abspath(os.path.join(script_dir, "../../../")),
+        # Add more potential paths if needed
+    ]
+    for path in potential_paths:
+        if os.path.exists(os.path.join(path, "flake.nix")):
+            PROJECT_ROOT = path
+            logger.info(f"Found project root at: {PROJECT_ROOT}")
+            break
+
+# Add near the top of main.py
+def startup_checks():
+    """Perform sanity checks at startup and log any issues"""
+    try:
+        # Check for required commands
+        for cmd in ["nixos-install", "lsblk", "reboot"]:
+            result = subprocess.run(["which", cmd], capture_output=True, text=True)
+            if result.returncode != 0:
+                logger.warning(f"Required command not found: {cmd}")
+                
+        # Check project structure
+        if not PROJECT_ROOT:
+            logger.warning("PROJECT_ROOT environment variable not set")
+            
+        # Log system information
+        logger.info(f"Starting Bloom Nix Installer v{VERSION}")
+        logger.info(f"Python version: {sys.version}")
+        logger.info(f"Project root: {PROJECT_ROOT}")
+        logger.info(f"EFI system: {is_efi_system()}")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Startup check failed: {str(e)}")
+        return False
+
+# Call this at the beginning of main()
+if not startup_checks():
+    st.error("Installer startup checks failed. Please check the logs at /tmp/bloom-nix-installer.log")
+
 
 # Apply custom theme
 st.markdown("""
@@ -70,8 +136,9 @@ st.markdown("""
 def run_sudo_command(command):
     """Run a command with sudo privileges"""
     try:
+        # Use sudo directly for simple commands
         result = subprocess.run(
-            ["sudo", "python3", "/etc/bloom-installer/sudo-helper.py", command],
+            ["sudo", "sh", "-c", command],
             capture_output=True,
             text=True
         )
@@ -82,12 +149,37 @@ def run_sudo_command(command):
 
 def get_disks():
     """Get list of available disks"""
-    code, stdout, stderr = run_sudo_command("list_disks")
-    if code != 0:
-        return []
     try:
-        return json.loads(stdout)
-    except:
+        # Use lsblk to get disk information
+        result = subprocess.run(
+            ["lsblk", "-d", "-o", "NAME,SIZE,MODEL", "-J"],
+            capture_output=True,
+            text=True
+        )
+        
+        if result.returncode != 0:
+            return []
+        
+        # Parse the JSON output
+        disks_data = json.loads(result.stdout)
+        
+        # Filter out loop devices and other non-disk devices
+        formatted_disks = []
+        for disk in disks_data.get('blockdevices', []):
+            name = disk['name']
+            # Skip loop devices, ram disks, and cdrom devices
+            if (not name.startswith('loop') and 
+                not name.startswith('ram') and 
+                not name.startswith('sr')):
+                formatted_disks.append({
+                    'name': name,
+                    'size': disk.get('size', 'Unknown'),
+                    'model': disk.get('model', 'Unknown').strip()
+                })
+        
+        return formatted_disks
+    except Exception as e:
+        logger.error(f"Error listing disks: {str(e)}")
         return []
 
 def is_efi_system():
@@ -114,7 +206,6 @@ def load_config():
         "username": "",
         "password": "",
         "disk": "",
-        "partitioning": "auto",
         "desktop": "plasma",  # Always use Plasma as the default
         "packages": ["daily", "browser"],
         "timezone": "America/New_York",
@@ -196,15 +287,14 @@ def get_package_categories():
             "utils": "System utilities"
         }
 
-# Function removed as we always use Plasma
-
 def generate_nix_config(config):
-    """Generate NixOS configuration from installer settings"""
+    """Generate fully declarative NixOS flake configuration"""
     logger.info(f"Generating NixOS configuration with: {json.dumps(config)}")
     
     # Extract configuration values
     hostname = config.get('hostname', 'bloom-nix')
     username = config.get('username', 'user')
+    password = config.get('password', '')
     timezone = config.get('timezone', 'America/New_York')
     locale = config.get('locale', 'en_US.UTF-8')
     disk = config.get('disk', '')
@@ -212,8 +302,9 @@ def generate_nix_config(config):
     desktop = "plasma"
     packages = config.get('packages', [])
     
-    # Create directory for the configuration
-    os.makedirs("/mnt/etc/nixos", exist_ok=True)
+    # Create temporary installer directory
+    installer_dir = "/tmp/bloom-installer"
+    os.makedirs(installer_dir, exist_ok=True)
     
     # Determine project root if not set
     project_root = PROJECT_ROOT
@@ -236,28 +327,83 @@ def generate_nix_config(config):
     
     package_config = "\n            ".join(package_config_lines)
     
-    # Create flake.nix for installation
+    # Add device path prefix
+    device = f"/dev/{disk}"
+    
+    # Create the declarative flake.nix configuration
+    # This includes disk partitioning specifications
     flake_content = f'''{{
   description = "Bloom Nix Installation for {hostname}";
 
   inputs = {{
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    bloom-nix.url = "path:{project_root}";
+    bloom-nix = {{
+      url = "path:{project_root}";
+      inputs.nixpkgs.follows = "nixpkgs";
+    }};
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
   }};
 
-  outputs = {{ self, nixpkgs, bloom-nix }}: {{
+  outputs = {{ self, nixpkgs, bloom-nix, disko }}: {{
     nixosConfigurations.{hostname} = nixpkgs.lib.nixosSystem {{
       system = "x86_64-linux";
       modules = [
-        # Hardware configuration
-        ./hardware-configuration.nix
+        # Import disko for disk management
+        disko.nixosModules.disko
         
         # Bloom Nix modules
         bloom-nix.nixosModules.base
         bloom-nix.nixosModules.hardware
         bloom-nix.nixosModules.branding
-        {f'bloom-nix.nixosModules.desktop.{desktop}' if desktop != "none" else '# No desktop selected'}
+        bloom-nix.nixosModules.desktop.plasma
         bloom-nix.nixosModules.packages
+        
+        # Disk configuration
+        {{
+          disko.devices = {{
+            disk.{disk} = {{
+              device = "{device}";
+              type = "disk";
+              content = {{
+                type = "gpt";
+                parts = {f'''
+                  {{
+                    name = "ESP";
+                    start = "1MiB";
+                    end = "512MiB";
+                    type = "EF00";
+                    fs.type = "vfat";
+                    fs.mountpoint = "/boot";
+                  }}
+                  {{
+                    name = "root";
+                    start = "512MiB";
+                    end = "100%";
+                    fs.type = "ext4";
+                    fs.mountpoint = "/";
+                  }}
+                ''' if is_efi_system() else '''
+                  {{
+                    name = "boot";
+                    start = "1MiB";
+                    end = "512MiB";
+                    flags = [ "boot" ];
+                    fs.type = "ext4";
+                    fs.mountpoint = "/boot";
+                  }}
+                  {{
+                    name = "root";
+                    start = "512MiB";
+                    end = "100%";
+                    fs.type = "ext4";
+                    fs.mountpoint = "/";
+                  }}
+                '''};
+              }};
+            }};
+          }};
+        }}
         
         # System-specific configuration
         {{
@@ -270,17 +416,19 @@ def generate_nix_config(config):
             isNormalUser = true;
             description = "{username}";
             extraGroups = [ "networkmanager" "wheel" ];
-          }};
-          
-          # Boot loader configuration
-          boot.loader = {{
-            {f'efi.canTouchEfiVariables = true;' if is_efi_system() else ''}
-            {f'systemd-boot.enable = true;' if is_efi_system() else f'grub = {{ device = "/dev/{disk}"; }};'}
+            # Password will be set using hashed value
+            initialPassword = "{password}";
           }};
           
           # Package categories
           bloom.packages = {{
             {package_config}
+          }};
+          
+          # Bootloader configuration
+          boot.loader = {{
+            {f'efi.canTouchEfiVariables = true;' if is_efi_system() else ''}
+            {f'systemd-boot.enable = true;' if is_efi_system() else f'grub = {{ device = "{device}"; }};'}
           }};
         }}
       ];
@@ -290,63 +438,59 @@ def generate_nix_config(config):
 '''
     
     # Write the configuration
-    with open("/mnt/etc/nixos/flake.nix", "w") as f:
+    flake_path = os.path.join(installer_dir, "flake.nix")
+    with open(flake_path, "w") as f:
         f.write(flake_content)
     
-    # Generate hardware configuration
-    code, stdout, stderr = run_sudo_command(f"generate_hardware_config /mnt/etc/nixos {disk}")
-    if code != 0:
-        logger.error(f"Failed to generate hardware configuration: {stderr}")
-        return False
-    
-    return True
+    logger.info(f"Generated declarative NixOS flake configuration at {flake_path}")
+    return flake_path
 
 def perform_installation(config):
-    """Execute the installation process"""
-    steps = [
-        (0, "Starting installation..."),
-        (10, "Preparing disk..."),
-        (20, "Creating partitions..."),
-        (30, "Formatting filesystems..."),
-        (40, "Mounting filesystems..."),
-        (50, "Generating hardware configuration..."),
-        (70, "Installing system..."),
-        (80, "Setting up users..."),
-        (90, "Installing bootloader..."),
-        (100, "Installation complete!")
-    ]
-    
-    # Get the disk and partitioning method
-    disk = config.get('disk', '')
-    partitioning = config.get('partitioning', 'auto')
-    
-    # Prepare the disk
-    if partitioning == "auto":
-        code, stdout, stderr = run_sudo_command(f"partition_disk {disk}")
+    """Execute NixOS installation using the generated flake"""
+    try:
+        # Check internet connection first
+        internet_connected, error_message = check_internet_connection()
+        if not internet_connected:
+            logger.error(f"No internet connection: {error_message}")
+            return False, f"Internet connection required for installation: {error_message}"
+        
+        # Generate NixOS configuration flake
+        flake_path = generate_nix_config(config)
+        if not flake_path:
+            return False, "Failed to generate NixOS configuration"
+        
+        # Get configuration details
+        hostname = config.get('hostname', 'bloom-nix')
+        
+        # Create a minimal sudo helper script for the installation
+        install_script = f"""#!/bin/sh
+set -e
+echo "Installing Bloom Nix with declarative configuration..."
+nixos-install --no-root-passwd --flake {flake_path}#{hostname}
+echo "Installation completed successfully!"
+"""
+        
+        # Write the script to disk
+        script_path = "/tmp/bloom-installer-install.sh"
+        with open(script_path, "w") as f:
+            f.write(install_script)
+        
+        # Make the script executable
+        os.chmod(script_path, 0o755)
+        
+        # Run the installation script
+        logger.info(f"Starting NixOS installation with flake: {flake_path}")
+        code, stdout, stderr = run_sudo_command(script_path)
+        
         if code != 0:
-            logger.error(f"Failed to partition disk: {stderr}")
-            return False, "Failed to partition disk"
-    
-    # Create NixOS configuration
-    if not generate_nix_config(config):
-        return False, "Failed to generate NixOS configuration"
-    
-    # Install the system
-    code, stdout, stderr = run_sudo_command("install_system")
-    if code != 0:
-        logger.error(f"Failed to install system: {stderr}")
-        return False, "Failed to install system"
-    
-    # Set the user password
-    username = config.get('username', '')
-    password = config.get('password', '')
-    if username and password:
-        code, stdout, stderr = run_sudo_command(f"set_password {username} {password}")
-        if code != 0:
-            logger.error(f"Failed to set password: {stderr}")
-            # Not a critical error, continue
-    
-    return True, "Installation completed successfully"
+            logger.error(f"Failed to install NixOS: {stderr}")
+            return False, f"Failed to install NixOS: {stderr}"
+        
+        logger.info("NixOS installation completed successfully")
+        return True, "Installation completed successfully"
+    except Exception as e:
+        logger.error(f"Error during installation: {str(e)}")
+        return False, f"Installation error: {str(e)}"
 
 # Main Application
 def main():
@@ -356,6 +500,15 @@ def main():
         col1.image(LOGO_PATH, width=80)
     col2.title("Bloom Nix Installer")
     col2.caption(f"Version {VERSION}")
+    
+    # Check for internet connectivity
+    internet_connected, error_message = check_internet_connection()
+    if not internet_connected:
+        st.error(f"⚠️ No internet connection detected. Installation requires internet access.")
+        st.warning(f"Error details: {error_message}")
+        if st.button("Check Again"):
+            rerun_app()
+        st.stop()
     
     # Initialize or load configuration
     if 'config' not in st.session_state:
@@ -519,7 +672,6 @@ def main():
                     "username": username,
                     "password": password,
                     "disk": selected_disk,
-                    "partitioning": "auto",  # For simplicity, always use auto partitioning
                     "desktop": "plasma",  # Always use Plasma as the desktop
                     "packages": selected_packages,
                     "timezone": timezone,

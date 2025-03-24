@@ -34,6 +34,13 @@ streamlit run /etc/bloom-installer/main.py \
 # Store PID
 echo $! > /tmp/streamlit.pid
 
+if ! nc -z localhost 8501; then
+    echo "<html><body><pre>Installer failed to start. Log output:</pre></body></html>" > /tmp/installer-error.html
+    cat /tmp/streamlit.log >> /tmp/installer-error.html
+    firefox /tmp/installer-error.html
+fi
+
+
 # Wait for server to start (check if port 8501 is listening)
 echo "Starting Bloom Nix installer..."
 attempts=0
@@ -49,7 +56,9 @@ done
 
 # Make sure server started
 if ! nc -z localhost 8501; then
-  echo "Failed to start installer. Check /tmp/streamlit.log for details."
+  echo "<html><body><pre>Installer failed to start. Log output:</pre></body></html>" > /tmp/installer-error.html
+  cat /tmp/streamlit.log >> /tmp/installer-error.html
+  firefox /tmp/installer-error.html
   exit 1
 fi
 
@@ -58,6 +67,16 @@ echo "Installer is ready!"
 # Launch browser explicitly with a delay
 sleep 1
 firefox http://localhost:8501
+
+# Replace the Firefox launch line with:
+if command -v firefox >/dev/null 2>&1; then
+    firefox http://localhost:8501
+elif command -v firefox-esr >/dev/null 2>&1; then
+    firefox-esr http://localhost:8501
+else
+    brave http://localhost:8501
+fi
+
 
 # Keep script running to maintain child process
 wait
