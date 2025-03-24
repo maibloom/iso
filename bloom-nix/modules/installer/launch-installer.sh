@@ -14,9 +14,6 @@ export BLOOM_ENABLE_PLASMA6="true"
 # Check if installer is already running
 if [ -f /tmp/bloom-installer-running ]; then
   echo "Installer is already running."
-  # Use xdg-open instead of directly launching firefox for better desktop compatibility
-  firefox http://localhost:8501
-  exit 0
 fi
 
 # Create marker file
@@ -34,13 +31,6 @@ streamlit run /etc/bloom-installer/main.py \
 # Store PID
 echo $! > /tmp/streamlit.pid
 
-if ! nc -z localhost 8501; then
-    echo "<html><body><pre>Installer failed to start. Log output:</pre></body></html>" > /tmp/installer-error.html
-    cat /tmp/streamlit.log >> /tmp/installer-error.html
-    firefox /tmp/installer-error.html
-fi
-
-
 # Wait for server to start (check if port 8501 is listening)
 echo "Starting Bloom Nix installer..."
 attempts=0
@@ -54,19 +44,27 @@ while [ $attempts -lt $max_attempts ]; do
   echo -n "."
 done
 
+echo "Installer is ready!"
+
+# Launch browser explicitly with a delay
+sleep 2
+firefox http://localhost:8501
+
+if ! nc -z localhost 8501; then
+    echo "<html><body><pre>Installer failed to start. Log output:</pre></body></html>" > /tmp/installer-error>
+    cat /tmp/streamlit.log >> /tmp/installer-error.html
+    firefox /tmp/installer-error.html
+fi
+
+
 # Make sure server started
 if ! nc -z localhost 8501; then
-  echo "<html><body><pre>Installer failed to start. Log output:</pre></body></html>" > /tmp/installer-error.html
+  echo "<html><body><pre>Installer failed to start. Log output:</pre></body></html>" > /tmp/installer-error.h>
   cat /tmp/streamlit.log >> /tmp/installer-error.html
   firefox /tmp/installer-error.html
   exit 1
 fi
 
-echo "Installer is ready!"
-
-# Launch browser explicitly with a delay
-sleep 1
-firefox http://localhost:8501
 
 # Replace the Firefox launch line with:
 if command -v firefox >/dev/null 2>&1; then
