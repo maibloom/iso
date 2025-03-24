@@ -23,7 +23,7 @@ fi
 touch /tmp/bloom-installer-running
 
 # Start Streamlit without browser auto-opening (this is more reliable)
-streamlit run /etc/bloom-installer/bloom-installer-minimal.py \
+streamlit run /etc/bloom-installer/main.py \
   --server.port 8501 \
   --server.headless true \
   --server.enableCORS false \

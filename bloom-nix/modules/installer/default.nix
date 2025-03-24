@@ -93,8 +93,8 @@ in {
     # Copy installer scripts
     environment.etc = {
       # Minimal Streamlit installer
-      "bloom-installer/bloom-installer-minimal.py" = {
-        source = ./bloom-installer-minimal.py;
+      "bloom-installer/main.py" = {
+        source = ./main.py;
         mode = "0755";
       };
       
