@@ -57,7 +57,7 @@ echo "Installer is ready!"
 
 # Launch browser explicitly with a delay
 sleep 1
-brave http://localhost:8501
+xdg-utils http://localhost:8501
 
 # Keep script running to maintain child process
 wait

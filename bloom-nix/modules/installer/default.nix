@@ -88,7 +88,6 @@ in {
       
       # For browser launching
       xdg-utils
-      firefox
     ];
 
     # Copy installer scripts
