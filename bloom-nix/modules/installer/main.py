@@ -10,6 +10,7 @@ import json
 import subprocess
 import logging
 import time
+import random
 from pathlib import Path
 
 # Configure logging
@@ -25,6 +26,21 @@ VERSION = "1.0.0"
 CONFIG_PATH = "/tmp/bloom-nix-installer.json"
 MARKER_PATH = "/tmp/bloom-installer-running"
 LOGO_PATH = "/etc/bloom-installer/logo.png"
+
+# Custom helper functions
+def rerun_app():
+    """Rerun the app, compatible with different Streamlit versions"""
+    try:
+        # Try the new method first (Streamlit >= 1.27.0)
+        st.rerun()
+    except AttributeError:
+        try:
+            # Fall back to the old method (older Streamlit versions)
+            st.experimental_rerun()
+        except AttributeError:
+            # If both fail, use the session state hack as last resort
+            st.session_state.random_rerun_key = random.randint(0, 1000000)
+            # This forces a rerun because the session state changed
 
 # Create marker file to indicate the installer is running
 Path(MARKER_PATH).touch(exist_ok=True)
@@ -394,7 +410,7 @@ def main():
             # Refresh for next step
             if st.session_state.installation_progress < 100:
                 time.sleep(1)
-                st.experimental_rerun()
+                rerun_app()
         
         # Show completion message when done
         if st.session_state.installation_progress >= 100:
@@ -519,7 +535,7 @@ def main():
                 st.session_state.status = "Starting installation..."
                 
                 # Force page refresh to show installation progress
-                st.experimental_rerun()
+                rerun_app()
 
 # Run the app
 if __name__ == "__main__":
