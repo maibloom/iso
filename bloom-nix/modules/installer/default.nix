@@ -100,7 +100,7 @@ in {
       
       # Minimal sudo helper
       "bloom-installer/sudo-helper.py" = {
-        source = ./sudo-helper-minimal.py;
+        source = ./sudo-helper.py;
         mode = "0755";
       };
       
