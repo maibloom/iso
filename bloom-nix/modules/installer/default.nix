@@ -137,7 +137,7 @@ in {
           Name=Install Bloom Nix
           GenericName=System Installer
           Comment=Install Bloom Nix to your computer
-          Exec=sudo /etc/bloom-installer/launch-installer.sh
+          Exec=/etc/bloom-installer/launch-installer.sh
           Icon=/etc/bloom-installer/logo.png
           Terminal=false
           StartupNotify=true
@@ -163,7 +163,7 @@ in {
         Name=Install Bloom Nix
         GenericName=System Installer
         Comment=Install Bloom Nix to your computer
-        Exec=sudo /etc/bloom-installer/launch-installer.sh
+        Exec=/etc/bloom-installer/launch-installer.sh
         Icon=/etc/bloom-installer/logo.png
         Terminal=false
         StartupNotify=true
@@ -193,7 +193,7 @@ in {
           
           # If notification is clicked, launch installer
           if [ $? -eq 0 ]; then
-            sudo /etc/bloom-installer/launch-installer.sh
+            /etc/bloom-installer/launch-installer.sh
           fi
         '';
       };
