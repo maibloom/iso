@@ -10,27 +10,32 @@ in {
   # Enable XFCE desktop environment
   services.xserver.desktopManager.xfce.enable = true;
   
-  # Configure LightDM - using the correct paths
-  services.displayManager.lightdm = {
-    enable = true;
-    background = "#1a1a1a";
-    # Ensure GTK+ theme is honored in greeter
-    greeters.gtk = {
-      enable = true;
-      theme.name = "Materia-dark";
-      iconTheme.name = "Papirus-Dark";
-      extraConfig = ''
-        hide-user-image=true
-        position = 50%,center 50%,center
-        font-name = Noto Sans 11
-      '';
+  # Configure display manager with fallback options
+  # Option 1: Try the older xserver path
+  services.xserver.displayManager = {
+    # Enable SDDM as a fallback since it's more consistently configured across NixOS versions
+    sddm.enable = true;
+    
+    # Configure auto-login (assuming this path still works)
+    autoLogin = {
+      enable = lib.mkDefault true;
+      user = lib.mkDefault defaultUser;
     };
+    
+    # Set session to XFCE
+    defaultSession = "xfce";
   };
   
-  # Enable auto-login for the live system - using the correct path
-  services.displayManager.autoLogin = {
-    enable = lib.mkDefault true;
-    user = lib.mkDefault defaultUser;
+  # Option 2: Configure at services.displayManager (newer path)
+  services.displayManager = {
+    # Enable auto-login
+    autoLogin = {
+      enable = lib.mkDefault true;
+      user = lib.mkDefault defaultUser;
+    };
+    
+    # Disable logging to file
+    logToFile = false;
   };
 
   # Install essential packages for XFCE
@@ -64,7 +69,7 @@ in {
     firefox
     thunderbird
     vlc
-    tilix  # Modern terminal
+    xfce.xfce4-terminal  # Default XFCE terminal, guaranteed to exist
     pluma  # Simple text editor
     gnome.file-roller  # Archive manager
     gparted  # Partition editor
