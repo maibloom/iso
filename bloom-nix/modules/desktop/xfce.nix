@@ -75,7 +75,7 @@ in {
     vlc
     xfce.xfce4-terminal  # Default XFCE terminal, guaranteed to exist
     pkgs.mate.pluma  # Simple text editor
-    gnome.file-roller  # Archive manager
+    pkgs.file-roller  # Archive manager
     gparted  # Partition editor
     xfce.ristretto  # Image viewer
     xfce.thunar-archive-plugin
