@@ -27,22 +27,22 @@ in {
   # Core GNOME packages and applications
   environment.systemPackages = with pkgs; [
     # Core GNOME packages
-    gnome.gnome-shell
-    gnome.gnome-session
-    gnome.gnome-settings-daemon
-    gnome.gnome-control-center
+    gnome-shell
+    gnome-session
+    gnome-settings-daemon
+    gnome-control-center
     
     # Essential GNOME applications
-    gnome.nautilus        # File manager
-    gnome.gnome-terminal  # Terminal
-    gnome.evince          # Document viewer
-    gnome.gedit           # Text editor
-    gnome.file-roller     # Archive manager
-    gnome.gnome-screenshot # Screenshot tool
-    gnome.eog             # Image viewer
+    nautilus        # File manager
+    gnome-terminal  # Terminal
+    evince          # Document viewer
+    gedit           # Text editor
+    file-roller     # Archive manager
+    gnome-screenshot # Screenshot tool
+    eog             # Image viewer
     
     # GNOME extension management
-    gnome.gnome-tweaks
+    pkgs.gnome-tweaks
     gnome-extension-manager
     
     # Custom theme dependencies
