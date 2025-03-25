@@ -157,7 +157,6 @@ in {
   # Make our theme available to GNOME Shell
   environment.pathsToLink = [ 
     "/share/themes" 
-    "/share/backgrounds"
   ];
   
   # Link the theme into the main system paths to ensure it's available system-wide
@@ -199,9 +198,6 @@ in {
     [org/gnome/mutter]
     edge-tiling=true
     workspaces-only-on-primary=true
-    
-    [org/gnome/desktop/background]
-    picture-options='zoom'
   '';
   
   # Create a extensions settings database
@@ -240,20 +236,7 @@ in {
     enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'just-perfection-desktop@just-perfection', 'blur-my-shell@aunetx']
   '';
   
-  # Create a system-wide initial setup script that runs at first boot
-  system.activationScripts.gnomeSetup = ''
-    # Update dconf databases
-    dconf update
-    
-    # Setup for GDM (Login screen)
-    if [ ! -d /run/current-system/sw/share/gdm/greeter/themes/Bloom-Theme ]; then
-      mkdir -p /run/current-system/sw/share/gdm/greeter/themes/Bloom-Theme
-      cp -r ${pkgs.bloomTheme}/share/themes/Bloom-Theme/gnome-shell/* /run/current-system/sw/share/gdm/greeter/themes/Bloom-Theme/
-      chmod -R 755 /run/current-system/sw/share/gdm/greeter/themes/Bloom-Theme
-    fi
-  '';
-  
-  # Configure GDM to use our theme
+  # Configure GDM to use our theme - FIXED PATH STRUCTURE
   services.xserver.displayManager.gdm.extraConfig = ''
     [org.gnome.shell]
     disable-user-extensions=false
@@ -279,71 +262,14 @@ in {
       "org/gnome/shell/extensions/user-theme" = {
         "name" = "Bloom-Theme";
       };
-      
-      # Set wallpaper - preferably from the Bloom branding if available
-      "org/gnome/desktop/background" = {
-        "picture-uri" = lib.mkDefault "file:///run/current-system/sw/share/backgrounds/gnome/adwaita-d.jpg";
-        "picture-uri-dark" = lib.mkDefault "file:///run/current-system/sw/share/backgrounds/gnome/adwaita-d.jpg";
-      };
     };
     
-    home = {
-      stateVersion = "23.11";
-    };
+    home.stateVersion = "23.11";
   };
   
-  # Configure system shell script to run once at first boot to ensure everything is set up correctly
+  # System-wide initialization script to run at boot
   system.activationScripts.finalSetup = ''
-    #!/bin/sh
-    
-    # Script to run at first boot to ensure theme is properly applied
-    cat > /etc/nixos/theme-setup.sh << 'EOF'
-    #!/bin/sh
-    
-    # Force update dconf database
+    # Update dconf databases
     dconf update
-    
-    # Compile schemas to ensure our theme is recognized
-    glib-compile-schemas /run/current-system/sw/share/glib-2.0/schemas
-    
-    # Force GDM to reload theme
-    if systemctl is-active gdm.service >/dev/null; then
-      systemctl restart gdm.service
-    fi
-    
-    # Set default theme for all users (including future users)
-    for USER_HOME in /home/*; do
-      if [ -d "$USER_HOME" ]; then
-        USER=$(basename "$USER_HOME")
-        # Create .config directory if it doesn't exist
-        mkdir -p "$USER_HOME/.config/dconf"
-        chown $USER:users "$USER_HOME/.config/dconf"
-        
-        # Set theme for the user
-        sudo -u $USER gsettings set org.gnome.desktop.interface gtk-theme 'Bloom-Theme'
-        sudo -u $USER gsettings set org.gnome.shell.extensions.user-theme name 'Bloom-Theme'
-      fi
-    done
-    EOF
-    
-    chmod +x /etc/nixos/theme-setup.sh
-    
-    # Create systemd service that runs the script at first boot
-    cat > /etc/systemd/system/bloom-theme-setup.service << EOF
-    [Unit]
-    Description=Set up Bloom Theme for GNOME
-    After=multi-user.target
-    
-    [Service]
-    Type=oneshot
-    ExecStart=/etc/nixos/theme-setup.sh
-    RemainAfterExit=true
-    
-    [Install]
-    WantedBy=multi-user.target
-    EOF
-    
-    # Enable the service to run at boot
-    systemctl enable bloom-theme-setup.service
   '';
 }

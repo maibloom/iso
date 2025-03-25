@@ -8,8 +8,8 @@ in {
   # Enable X server and Wayland
   services.xserver.enable = true;
   
-  # Configure display manager
-  services.displayManager = {
+  # Configure display manager - FIXED PATH STRUCTURE
+  services.xserver.displayManager = {
     gdm = {
       enable = true;
       wayland = true;  # Enable Wayland support in GDM
@@ -88,9 +88,4 @@ in {
   
   # Set up system-wide wallpaper paths
   environment.pathsToLink = [ "/share/backgrounds" ];
-
-  # Import the Bloom Theme configuration
-  imports = [
-    ./bloom-theme.nix
-  ];
 }
