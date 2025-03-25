@@ -1,5 +1,5 @@
 {
-  description = "Bloom Nix - A modern NixOS distribution";
+  description = "Bloom Nix - A modern NixOS distribution with GNOME";
 
   inputs = {
     # Core Nix inputs
@@ -12,18 +12,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Plasma Manager for KDE customization
-    plasma-manager = {
-      url = "github:nix-community/plasma-manager";
+    # Useful for GNOME extensions management
+    gnome-extension-manager = {
+      url = "github:nix-community/nur-combined";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
 
     # Add other useful inputs
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, plasma-manager, nix-colors, ... }@inputs:
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, gnome-extension-manager, nix-colors, ... }@inputs:
     let
       lib = nixpkgs.lib;
 
@@ -64,12 +63,22 @@
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
-          ./modules/desktop/plasma.nix
+          ./modules/desktop/gnome.nix  # Changed from plasma.nix to gnome.nix
+          ./modules/desktop/bloom-theme.nix  # Added the Bloom Theme module
           ./modules/branding/default.nix
           ./modules/packages/default.nix
 
           # ISO-specific configurations
           ./hosts/iso/default.nix
+          
+          # Customize ISO properties
+          {
+            isoImage = {
+              edition = "bloom-gnome";
+              isoName = "bloom-gnome-${self.lastModifiedDate}-${self.shortRev or "dirty"}.iso";
+              appendToMenuLabel = " Bloom Nix GNOME Edition";
+            };
+          }
         ];
       };
 
@@ -79,7 +88,8 @@
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
-          ./modules/desktop/plasma.nix
+          ./modules/desktop/gnome.nix  # Changed from plasma.nix to gnome.nix
+          ./modules/desktop/bloom-theme.nix  # Added the Bloom Theme module
           ./modules/branding/default.nix
           ./modules/packages/default.nix
 
@@ -105,7 +115,7 @@
               nixpkgs-fmt  # Nix formatter
             ];
             shellHook = ''
-              echo "Bloom Nix development environment"
+              echo "Bloom Nix development environment with GNOME"
               echo "Run 'nix build .#iso' to build the ISO"
             '';
           };
