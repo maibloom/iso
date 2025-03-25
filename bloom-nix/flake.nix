@@ -1,5 +1,5 @@
 {
-  description = "Bloom Nix - A modern NixOS distribution with GNOME";
+  description = "Bloom Nix - A modern NixOS distribution with XFCE";
 
   inputs = {
     # Core Nix inputs
@@ -85,22 +85,11 @@
         # SPICE agent for better mouse, clipboard, and resolution handling
         services.spice-vdagentd.enable = true;
         
-        # Use X11 instead of Wayland in VMs for better compatibility
-        services.xserver.displayManager.gdm.wayland = lib.mkForce false;
-        
         # Add VM-related packages
         environment.systemPackages = with pkgs; [
           spice-vdagent    # For QEMU/KVM with SPICE
           pciutils         # For hardware debugging
           usbutils         # For USB debugging
-        ];
-        
-        # Ensure display size can be adjusted dynamically
-        services.xserver.resolutions = lib.mkIf (lib.versionAtLeast lib.version "23.05") [
-          { x = 1024; y = 768; }
-          { x = 1280; y = 720; }
-          { x = 1366; y = 768; }
-          { x = 1920; y = 1080; }
         ];
         
         # Reduce timeout for shutting down services to prevent hanging
@@ -118,8 +107,8 @@
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
-          ./modules/desktop/gnome.nix  # Changed from plasma.nix to gnome.nix
-          ./modules/desktop/bloom-theme.nix  # Added the Bloom Theme module
+          ./modules/desktop/xfce.nix       # Changed to XFCE
+          ./modules/desktop/xfce-theme.nix # Added XFCE Theme module
           ./modules/branding/default.nix
           ./modules/packages/default.nix
 
@@ -129,13 +118,13 @@
           # Add VM support module
           vmSupportModule
          
-          # Customize ISO properties with priority resolution
+          # Customize ISO properties
           {
             isoImage = {
-              edition = "bloom-gnome";
-              isoName = "bloom-gnome-${builtins.substring 0 8 self.lastModifiedDate or "19700101"}-${self.shortRev or "dirty"}.iso";
+              edition = "bloom-xfce";
+              isoName = "bloom-xfce-${builtins.substring 0 8 self.lastModifiedDate or "19700101"}-${self.shortRev or "dirty"}.iso";
               # Use lib.mkForce to give this definition higher priority
-              appendToMenuLabel = lib.mkForce " Bloom Nix GNOME Edition";
+              appendToMenuLabel = lib.mkForce " Bloom Nix XFCE Edition";
               makeEfiBootable = true;
               makeUsbBootable = true;
             };
@@ -159,8 +148,8 @@
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
-          ./modules/desktop/gnome.nix  # Changed from plasma.nix to gnome.nix
-          ./modules/desktop/bloom-theme.nix  # Added the Bloom Theme module
+          ./modules/desktop/xfce.nix       # Changed to XFCE
+          ./modules/desktop/xfce-theme.nix # Added XFCE Theme module
           ./modules/branding/default.nix
           ./modules/packages/default.nix
 
@@ -186,7 +175,7 @@
               nixpkgs-fmt  # Nix formatter
             ];
             shellHook = ''
-              echo "Bloom Nix development environment with GNOME"
+              echo "Bloom Nix development environment with XFCE"
               echo "Run 'nix build .#iso' to build the ISO"
             '';
           };
