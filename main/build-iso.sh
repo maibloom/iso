@@ -21,7 +21,7 @@ ISO_PATH=$(readlink -f result/iso/*.iso)
 echo "ISO successfully built at: $ISO_PATH"
 echo "You can burn this to a USB drive with:"
 echo "  sudo dd if=$ISO_PATH of=/dev/sdX bs=4M status=progress"
-echo "  (Replace sdX with your USB device, BE CAREFUL!)”
+echo "  (Replace sdX with your USB device, BE CAREFUL!)"
 
 
 qemu-system-x86_64 -cdrom result/iso/* -boot d 

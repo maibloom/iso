@@ -1,5 +1,5 @@
 # Base module for Bloom Nix - Flake compatible
-{ config, pkgs, lib, inputs, outputs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   # System identity
@@ -21,9 +21,6 @@
       trusted-public-keys = lib.mkDefault [];
       substituters = lib.mkDefault [];
     };
-    
-    # Registry entries for this flake
-    registry = lib.mapAttrs (_: flake: { inherit flake; }) inputs;
     
     # Make nixpkgs available in the NIX_PATH
     nixPath = lib.mkForce [
@@ -80,17 +77,17 @@
   # Core system packages
   environment.systemPackages = with pkgs; [
     # CLI essentials
-    vim 
-    nano 
-    wget 
-    curl 
+    vim
+    nano
+    wget
+    curl
     git
-    htop 
+    htop
     lsof
-    zip 
-    unzip 
-    file 
-    tree 
+    zip
+    unzip
+    file
+    tree
     rsync
   ];
 }

@@ -6,7 +6,7 @@
 {
   imports = [
     # Include the minimal installation CD NixOS module
-    <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical.nix>
+    <nixpkgs/nixos/modules/installer/cd-dvd/iso-image.nix>
     ./hardware/default.nix
   ];
 
