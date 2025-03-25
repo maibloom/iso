@@ -74,7 +74,7 @@ in {
     thunderbird
     vlc
     xfce.xfce4-terminal  # Default XFCE terminal, guaranteed to exist
-    pluma  # Simple text editor
+    pkgs.mate.pluma  # Simple text editor
     gnome.file-roller  # Archive manager
     gparted  # Partition editor
     xfce.ristretto  # Image viewer
