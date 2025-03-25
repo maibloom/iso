@@ -1,54 +1,42 @@
-nixosConfigurations.minimal-iso = mkNixosConfig {
-  modules = [
-    # ISO image creation module from nixpkgs
-    "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
+{
+  description = "A minimal NixOS ISO configuration";
 
-    # Just the essential modules
-    ./modules/base/default.nix
-    ./modules/hardware/default.nix
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # or your desired branch
 
-    # VM support
-    vmSupportModule
-
-    # Minimal desktop
-    {
-      # Enable X server
-      services.xserver.enable = true;
-      
-      # Use a lightweight desktop environment (XFCE instead of Plasma)
-      services.xserver.desktopManager.xfce.enable = true;
-      services.xserver.displayManager.lightdm.enable = true;
-      
-      # Auto-login
-      services.xserver.displayManager.autoLogin = {
-        enable = true;
-        user = "nixos";
-      };
-      
-      # Create a user
-      users.users.nixos = {
-        isNormalUser = true;
-        extraGroups = [ "wheel" "networkmanager" "video" ];
-        initialPassword = "";
-      };
-      
-      # Allow sudo without password
-      security.sudo.wheelNeedsPassword = false;
-      
-      # Add basic packages
-      environment.systemPackages = with pkgs; [
-        firefox
-        xfce.xfce4-terminal
-        gparted
+  outputs = { self, nixpkgs }: {
+    nixosConfigurations.minimal-iso = nixpkgs.lib.nixos.mkNixosConfig {
+      modules = [
+        "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
+        ./modules/base/default.nix
+        ./modules/hardware/default.nix
+        vmSupportModule
+        {
+          services.xserver.enable = true;
+          services.xserver.desktopManager.xfce.enable = true;
+          services.xserver.displayManager.lightdm.enable = true;
+          services.xserver.displayManager.autoLogin = {
+            enable = true;
+            user = "nixos";
+          };
+          users.users.nixos = {
+            isNormalUser = true;
+            extraGroups = [ "wheel" "networkmanager" "video" ];
+            initialPassword = "";
+          };
+          security.sudo.wheelNeedsPassword = false;
+          environment.systemPackages = with pkgs; [
+            firefox
+            xfce.xfce4-terminal
+            gparted
+          ];
+          isoImage = {
+            edition = "minimal";
+            isoName = "bloom-minimal.iso";
+            makeEfiBootable = true;
+            makeUsbBootable = true;
+          };
+        }
       ];
-      
-      # ISO settings
-      isoImage = {
-        edition = "minimal";
-        isoName = "bloom-minimal.iso";
-        makeEfiBootable = true;
-        makeUsbBootable = true;
-      };
-    }
-  ];
-};
+    };
+  };
+}
