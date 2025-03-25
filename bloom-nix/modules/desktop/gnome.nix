@@ -48,7 +48,7 @@ in {
     # Custom theme dependencies
     gtk3
     gtk4
-    gnome.adwaita-icon-theme
+    pkgs.adwaita-icon-theme
     sassc                 # For CSS compilation
     
     # Essential GNOME extensions
