@@ -9,7 +9,9 @@ in {
   
   # Enable XFCE desktop environment
   services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.displayManager.lightdm = {
+  
+  # Configure LightDM - using the correct paths
+  services.displayManager.lightdm = {
     enable = true;
     background = "#1a1a1a";
     # Ensure GTK+ theme is honored in greeter
@@ -25,15 +27,16 @@ in {
     };
   };
   
-  # Enable auto-login for the live system
-  services.xserver.displayManager.autoLogin = {
+  # Enable auto-login for the live system - using the correct path
+  services.displayManager.autoLogin = {
     enable = lib.mkDefault true;
     user = lib.mkDefault defaultUser;
   };
 
   # Install essential packages for XFCE
+  # Carefully selecting packages that are likely to exist in all nixpkgs versions
   environment.systemPackages = with pkgs; [
-    # XFCE core and plugins
+    # XFCE core and plugins - Only using packages confirmed to exist
     xfce.xfce4-whiskermenu-plugin  # Modern menu
     xfce.xfce4-pulseaudio-plugin   # Volume control
     xfce.xfce4-weather-plugin      # Weather
@@ -42,7 +45,7 @@ in {
     xfce.xfce4-cpugraph-plugin     # CPU monitor
     xfce.xfce4-systemload-plugin   # System load
     xfce.xfce4-netload-plugin      # Network monitor
-    xfce.xfce4-places-plugin       # Quick access to folders
+    # Removed xfce.xfce4-places-plugin as it's missing
     
     # Themes and icons for a modern look
     arc-theme
@@ -98,18 +101,8 @@ in {
   services.devmon.enable = true;
   services.udisks2.enable = true;
   
-  # Audio configuration - Correctly configured to avoid conflicts
-  # Remove sound.enable as it's deprecated
-  # Ensure PulseAudio is disabled if you're using PipeWire elsewhere
-  hardware.pulseaudio.enable = false;  # Disable PulseAudio to avoid conflicts with PipeWire
-  
-  # If you want to explicitly enable PipeWire (you might not need this if it's enabled elsewhere)
-  # services.pipewire = {
-  #   enable = true;
-  #   alsa.enable = true;
-  #   alsa.support32Bit = true;
-  #   pulse.enable = true;
-  # };
+  # Audio configuration - Using correct path
+  services.pulseaudio.enable = false;  # Correct path based on warning
   
   # Enable NetworkManager for networking
   networking.networkmanager.enable = true;
