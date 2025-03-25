@@ -1,65 +1,97 @@
 {
-  description = "Minimal Bloom Nix for testing";
+  description = "Bloom Nix - A minimal NixOS-based distribution";
 
   inputs = {
+    # Use the nixos-unstable channel for the latest packages
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    
+    # You can add more inputs here as needed
+    # Example: home-manager for user environment management
+    # home-manager = {
+    #   url = "github:nix-community/home-manager";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs: 
     let
-      lib = nixpkgs.lib;
-      system = "x86_64-linux";
+      # Define supported systems
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      
+      # Helper function to generate attributes for each system
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      
+      # Import function to make importing files easier
+      # This allows importing Nix files relative to the flake root
+      importFile = file: import (./. + "/${file}");
     in {
-      nixosConfigurations.test-iso = lib.nixosSystem {
-        inherit system;
-        modules = [
-          # ISO image module
-          "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
-          
-          # Basic system configuration
-          ({ pkgs, ... }: {
-            # Basic ISO settings
-            isoImage.edition = "bloom-test";
-            isoImage.isoName = "bloom-test.iso";
-            isoImage.makeEfiBootable = true;
-            isoImage.makeUsbBootable = true;
+      # NixOS configurations
+      nixosConfigurations = {
+        # Default BloomNix configuration
+        bloomNix = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };  # Pass inputs to modules
+          modules = [
+            # Main configuration file
+            ./configuration.nix
             
-            # Essential packages
-            environment.systemPackages = with pkgs; [
-              firefox
-              git
-            ];
+            # You can import additional module files as needed
+            # ./modules/base.nix
+            # ./modules/users.nix
+            # ./modules/networking.nix
             
-            # Enable Plasma 6
-            services.xserver.enable = true;
-            services.xserver.desktopManager.plasma6.enable = true;
-            services.xserver.displayManager.sddm.enable = true;
-            
-            # User configuration
-            users.users.nixos = {
-              isNormalUser = true;
-              extraGroups = [ "wheel" ];
-              initialPassword = "";
-            };
-            
-            # Auto-login for live system
-            services.xserver.displayManager.autoLogin = {
-              enable = true;
-              user = "nixos";
-            };
-            
-            # Allow passwordless sudo
-            security.sudo.wheelNeedsPassword = false;
-          })
-        ];
+            # Inline configuration (can be moved to separate files later)
+            ({ config, pkgs, ... }: {
+              # The version of NixOS to base the configuration on
+              system.stateVersion = "23.11";
+              
+              # Basic system identification
+              networking.hostName = "bloom-nix";
+              
+              # Create a default user
+              users.users.bloom = {
+                isNormalUser = true;
+                extraGroups = [ "wheel" ];  # For sudo access
+                initialPassword = "bloom";  # Should be changed after first login
+              };
+              
+              # Basic command-line utilities
+              environment.systemPackages = with pkgs; [
+                vim
+                curl
+                git
+                wget
+              ];
+              
+              # Enable OpenSSH server for remote access
+              services.openssh.enable = true;
+              
+              # Boot configuration
+              boot.loader.systemd-boot.enable = true;
+              boot.loader.efi.canTouchEfiVariables = true;
+              
+              # No GUI as requested
+              services.xserver.enable = false;
+            })
+          ];
+        };
       };
       
-      # Make the ISO available as a package
-      packages.${system}.test-iso = self.nixosConfigurations.test-iso.config.system.build.isoImage;
-      packages.${system}.default = self.packages.${system}.test-iso;
+      # Custom packages specific to Bloom Nix
+      # These can be defined in separate files under ./packages/
+      packages = forAllSystems (system: 
+        let 
+          pkgs = nixpkgs.legacyPackages.${system};
+        in {
+          # Example of a custom package (uncomment and implement when needed)
+          # bloom-utils = pkgs.callPackage ./packages/bloom-utils { };
+        }
+      );
+      
+      # NixOS modules that can be shared and imported in configurations
+      nixosModules = {
+        # Define reusable modules (uncomment and implement when needed)
+        # bloom-base = import ./modules/bloom-base.nix;
+      };
     };
 }
