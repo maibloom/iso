@@ -1,5 +1,5 @@
 {
-  description = "Bloom Nix - A modern NixOS distribution with XFCE";
+  description = "Bloom Nix - A minimal NixOS distribution with Plasma 6";
 
   inputs = {
     # Core Nix inputs
@@ -11,12 +11,9 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Add other useful inputs
-    nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, nix-colors, ... }@inputs:
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, ... }@inputs:
     let
       lib = nixpkgs.lib;
 
@@ -47,55 +44,27 @@
             inherit (self) outputs;
           };
         };
-        
-      # VM support module to ensure stable operation in virtual machines
+     
+      # Minimal VM support module
       vmSupportModule = { config, lib, pkgs, ... }: {
         # Enable necessary kernel modules for VMs
-        boot.initrd.availableKernelModules = [ 
-          "ata_piix" "uhci_hcd" "virtio_pci" "sr_mod" "virtio_blk" 
-          "ahci" "xhci_pci" "sd_mod" "usb_storage"
+        boot.initrd.availableKernelModules = [
+          "ata_piix" "uhci_hcd" "virtio_pci" "sr_mod" "virtio_blk"
         ];
-        boot.initrd.kernelModules = [ "kvm-intel" "kvm-amd" ];
-        
+     
         # Optimize kernel parameters for VMs
-        boot.kernelParams = [
-          # Improve VM performance and reduce resources
-          "mem_sleep_default=deep"
-          "usbcore.autosuspend=0"
-          # Prevent GPU-related hangs
-          "nomodeset"
-          # Improve boot speed
-          "panic=60"
-          "boot.shell_on_fail"
-          # Prevent some kernel panics in VMs
-          "ibt=off"
-        ];
-        
+        boot.kernelParams = [ "nomodeset" "ibt=off" ];
+     
         # Enable firmware that might be needed
         hardware.enableRedistributableFirmware = true;
-        
-        # VM-friendly graphics drivers
-        services.xserver.videoDrivers = [ 
-          "qxl"       # For QEMU/Spice
-          "vmware"    # For VMware
-          "modesetting" # Fallback
-          "fbdev"     # Last resort
-        ];
-        
+     
         # SPICE agent for better mouse, clipboard, and resolution handling
         services.spice-vdagentd.enable = true;
-        
+     
         # Add VM-related packages
         environment.systemPackages = with pkgs; [
-          spice-vdagent    # For QEMU/KVM with SPICE
-          pciutils         # For hardware debugging
-          usbutils         # For USB debugging
+          spice-vdagent
         ];
-        
-        # Reduce timeout for shutting down services to prevent hanging
-        systemd.extraConfig = ''
-          DefaultTimeoutStopSec=15s
-        '';
       };
     in {
       # ISO image configuration
@@ -104,40 +73,31 @@
           # ISO image creation module from nixpkgs
           "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
 
-          # Bloom Nix modules
+          # Bloom Nix modules - using the minimal required set
           ./modules/base/default.nix
           ./modules/hardware/default.nix
-          ./modules/desktop/xfce.nix       # Changed to XFCE
-          ./modules/desktop/xfce-theme.nix # Added XFCE Theme module
-          ./modules/branding/default.nix
+          ./modules/desktop/plasma6.nix     # Our minimal Plasma 6 module
           ./modules/packages/default.nix
 
           # ISO-specific configurations
           ./hosts/iso/default.nix
-          
+         
           # Add VM support module
           vmSupportModule
+          
+          # Add Calamares modules in the ISO rather than desktop
+          ./modules/installer/calamares.nix
+          ./modules/installer/calamares-config.nix
          
           # Customize ISO properties
           {
             isoImage = {
-              edition = "bloom-xfce";
-              isoName = "bloom-xfce-${builtins.substring 0 8 self.lastModifiedDate or "19700101"}-${self.shortRev or "dirty"}.iso";
-              # Use lib.mkForce to give this definition higher priority
-              appendToMenuLabel = lib.mkForce " Bloom Nix XFCE Edition";
+              edition = "bloom-plasma6";
+              isoName = "bloom-plasma6-${builtins.substring 0 8 self.lastModifiedDate or "19700101"}-${self.shortRev or "dirty"}.iso";
+              appendToMenuLabel = lib.mkForce " Bloom Nix Plasma 6";
               makeEfiBootable = true;
               makeUsbBootable = true;
             };
-            
-            # Force auto-login to be reliable in VMs - using correct paths
-            services.displayManager.autoLogin = {
-              enable = lib.mkForce true;
-              user = lib.mkForce "nixos";
-            };
-            
-            # Reduce memory usage for VM compatibility - using correct paths
-            boot.tmp.cleanOnBoot = true;
-            services.displayManager.logToFile = false;  # Corrected path
           }
         ];
       };
@@ -148,9 +108,7 @@
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
-          ./modules/desktop/xfce.nix       # Changed to XFCE
-          ./modules/desktop/xfce-theme.nix # Added XFCE Theme module
-          ./modules/branding/default.nix
+          ./modules/desktop/plasma6.nix     # Our minimal Plasma 6 module
           ./modules/packages/default.nix
 
           # Desktop-specific configurations
@@ -172,10 +130,10 @@
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
               git
-              nixpkgs-fmt  # Nix formatter
+              nixpkgs-fmt
             ];
             shellHook = ''
-              echo "Bloom Nix development environment with XFCE"
+              echo "Bloom Nix development environment with Plasma 6"
               echo "Run 'nix build .#iso' to build the ISO"
             '';
           };
