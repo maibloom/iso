@@ -129,15 +129,15 @@
               makeUsbBootable = true;
             };
             
-            # Force auto-login to be reliable in VMs
+            # Force auto-login to be reliable in VMs - using correct paths
             services.displayManager.autoLogin = {
               enable = lib.mkForce true;
               user = lib.mkForce "nixos";
             };
             
-            # Reduce memory usage for VM compatibility
+            # Reduce memory usage for VM compatibility - using correct paths
             boot.tmp.cleanOnBoot = true;
-            services.xserver.displayManager.job.logToFile = false;
+            services.displayManager.logToFile = false;  # Corrected path
           }
         ];
       };

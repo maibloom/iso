@@ -63,7 +63,7 @@ in {
             </property>
             <property name="plugin-5" type="string" value="launcher">
               <property name="items" type="array">
-                <value type="string" value="tilix.desktop"/>
+                <value type="string" value="xfce4-terminal.desktop"/>
               </property>
             </property>
             <property name="plugin-6" type="string" value="separator">
@@ -188,12 +188,12 @@ in {
         </channel>
       '';
       
-      # Configure whisker menu
+      # Configure whisker menu - using XFCE's built-in terminal as a fallback
       ".config/xfce4/panel/whiskermenu-1.rc".text = ''
-        favorites=firefox.desktop,Thunar.desktop,tilix.desktop,xfce4-terminal.desktop,pluma.desktop
+        favorites=firefox.desktop,Thunar.desktop,xfce4-terminal.desktop
         recent=
         button-title=Applications
-        button-icon=bloom-nix-logo
+        button-icon=start-here
         button-single-row=false
         show-button-title=false
         show-button-icon=true
@@ -248,7 +248,7 @@ in {
       [Desktop Entry]
       Type=Application
       Name=Set XFCE Theme
-      Exec=/run/current-system/sw/bin/bash -c 'xfconf-query -c xsettings -p /Net/ThemeName -s "Materia-dark" && xfconf-query -c xsettings -p /Net/IconThemeName -s "Papirus-Dark" && xfconf-query -c xfwm4 -p /general/theme -s "Materia-dark" && xfconf-query -c xfwm4 -p /general/button_layout -s "O|HMC"'
+      Exec=sh -c 'xfconf-query -c xsettings -p /Net/ThemeName -s "Materia-dark" || true; xfconf-query -c xsettings -p /Net/IconThemeName -s "Papirus-Dark" || true; xfconf-query -c xfwm4 -p /general/theme -s "Materia-dark" || true; xfconf-query -c xfwm4 -p /general/button_layout -s "O|HMC" || true'
       Terminal=false
       NoDisplay=true
       X-GNOME-Autostart-enabled=true
@@ -258,34 +258,25 @@ in {
     home.stateVersion = "23.11";
   };
   
-  # Create a custom background for Bloom Nix
+  # Create a custom background for Bloom Nix - using more robust approach
   system.activationScripts.bloomBackground = ''
     mkdir -p /run/current-system/sw/share/backgrounds/
     
-    # Create a symlink to the default background if it exists
-    if [ -f ${./wallpapers/default.jpg} ]; then
-      ln -sf ${./wallpapers/default.jpg} /run/current-system/sw/share/backgrounds/bloom-nix-wallpaper.jpg
-    # Otherwise, use a fallback from the nixpkgs backgrounds
-    else
-      ln -sf ${pkgs.xfce.xfdesktop}/share/backgrounds/xfce/xfce-stripes.png /run/current-system/sw/share/backgrounds/bloom-nix-wallpaper.jpg
-    fi
-  '';
-  
-  # Create a Bloom Nix logo for menus
-  system.activationScripts.bloomLogo = ''
-    mkdir -p /run/current-system/sw/share/icons/hicolor/scalable/apps/
-    cat > /run/current-system/sw/share/icons/hicolor/scalable/apps/bloom-nix-logo.svg << 'EOF'
-    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-      <circle cx="32" cy="32" r="28" fill="#1a1a1a" stroke="#5294e2" stroke-width="2"/>
-      <path d="M32,10 C20.95,10 12,18.95 12,30 C12,41.05 20.95,50 32,50 C43.05,50 52,41.05 52,30" 
-            fill="none" stroke="#5294e2" stroke-width="3" stroke-linecap="round"/>
-      <path d="M26,22 Q32,17 38,22 Q44,27 38,32 Q32,37 26,32 Q20,27 26,22 Z" 
-            fill="#5294e2" stroke="none"/>
-      <circle cx="32" cy="27" r="3" fill="#1a1a1a"/>
+    # Create a default wallpaper with a solid color if nothing else is available
+    cat > /run/current-system/sw/share/backgrounds/bloom-nix-wallpaper.svg << 'EOF'
+    <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080">
+      <rect width="1920" height="1080" fill="#1a1a1a"/>
+      <text x="960" y="540" font-family="sans-serif" font-size="64" text-anchor="middle" fill="#5294e2">Bloom Nix</text>
     </svg>
     EOF
     
-    # Update icon cache
-    touch -c /run/current-system/sw/share/icons/hicolor
+    # Set it as the default wallpaper
+    ln -sf /run/current-system/sw/share/backgrounds/bloom-nix-wallpaper.svg /run/current-system/sw/share/backgrounds/bloom-nix-wallpaper.jpg || true
   '';
+  
+  # Create a default icon using built-in XFCE resources to avoid dependency on SVG rendering
+  environment.variables = {
+    # Set a default icon from the system that's guaranteed to exist
+    XFCE_PANEL_BLOOM_ICON = "start-here";
+  };
 }
