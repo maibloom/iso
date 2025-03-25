@@ -19,7 +19,7 @@
             ./modules/hardware/default.nix
 
             # VM support (ensure vmSupportModule is defined or imported)
-            vmSupportModule
+            # vmSupportModule
 
             # Minimal desktop configuration
             {
