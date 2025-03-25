@@ -5,7 +5,7 @@
   imports = [
     # Hardware scan configuration
     # This will be generated when you install NixOS with nixos-generate-config
-    # ./hardware-configuration.nix
+    ./hardware-configuration.nix
   ];
   
   # System configuration options that don't fit in other modules
