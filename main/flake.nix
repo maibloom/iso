@@ -19,7 +19,7 @@
           ./modules/base/default.nix
           ./modules/hardware/default.nix
           # VM support (make sure vmSupportModule is defined or imported)
-          vmSupportModule
+          # vmSupportModule
           # Minimal desktop configuration
           {
             services.xserver.enable = true;
