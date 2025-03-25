@@ -12,17 +12,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Useful for GNOME extensions management
-    gnome-extension-manager = {
-      url = "github:nix-community/nur-combined";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Add other useful inputs
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, gnome-extension-manager, nix-colors, ... }@inputs:
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, nix-colors, ... }@inputs:
     let
       lib = nixpkgs.lib;
 
@@ -75,7 +69,7 @@
           {
             isoImage = {
               edition = "bloom-gnome";
-              isoName = "bloom-gnome-${self.lastModifiedDate}-${self.shortRev or "dirty"}.iso";
+              isoName = "bloom-gnome-${builtins.substring 0 8 self.lastModifiedDate or "19700101"}-${self.shortRev or "dirty"}.iso";
               appendToMenuLabel = " Bloom Nix GNOME Edition";
             };
           }
