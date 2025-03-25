@@ -74,23 +74,10 @@
         # Enable firmware that might be needed
         hardware.enableRedistributableFirmware = true;
         
-        # Virtualization guest services
-        virtualisation = {
-          # For QEMU/KVM guests
-          qemu.guestAgent.enable = true;
-          
-          # For VMware guests
-          vmware.guest.enable = true;
-          
-          # For Hyper-V guests
-          hypervGuest.enable = true;
-        };
-        
         # VM-friendly graphics drivers
         services.xserver.videoDrivers = [ 
           "qxl"       # For QEMU/Spice
           "vmware"    # For VMware
-          "hyperv_fb" # For Hyper-V
           "modesetting" # Fallback
           "fbdev"     # Last resort
         ];
@@ -98,40 +85,23 @@
         # SPICE agent for better mouse, clipboard, and resolution handling
         services.spice-vdagentd.enable = true;
         
-        # VirtualBox guest additions if running in VirtualBox
-        virtualisation.virtualbox.guest.enable = true;
-        virtualisation.virtualbox.guest.x11 = true;
-        
         # Use X11 instead of Wayland in VMs for better compatibility
         services.xserver.displayManager.gdm.wayland = lib.mkForce false;
-        
-        # Ensure autologin works reliably in VMs
-        services.xserver.displayManager.autoLogin.enable = true;
         
         # Add VM-related packages
         environment.systemPackages = with pkgs; [
           spice-vdagent    # For QEMU/KVM with SPICE
-          qemu-guest-agent # For QEMU/KVM
-          vmware-tools     # For VMware
-          xorg.xf86videovmware # Additional VMware support
           pciutils         # For hardware debugging
           usbutils         # For USB debugging
         ];
         
         # Ensure display size can be adjusted dynamically
-        services.xserver.resolutions = [
-          { x = 800; y = 600; }
+        services.xserver.resolutions = lib.mkIf (lib.versionAtLeast lib.version "23.05") [
           { x = 1024; y = 768; }
           { x = 1280; y = 720; }
-          { x = 1280; y = 1024; }
           { x = 1366; y = 768; }
-          { x = 1440; y = 900; }
-          { x = 1600; y = 900; }
           { x = 1920; y = 1080; }
         ];
-        
-        # Improve display manager reliability
-        systemd.services.display-manager.restartIfChanged = false;
         
         # Reduce timeout for shutting down services to prevent hanging
         systemd.extraConfig = ''
@@ -166,15 +136,19 @@
               isoName = "bloom-gnome-${builtins.substring 0 8 self.lastModifiedDate or "19700101"}-${self.shortRev or "dirty"}.iso";
               # Use lib.mkForce to give this definition higher priority
               appendToMenuLabel = lib.mkForce " Bloom Nix GNOME Edition";
+              makeEfiBootable = true;
+              makeUsbBootable = true;
             };
             
-            # Additional VM-specific ISO settings
-            isoImage.makeEfiBootable = true;
-            isoImage.makeUsbBootable = true;
+            # Force auto-login to be reliable in VMs
+            services.displayManager.autoLogin = {
+              enable = lib.mkForce true;
+              user = lib.mkForce "nixos";
+            };
             
-            # Ensure we have enough memory assigned in the VM
-            virtualisation.memorySize = lib.mkDefault 4096; # 4GB
-            virtualisation.cores = lib.mkDefault 2;
+            # Reduce memory usage for VM compatibility
+            boot.tmp.cleanOnBoot = true;
+            services.xserver.displayManager.job.logToFile = false;
           }
         ];
       };
