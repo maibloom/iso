@@ -16,6 +16,13 @@
           # Include the NixOS installation CD module
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           
+          ./modules/hardware/default.nix
+          ./modules/branding/default.nix
+          ./modules/desktop/plasma6.nix
+          ./modules/packages/default.nix
+          ./hosts/iso/default.nix
+          ./modules/installer/default.nix
+
           # Our custom configuration
           ({ config, lib, pkgs, ... }: {
             # System identity
@@ -58,6 +65,9 @@
             
             # State version
             system.stateVersion = "23.11";
+          
+          
+          
           })
         ];
       };

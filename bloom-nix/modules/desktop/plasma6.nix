@@ -2,18 +2,10 @@
 { config, lib, pkgs, ... }:
 
 {
-  # Enable X server with Wayland support
-  services.xserver.enable = true;
-  
-  # Enable Plasma 6 desktop environment
-  services.xserver.desktopManager.plasma6.enable = true;
-  
-  # Configure display manager - use SDDM which is recommended for Plasma
-  services.xserver.displayManager = {
-    sddm = {
-      enable = true;
-      wayland.enable = true;  # Enable Wayland support
-    };
+  services.xserver = {
+    enable = true;
+    displayManager.sddm.enable = true;
+  }
     
     # Auto-login for the live system
     autoLogin = {
