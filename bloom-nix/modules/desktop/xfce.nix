@@ -98,9 +98,18 @@ in {
   services.devmon.enable = true;
   services.udisks2.enable = true;
   
-  # Enable sound
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  # Audio configuration - Correctly configured to avoid conflicts
+  # Remove sound.enable as it's deprecated
+  # Ensure PulseAudio is disabled if you're using PipeWire elsewhere
+  hardware.pulseaudio.enable = false;  # Disable PulseAudio to avoid conflicts with PipeWire
+  
+  # If you want to explicitly enable PipeWire (you might not need this if it's enabled elsewhere)
+  # services.pipewire = {
+  #   enable = true;
+  #   alsa.enable = true;
+  #   alsa.support32Bit = true;
+  #   pulse.enable = true;
+  # };
   
   # Enable NetworkManager for networking
   networking.networkmanager.enable = true;
