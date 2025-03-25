@@ -4,8 +4,7 @@
 let
   defaultUser = "nixos";
 in {
-  # Create Bloom Theme using runCommand instead of a standard derivation
-  # This avoids the unpacking issues
+  # Create Bloom Theme using runCommand
   nixpkgs.overlays = [
     (final: prev: {
       bloomTheme = prev.runCommand "bloom-theme-1.0.0" {
@@ -146,21 +145,36 @@ in {
     "/share/themes" 
   ];
   
-  # Link the theme into the main system paths to ensure it's available system-wide
-  system.activationScripts.bloomTheme = ''
+  # Enable dconf
+  programs.dconf.enable = true;
+  
+  # Use NixOS's built-in dconf settings mechanism instead of creating files directly
+  # This avoids the permission errors in the Nix store
+  programs.dconf.profiles = {
+    user = "${pkgs.writeText "user-profile" ''
+      user-db:user
+      system-db:bloom
+    ''}";
+  };
+  
+  # Configure GDM to use our theme - using a more NixOS-friendly approach
+  services.xserver.displayManager.gdm = {
+    enable = true;
+    wayland = true;
+  };
+  
+  # We'll create and configure the dconf database during system activation
+  # This avoids trying to create directories in the read-only Nix store
+  system.activationScripts.bloomThemeSetup = ''
     # Create symlinks to make the theme available system-wide
     mkdir -p /run/current-system/sw/share/themes/
     ln -sf ${pkgs.bloomTheme}/share/themes/Bloom-Theme /run/current-system/sw/share/themes/
-  '';
-  
-  # Create system-wide dconf profile and database
-  environment.etc."dconf/profile/user".text = ''
-    user-db:user
-    system-db:bloom
-  '';
-  
-  # Create the system database with our default settings
-  environment.etc."dconf/db/bloom.d/01-bloom-theme".text = ''
+    
+    # Set up dconf database directories
+    mkdir -p /etc/dconf/db/bloom.d
+    
+    # Create the theme settings file
+    cat > /etc/dconf/db/bloom.d/01-bloom-theme << EOF
     [org/gnome/desktop/wm/preferences]
     button-layout='appmenu:minimize,maximize,close'
     focus-mode='click'
@@ -178,17 +192,10 @@ in {
     [org/gnome/shell]
     disable-user-extensions=false
     favorite-apps=['org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'firefox.desktop', 'org.gnome.gedit.desktop']
+    EOF
     
-    [org/gnome/shell/extensions]
-    disabled-extensions=[]
-    
-    [org/gnome/mutter]
-    edge-tiling=true
-    workspaces-only-on-primary=true
-  '';
-  
-  # Create a extensions settings database
-  environment.etc."dconf/db/bloom.d/02-extensions".text = ''
+    # Create extensions settings file
+    cat > /etc/dconf/db/bloom.d/02-extensions << EOF
     [org/gnome/shell/extensions/user-theme]
     name='Bloom-Theme'
     
@@ -215,24 +222,17 @@ in {
     [org/gnome/shell/extensions/blur-my-shell]
     panel-blur=true
     panel-blur-strength=4
-  '';
-  
-  # Auto-enable required extensions for all users
-  environment.etc."dconf/db/bloom.d/00-extensions-enabled".text = ''
+    EOF
+    
+    # Create extensions enabled file
+    cat > /etc/dconf/db/bloom.d/00-extensions-enabled << EOF
     [org/gnome/shell]
     enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'just-perfection-desktop@just-perfection', 'blur-my-shell@aunetx']
-  '';
-  
-  # GDM theme customization using proper NixOS options
-  services.xserver.displayManager.gdm = {
-    # These settings work reliably in NixOS
-    enable = true;
-    wayland = true;
-  };
-  
-  # Configure GDM theme by creating a custom override file
-  # This is a more reliable approach than using extraConfig
-  environment.etc."gdm/greeter.dconf-defaults".text = ''
+    EOF
+    
+    # Configure GDM theme
+    mkdir -p /etc/gdm
+    cat > /etc/gdm/greeter.dconf-defaults << EOF
     # GDM configuration for Bloom Theme
     
     [org/gnome/desktop/interface]
@@ -243,6 +243,10 @@ in {
     
     [org/gnome/desktop/wm/preferences]
     button-layout='appmenu:minimize,maximize,close'
+    EOF
+    
+    # Update dconf database
+    dconf update || true
   '';
   
   # Set the theme preference for the default user through home-manager
@@ -265,14 +269,4 @@ in {
     
     home.stateVersion = "23.11";
   };
-  
-  # System-wide initialization script to run at boot
-  system.activationScripts.finalSetup = ''
-    # Update dconf databases
-    dconf update
-    
-    # Make GDM load our dconf defaults
-    mkdir -p /run/current-system/sw/etc/gdm
-    ln -sf /etc/gdm/greeter.dconf-defaults /run/current-system/sw/etc/gdm/
-  '';
 }
