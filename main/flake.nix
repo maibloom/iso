@@ -1,73 +1,65 @@
 {
-  description = "Minimal ISO configuration with an ISO output alias";
+  description = "Minimal Bloom Nix for testing";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, ... }:
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
+      lib = nixpkgs.lib;
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-
-      minimalIso = pkgs.lib.nixosSystem {
-        system = system;
+    in {
+      nixosConfigurations.test-iso = lib.nixosSystem {
+        inherit system;
         modules = [
-          # ISO image creation module from nixpkgs
+          # ISO image module
           "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
-          # Essential modules
-          ./modules/base/default.nix
-          ./modules/hardware/default.nix
-          # VM support (make sure vmSupportModule is defined or imported)
-          # vmSupportModule
-          # Minimal desktop configuration
-          {
+          
+          # Basic system configuration
+          ({ pkgs, ... }: {
+            # Basic ISO settings
+            isoImage.edition = "bloom-test";
+            isoImage.isoName = "bloom-test.iso";
+            isoImage.makeEfiBootable = true;
+            isoImage.makeUsbBootable = true;
+            
+            # Essential packages
+            environment.systemPackages = with pkgs; [
+              firefox
+              git
+            ];
+            
+            # Enable Plasma 6
             services.xserver.enable = true;
-            services.xserver.desktopManager.xfce.enable = true;
-            services.xserver.displayManager.lightdm.enable = true;
+            services.xserver.desktopManager.plasma6.enable = true;
+            services.xserver.displayManager.sddm.enable = true;
+            
+            # User configuration
+            users.users.nixos = {
+              isNormalUser = true;
+              extraGroups = [ "wheel" ];
+              initialPassword = "";
+            };
+            
+            # Auto-login for live system
             services.xserver.displayManager.autoLogin = {
               enable = true;
               user = "nixos";
             };
-            users.users.nixos = {
-              isNormalUser = true;
-              extraGroups = [ "wheel" "networkmanager" "video" ];
-              initialPassword = "";
-            };
+            
+            # Allow passwordless sudo
             security.sudo.wheelNeedsPassword = false;
-            environment.systemPackages = with pkgs; [
-              firefox
-              xfce.xfce4-terminal
-              gparted
-            ];
-            isoImage = {
-              edition = "minimal";
-              isoName = "bloom-minimal.iso";
-              makeEfiBootable = true;
-              makeUsbBootable = true;
-            };
-          }
+          })
         ];
       };
-    in {
-      # Your NixOS configuration output:
-      nixosConfigurations = {
-        minimal-iso = minimalIso;
-      };
-
-      # Expose the ISO image directly as a top-level output:
-      iso = minimalIso.config.system.build.isoImage;
-
-      # (Optionally) Also add the ISO under packages and legacyPackages:
-      packages = {
-        "${system}" = {
-          iso = minimalIso.config.system.build.isoImage;
-        };
-      };
-      legacyPackages = {
-        "${system}" = {
-          iso = minimalIso.config.system.build.isoImage;
-        };
-      };
+      
+      # Make the ISO available as a package
+      packages.${system}.test-iso = self.nixosConfigurations.test-iso.config.system.build.isoImage;
+      packages.${system}.default = self.packages.${system}.test-iso;
     };
 }
