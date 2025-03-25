@@ -1,14 +1,13 @@
-# Bloom Theme configuration for GNOME
+# Bloom Theme configuration for GNOME - Minimalist Approach
 { config, lib, pkgs, ... }:
 
 let
   defaultUser = "nixos";
 in {
-  # Create Bloom Theme using runCommand
+  # Create Bloom Theme package
   nixpkgs.overlays = [
     (final: prev: {
       bloomTheme = prev.runCommand "bloom-theme-1.0.0" {
-        # Dependencies for building the theme
         nativeBuildInputs = with prev; [ 
           sassc 
           gtk3
@@ -135,15 +134,16 @@ in {
     })
   ];
   
-  # Add our theme package to system packages
+  # Install the theme package and GNOME extensions
   environment.systemPackages = with pkgs; [
     bloomTheme
-    
-    # Ensure GNOME extensions are installed
     gnomeExtensions.user-themes
     gnomeExtensions.dash-to-panel
     gnomeExtensions.just-perfection
     gnomeExtensions.blur-my-shell
+    
+    # Add gsettings command to manipulate GNOME settings
+    glib
   ];
   
   # Make our theme available to GNOME Shell
@@ -151,109 +151,17 @@ in {
     "/share/themes" 
   ];
   
-  # Enable dconf
+  # Enable dconf (basic setting only)
   programs.dconf.enable = true;
   
-  # Create dconf files for system-wide settings
-  # This method works on older NixOS versions too
-  environment.etc = {
-    # User profile to chain the databases
-    "dconf/profile/user".text = ''
-      user-db:user
-      system-db:local
-    '';
-    
-    # GDM profile
-    "dconf/profile/gdm".text = ''
-      user-db:user
-      system-db:gdm
-      system-db:local
-    '';
-    
-    # Basic theme settings
-    "dconf/db/local.d/01-bloom-theme".text = ''
-      [org/gnome/desktop/wm/preferences]
-      button-layout='appmenu:minimize,maximize,close'
-      focus-mode='click'
-      action-double-click-titlebar='toggle-maximize'
-      
-      [org/gnome/desktop/interface]
-      enable-hot-corners=true
-      gtk-theme='Bloom-Theme'
-      icon-theme='Adwaita'
-      cursor-theme='Adwaita'
-      font-name='Noto Sans 11'
-      document-font-name='Noto Sans 11'
-      monospace-font-name='Fira Code 10'
-    '';
-    
-    # Shell settings
-    "dconf/db/local.d/02-shell-settings".text = ''
-      [org/gnome/shell]
-      disable-user-extensions=false
-      favorite-apps=['org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'firefox.desktop', 'org.gnome.gedit.desktop']
-      enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'just-perfection-desktop@just-perfection', 'blur-my-shell@aunetx']
-    '';
-    
-    # Mutter settings
-    "dconf/db/local.d/03-mutter-settings".text = ''
-      [org/gnome/mutter]
-      edge-tiling=true
-      workspaces-only-on-primary=true
-    '';
-    
-    # Extension settings
-    "dconf/db/local.d/04-extension-settings".text = ''
-      [org/gnome/shell/extensions/user-theme]
-      name='Bloom-Theme'
-      
-      [org/gnome/shell/extensions/dash-to-panel]
-      intellihide=false
-      autohide=false
-      panel-color='rgba(20, 20, 20, 0.95)'
-      panel-opacity=95
-      panel-size=48
-      panel-positions={'0': 'TOP'}
-      panel-element-positions={"0":[{"element":"showAppsButton","visible":true,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"centered"},{"element":"centerBox","visible":true,"position":"centered"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}
-      appicon-margin=8
-      appicon-padding=4
-      dot-position='BOTTOM'
-      animate-appicon-hover=true
-      animate-appicon-hover-animation-extent=4
-      
-      [org/gnome/shell/extensions/just-perfection]
-      hot-corner=true
-      startup-status=0
-      animation=1
-      activities-button=false
-      
-      [org/gnome/shell/extensions/blur-my-shell]
-      panel-blur=true
-      panel-blur-strength=4
-    '';
-    
-    # GDM theme settings
-    "dconf/db/gdm.d/01-bloom-theme".text = ''
-      [org/gnome/desktop/interface]
-      gtk-theme='Bloom-Theme'
-      icon-theme='Adwaita'
-      cursor-theme='Adwaita'
-      font-name='Noto Sans 11'
-      
-      [org/gnome/desktop/wm/preferences]
-      button-layout='appmenu:minimize,maximize,close'
-    '';
-  };
-  
-  # Configure GDM
+  # Configure GDM 
   services.xserver.displayManager.gdm = {
     enable = true;
     wayland = true;
   };
   
-  # Set the theme preference for the default user through home-manager
+  # Set the theme for the default user through home-manager
   home-manager.users.${defaultUser} = { pkgs, ... }: {
-    # Ensure default user gets the theme too
     dconf.settings = {
       "org/gnome/shell" = {
         "enabled-extensions" = [
@@ -276,13 +184,55 @@ in {
     home.stateVersion = "23.11";
   };
   
-  # System activation script to make the theme available system-wide
+  # This script will be used to setup default GNOME settings when the system boots
+  # Note: We use /usr/bin/env because the script will be executed in the system context
+  environment.etc."bloomtheme-setup.sh" = {
+    text = ''
+      #!/usr/bin/env bash
+      
+      # Set system-wide theme
+      ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface gtk-theme 'Bloom-Theme'
+      ${pkgs.glib}/bin/gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+      ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface enable-hot-corners true
+      
+      # Configure mutter (window manager)
+      ${pkgs.glib}/bin/gsettings set org.gnome.mutter edge-tiling true
+      
+      # Enable extensions
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell disable-user-extensions false
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'just-perfection-desktop@just-perfection', 'blur-my-shell@aunetx']"
+      
+      # Configure dash-to-panel extension
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell.extensions.dash-to-panel intellihide false
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell.extensions.dash-to-panel autohide false
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell.extensions.dash-to-panel panel-size 48
+      
+      # Configure Just Perfection extension
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell.extensions.just-perfection hot-corner true
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell.extensions.just-perfection activities-button false
+      
+      # Set shell theme
+      ${pkgs.glib}/bin/gsettings set org.gnome.shell.extensions.user-theme name 'Bloom-Theme'
+    '';
+    mode = "0755";
+  };
+  
+  # Create a systemd service to run our script on startup for all users
+  systemd.user.services.bloom-theme-setup = {
+    description = "Setup Bloom Theme for GNOME";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash /etc/bloomtheme-setup.sh";
+      RemainAfterExit = true;
+    };
+  };
+  
+  # System activation script only for making the theme available in the filesystem
   system.activationScripts.bloomThemeSetup = ''
     # Create symlinks to make the theme available system-wide
     mkdir -p /run/current-system/sw/share/themes/
     ln -sf ${pkgs.bloomTheme}/share/themes/Bloom-Theme /run/current-system/sw/share/themes/
-    
-    # Update dconf database
-    dconf update || true
   '';
 }
