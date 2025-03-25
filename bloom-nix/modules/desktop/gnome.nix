@@ -8,17 +8,16 @@ in {
   # Enable X server and Wayland
   services.xserver.enable = true;
   
-  # Configure display manager - FIXED PATH STRUCTURE
-  services.xserver.displayManager = {
-    gdm = {
-      enable = true;
-      wayland = true;  # Enable Wayland support in GDM
-    };
-    # Auto-login for the live system
-    autoLogin = {
-      enable = lib.mkDefault true;
-      user = lib.mkDefault defaultUser;
-    };
+  # Configure display manager
+  services.xserver.displayManager.gdm = {
+    enable = true;
+    wayland = true;  # Enable Wayland support in GDM
+  };
+  
+  # Auto-login for the live system (using the CORRECTED path)
+  services.displayManager.autoLogin = {
+    enable = lib.mkDefault true;
+    user = lib.mkDefault defaultUser;
   };
 
   # Enable GNOME desktop environment
@@ -26,44 +25,44 @@ in {
   
   # Core GNOME packages and applications
   environment.systemPackages = with pkgs; [
-    # Core GNOME packages
-    gnome-shell
-    gnome-session
-    gnome-settings-daemon
-    gnome-control-center
+	# Core GNOME packages
+	gnome-shell
+	gnome-session
+	gnome-settings-daemon
+	gnome-control-center
     
-    # Essential GNOME applications
-    nautilus        # File manager
-    gnome-terminal  # Terminal
-    evince          # Document viewer
-    gedit           # Text editor
-    file-roller     # Archive manager
-    gnome-screenshot # Screenshot tool
-    eog             # Image viewer
+	# Essential GNOME applications
+	nautilus    	# File manager
+	gnome-terminal  # Terminal
+	evince      	# Document viewer
+	gedit       	# Text editor
+	file-roller 	# Archive manager
+	gnome-screenshot # Screenshot tool
+	eog         	# Image viewer
     
-    # GNOME extension management
-    pkgs.gnome-tweaks
-    gnome-extension-manager
+	# GNOME extension management
+	pkgs.gnome-tweaks
+	gnome-extension-manager
     
-    # Custom theme dependencies
-    gtk3
-    gtk4
-    pkgs.adwaita-icon-theme
-    sassc                 # For CSS compilation
+	# Custom theme dependencies
+	gtk3
+	gtk4
+	pkgs.adwaita-icon-theme
+	sassc             	# For CSS compilation
     
-    # Essential GNOME extensions
-    gnomeExtensions.user-themes
-    gnomeExtensions.dash-to-panel
-    gnomeExtensions.just-perfection
-    gnomeExtensions.blur-my-shell
+	# Essential GNOME extensions
+	gnomeExtensions.user-themes
+	gnomeExtensions.dash-to-panel
+	gnomeExtensions.just-perfection
+	gnomeExtensions.blur-my-shell
     
-    # Fonts
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
+	# Fonts
+	noto-fonts
+	noto-fonts-cjk-sans
+	noto-fonts-emoji
+	liberation_ttf
+	fira-code
+	fira-code-symbols
   ];
 
   # Enable important GNOME-related services
