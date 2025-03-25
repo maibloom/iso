@@ -89,8 +89,8 @@ in {
 
     # Additional tools
     polkit_gnome
-    gnome.gnome-disk-utility
-    gnome.gnome-system-monitor
+    pkgs.gnome-disk-utility
+    pkgs.gnome-system-monitor
     xfce.xfce4-screenshooter  # Screenshot tool
 
     # VM support packages
