@@ -65,12 +65,13 @@
           # ISO-specific configurations
           ./hosts/iso/default.nix
           
-          # Customize ISO properties
+          # Customize ISO properties with priority resolution
           {
             isoImage = {
               edition = "bloom-gnome";
               isoName = "bloom-gnome-${builtins.substring 0 8 self.lastModifiedDate or "19700101"}-${self.shortRev or "dirty"}.iso";
-              appendToMenuLabel = " Bloom Nix GNOME Edition";
+              # Use lib.mkForce to give this definition higher priority
+              appendToMenuLabel = lib.mkForce " Bloom Nix GNOME Edition";
             };
           }
         ];
