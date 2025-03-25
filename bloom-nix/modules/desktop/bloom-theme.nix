@@ -236,17 +236,29 @@ in {
     enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'just-perfection-desktop@just-perfection', 'blur-my-shell@aunetx']
   '';
   
-  # Configure GDM to use our theme - FIXED PATH STRUCTURE
-  services.xserver.displayManager.gdm.extraConfig = ''
-    [org.gnome.shell]
-    disable-user-extensions=false
-    enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com']
+  # GDM theme customization using proper NixOS options
+  services.xserver.displayManager.gdm = {
+    # These settings work reliably in NixOS
+    enable = true;
+    wayland = true;
+  };
+  
+  # Configure GDM theme by creating a custom override file
+  # This is a more reliable approach than using extraConfig
+  environment.etc."gdm/greeter.dconf-defaults".text = ''
+    # GDM configuration for Bloom Theme
     
-    [org.gnome.shell.extensions.user-theme]
-    name='Bloom-Theme'
+    [org/gnome/desktop/interface]
+    gtk-theme='Bloom-Theme'
+    icon-theme='Adwaita'
+    cursor-theme='Adwaita'
+    font-name='Noto Sans 11'
+    
+    [org/gnome/desktop/wm/preferences]
+    button-layout='appmenu:minimize,maximize,close'
   '';
   
-  # Set the theme preference for the default user too through home-manager
+  # Set the theme preference for the default user through home-manager
   home-manager.users.${defaultUser} = { pkgs, ... }: {
     # Ensure default user gets the theme too
     dconf.settings = {
@@ -271,5 +283,9 @@ in {
   system.activationScripts.finalSetup = ''
     # Update dconf databases
     dconf update
+    
+    # Make GDM load our dconf defaults
+    mkdir -p /run/current-system/sw/etc/gdm
+    ln -sf /etc/gdm/greeter.dconf-defaults /run/current-system/sw/etc/gdm/
   '';
 }
