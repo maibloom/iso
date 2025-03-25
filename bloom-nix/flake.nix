@@ -84,7 +84,7 @@
           # Bloom Nix modules
           ./modules/base/default.nix
           ./modules/hardware/default.nix
-          ./modules/desktop/plasma.nix
+          ./modules/desktop/plasma6.nix
           ./modules/branding/default.nix
           ./modules/packages/default.nix
           
