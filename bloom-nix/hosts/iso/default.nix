@@ -90,20 +90,4 @@
   imports = [
     ../../modules/installer
   ];
-
-  # Enable and configure the Bloom Nix web installer
-  services.bloom-installer = {
-    enable = true;
-    
-    # Configure paths to project structure
-    projectRoot = ../../.;
-    modulePaths = {
-      base = ../../modules/base;
-      desktop = ../../modules/desktop;
-      hardware = ../../modules/hardware;
-      packages = ../../modules/packages;
-      branding = ../../modules/branding;
-    };
-    installedSystem.hostConfig = ../../hosts/desktop;
-  };
 }
