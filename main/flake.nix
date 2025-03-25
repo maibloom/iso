@@ -9,7 +9,7 @@
         "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
         ./modules/base/default.nix
         ./modules/hardware/default.nix
-        vmSupportModule
+        # vmSupportModule
         {
           services.xserver.enable = true;
           services.xserver.desktopManager.xfce.enable = true;
