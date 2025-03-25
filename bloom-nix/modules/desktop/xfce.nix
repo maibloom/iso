@@ -58,9 +58,13 @@ in {
     papirus-icon-theme
 
     # Fonts
-    noto-fonts-sans
-    noto-fonts-cjk-sans
-    noto-fonts-emoji
+    pkgs.noto-fonts
+    pkgs.noto-fonts-lgc-plus
+    pkgs.noto-fonts-cjk-sans
+    pkgs.noto-fonts-cjk-serif
+    pkgs.noto-fonts-color-emoji
+    pkgs.noto-fonts-emoji-blob-bin
+    pkgs.noto-fonts-monochrome-emoji
     liberation_ttf
     fira-code
     fira-code-symbols
