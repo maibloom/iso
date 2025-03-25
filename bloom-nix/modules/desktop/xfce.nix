@@ -58,7 +58,7 @@ in {
     papirus-icon-theme
     
     # Fonts
-    noto-fonts
+    noto-fonts-cjk-sans
     noto-fonts-cjk
     noto-fonts-emoji
     liberation_ttf
