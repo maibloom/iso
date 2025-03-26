@@ -12,19 +12,18 @@
       # Use SDDM for KDE Plasma
       sddm.enable = true;
 
-      # Auto-login for the live system - this is the ONLY place
-      # where auto-login should be configured
+      # Auto-login for the live system
       autoLogin = {
         enable = true;
         user = "nixos";  # Make sure this user exists
       };
 
-      # Default session (used by Plasma)
-      defaultSession = "plasma5";
+      # Default session - using "plasma" which is the correct name in your environment
+      # (The error message told us this is the right name to use)
+      defaultSession = "plasma";
     };
 
     # Enable Plasma desktop environment
-    # In nixos-23.11, it's called "plasma5" not "plasma"
     desktopManager.plasma5.enable = true;
 
     # VM-friendly video drivers
