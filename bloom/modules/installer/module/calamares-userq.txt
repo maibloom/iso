@@ -1,0 +1,66 @@
+# User account configuration for Bloom Nix Calamares installer
+---
+# Default username is empty, user is required to enter it
+defaultUserName:                 ""
+
+# Auto-login for the user
+doAutoLogin:                     true
+
+# Set the root password to the user's password
+setRootPassword:                 false
+doReusePassword:                 false
+
+# Disable checking for weak passwords
+checkStrongPassword:             false
+
+# Default hostname is bloom-nix
+defaultHostName:                 bloom-nix
+
+# Preset groups for user
+defaultGroups:
+    - users
+    - wheel
+    - video
+    - audio
+    - storage
+    - input
+    - network
+    - lp
+    - scanner
+    - networkmanager
+
+# Username validator regex
+userNameRegex:                   "^[a-z_][a-z0-9_-]*[$]?$"
+userNameRegexFullName:           "Username must start with a lowercase letter or underscore, and can only contain lowercase letters, numbers, underscores, and hyphens."
+
+# Hostname validator regex
+hostnameRegex:                   "^[a-zA-Z0-9][-a-zA-Z0-9]*$"
+hostnameRegexFullName:           "Hostname can only contain letters, numbers, and hyphens, and must start with a letter or number."
+
+# Password validator regex
+passwordRegex:                   ".{6,}"
+passwordRegexFullName:           "Password must be at least 6 characters long."
+
+# Shell to use
+userShell:                       /run/current-system/sw/bin/bash
+
+# Keep existing users (for live ISO)
+preserveUsers:
+    - bloom
+    - nixos
+
+# Keep specific groups
+preserveGroups:
+    - users
+    - wheel
+
+# Full name field autofill
+fullNameAutofill:                false
+
+# Perform sudo actions with the user
+sudoersConfigureWithGroup:       wheel
+sudoersGroup:                    wheel
+
+# For autologin
+writeAutologinConfig:            true
+autologinGroup:                  autologin
