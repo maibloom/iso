@@ -5,12 +5,7 @@
   # Enable all firmware
   hardware.enableAllFirmware = true;
 
-  # Enable hardware acceleration
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
-  };
+  hardware.graphics.enable = true;
 
   # Enable sound with Pipewire
   security.rtkit.enable = true;

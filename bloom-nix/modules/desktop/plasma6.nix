@@ -51,7 +51,8 @@ in {
   };
 
   # Enable KDE Plasma 6 desktop environment
-  services.desktopManager.plasma6.enable = true;
+  services.xserver.desktopManager.plasma6.enable = true;
+
 
   # Set the default session to Plasma (Wayland)
   services.displayManager.defaultSession = "plasmawayland";
