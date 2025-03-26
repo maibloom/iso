@@ -58,7 +58,4 @@ in {
 
   # Enable important services
   services.upower.enable = true;
-
-  # Basic networking
-  networking.networkmanager.enable = true;
 }
