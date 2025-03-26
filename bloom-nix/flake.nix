@@ -15,6 +15,8 @@
         modules = [
           # Include the NixOS installation CD module
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+
+          ./modules/desktop/x11-base.nix
           
           ./modules/hardware/default.nix
           ./modules/branding/default.nix

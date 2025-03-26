@@ -1,30 +1,11 @@
-# Minimal Plasma 6 desktop environment configuration for Bloom Nix
+# KDE Plasma 6 packages and configuration for Bloom Nix
 { config, lib, pkgs, ... }:
 
 {
-  services.xserver = {
-    enable = true;
-    displayManager = {
-      sddm.enable = true;
-
-      # Auto-login for the live system - inside displayManager
-      autoLogin = {
-        enable = lib.mkDefault true;
-        user = lib.mkDefault "nixos";
-      };
-
-      # Default to Plasma - inside displayManager
-      defaultSession = "plasma";
-    };
-  };
-
-  # Enable Plasma desktop
-  services.xserver.desktopManager.plasma5.enable = true;
-
   # Essential packages for a functional desktop
   environment.systemPackages = with pkgs; [
     # Core KDE Packages
-    pkgs.kdePackages.plasma-workspace
+    kdePackages.plasma-workspace
     kdePackages.kwayland
     kdePackages.kwin
 
@@ -53,16 +34,6 @@
 
   # Enable important services
   services.upower.enable = true;
-
-  # System-wide Qt integration
-  qt = {
-    enable = true;
-    platformTheme = "kde";
-    style = "breeze";
-  };
-
-  # VM-friendly settings
-  services.xserver.videoDrivers = [ "qxl" "vmware" "modesetting" "fbdev" ];
 
   # Basic networking
   networking.networkmanager.enable = true;
