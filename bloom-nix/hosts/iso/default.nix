@@ -1,7 +1,15 @@
 # ISO-specific configuration for Bloom Nix - Flake compatible
 { config, pkgs, lib, ... }:
 
-{
+let
+  # Helper function to find a terminal emulator
+  # This tries different options in order of preference
+  getTerminal =
+    if pkgs ? kdePackages && pkgs.kdePackages ? konsole then "${lib.getBin pkgs.kdePackages.konsole}/bin/konsole"
+    else if pkgs ? plasma5Packages && pkgs.plasma5Packages ? konsole then "${lib.getBin pkgs.plasma5Packages.konsole}/bin/konsole"
+    else if pkgs ? konsole then "${lib.getBin pkgs.konsole}/bin/konsole"
+    else "${lib.getBin pkgs.xterm}/bin/xterm";  # Fall back to xterm which always exists
+in {
   # ISO-specific configuration
   isoImage = {
     # Set ISO filename and volume ID
@@ -36,7 +44,7 @@
       Type=Application
       Name=Terminal
       Comment=Access the command line
-      Exec=${lib.getBin pkgs.kdePackages.konsole}/bin/konsole
+      Exec=${getTerminal}
       Icon=utilities-terminal
       Terminal=false
       Categories=System;
@@ -66,8 +74,12 @@
 
   # This makes the auto-login setting more robust by:
   # 1. Only adding services.displayManager if services.xserver.enable is true
-  # 2. Only adding autoLogin if services.displayManager exists
-  # This approach avoids evaluation errors by safely checking if attributes exist
+  services = lib.mkIf (config.services.xserver.enable or false) {
+    displayManager.autoLogin = {
+      enable = true;
+      user = "nixos";
+    };
+  };
 
   # Enable the needed polkit rules for disk mounting and system installation
   security.polkit.extraConfig = ''
@@ -84,9 +96,4 @@
       }
     });
   '';
-
-  # Import the installer module
-  imports = [
-    ../../modules/installer
-  ];
 }
