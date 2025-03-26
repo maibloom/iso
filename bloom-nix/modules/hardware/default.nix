@@ -38,12 +38,6 @@
     dosfstools
   ];
 
-  # Automatically log in the live user
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "nixos";
-  };
-
   # Enable SSH for remote installation assistance (optional)
   # services.openssh.enable = true;
   
