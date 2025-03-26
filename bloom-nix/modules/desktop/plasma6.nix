@@ -4,19 +4,21 @@
 {
   services.xserver = {
     enable = true;
-    displayManager.sddm.enable = true;
-  }
-    
-    # Auto-login for the live system
-    autoLogin = {
-      enable = lib.mkDefault true;
-      user = lib.mkDefault "nixos";
+    displayManager = {
+      sddm.enable = true;
+      
+      # Auto-login for the live system
+      autoLogin = {
+        enable = lib.mkDefault true;
+        user = lib.mkDefault "nixos";
+      };
     };
     
     # Default to Plasma on Wayland for modern experience
     defaultSession = "plasma";
   };
 
+  # Rest of your configuration remains the same
   # Essential packages for a functional desktop
   environment.systemPackages = with pkgs; [
     # Core KDE Packages
@@ -25,16 +27,16 @@
     kdePackages.kwin
     
     # Basic Plasma integration
-    kdePackages.plasma-pa        # Volume control
-    kdePackages.plasma-nm        # Network management
-    kdePackages.powerdevil       # Power management
-    kdePackages.plasma-desktop   # Plasma desktop shell
+    kdePackages.plasma-pa         # Volume control
+    kdePackages.plasma-nm         # Network management
+    kdePackages.powerdevil        # Power management
+    kdePackages.plasma-desktop    # Plasma desktop shell
     
     # Essential applications
-    kdePackages.konsole          # Terminal
-    kdePackages.dolphin          # File manager
-    kdePackages.kate             # Text editor
-    kdePackages.ark              # Archive manager
+    kdePackages.konsole           # Terminal
+    kdePackages.dolphin           # File manager
+    kdePackages.kate              # Text editor
+    kdePackages.ark               # Archive manager
     
     # Web browser
     firefox
