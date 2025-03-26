@@ -1,6 +1,3 @@
-# modules/installer/default.nix
-# This file imports all installer modules
-
 { config, lib, pkgs, ... }:
 
 {
