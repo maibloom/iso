@@ -1,48 +1,42 @@
-# ISO-specific configuration for Bloom Nix - Flake compatible
-{ config, pkgs, lib, inputs, outputs, ... }:
+# Hardware support configuration for Bloom Nix
+{ config, lib, pkgs, ... }:
 
 {
-  # ISO-specific configuration
-  isoImage = {
-    # Set ISO filename and volume ID
-    isoName = lib.mkForce "bloom-nix.iso";
-    volumeID = lib.mkForce "BLOOM_NIX";
+  # Enable all firmware
+  hardware.enableAllFirmware = true;
 
-    # Make the ISO bootable via both BIOS and UEFI
-    makeEfiBootable = true;
-    makeUsbBootable = true;
-
-    # Add build information to the ISO label
-    appendToMenuLabel = " Live";
-    squashfsCompression = "gzip";
+  # Enable hardware acceleration
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
   };
 
-  # Live environment user configuration
-  users.users.nixos = {
-    isNormalUser = true;
-    description = "Bloom Nix Live User";
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
-    # No password for live environment
-    initialPassword = "";
+  # Enable sound with Pipewire
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
   };
 
-  # Allow sudo without password for live environment
-  security.sudo.wheelNeedsPassword = false;
+  # Support for various hardware
+  hardware.bluetooth.enable = true;
+  hardware.sensor.iio.enable = true;
 
-  # Add the Bloom installer to the system
-  environment.systemPackages = with pkgs; [
-    # Add any other ISO-specific packages here
-    gparted
-    parted
-    ntfs3g
-    dosfstools
-  ];
+  # Support for common filesystems
+  boot.supportedFilesystems = [ "ntfs" "exfat" "ext4" "btrfs" "xfs" ];
 
-  # Enable SSH for remote installation assistance (optional)
-  # services.openssh.enable = true;
-  
-  # Import appropriate modules for ISO - flake style
-  imports = [
-    # You can specify additional imports here if needed
-  ];
+  # Better power management
+  powerManagement.enable = true;
+  services.thermald.enable = true;
+
+  # Enable CUPS for printing
+  services.printing.enable = true;
+
+  # Hardware-specific ISO settings
+  # Use mkDefault to allow overriding in other modules
+  isoImage.appendToMenuLabel = lib.mkDefault " Live";
 }
