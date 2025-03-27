@@ -4,12 +4,6 @@
   # Allow unfree packages but only when explicitly enabled
   nixpkgs.config.allowUnfree = true;
 
-  # Basic networking support
-  networking = {
-    networkmanager.enable = true;
-    firewall.enable = true;
-  };
-
   # Core system packages
   environment.systemPackages = with pkgs; [
     # Basic utilities
@@ -50,7 +44,7 @@
   # Enable essential services
   services = {
     # SSH for remote access (disabled by default)
-    openssh.enable = false;
+    openssh.enable = lib.mkForce false;
     
     # Basic device management
     udisks2.enable = true;

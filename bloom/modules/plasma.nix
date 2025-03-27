@@ -19,9 +19,6 @@ let
   pkgNamespace = if usePlasma6 && hasPlasma6 then pkgs.kdePackages else pkgs.libsForQt5;
 in
 {
-  # Import Wayland-specific configuration
-  imports = [ ./wayland.nix ];
-
   # Enable X11 server (required as fallback for Plasma Wayland)
   services.xserver.enable = true;
     

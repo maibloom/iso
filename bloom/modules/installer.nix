@@ -6,17 +6,18 @@
     makeEfiBootable = true;
     makeUsbBootable = true;
     # Use generic names to avoid issues
-    isoName = "bloom-nix.iso";
-    volumeID = "BLOOM_NIX";
-    appendToMenuLabel = " Bloom Nix";
+    isoName = lib.mkForce "bloom-nix.iso";
+    volumeID = lib.mkForce "BLOOM_NIX";
+    appendToMenuLabel = lib.mkForce "Bloom Nix";
   };
-  
+ 
   # Live CD user does not get a password
   users.users.bloom.password = "";
-  
+ 
   # Allow the user to log in without a password on the TTY
-  services.getty.autologinUser = "bloom";
-  
+  # Use mkForce to ensure our value takes precedence over the default "nixos"
+  services.getty.autologinUser = lib.mkForce "bloom";
+ 
   # Create a simple desktop entry for installation
   environment.etc."skel/Desktop/terminal.desktop".text = ''
     [Desktop Entry]
@@ -28,7 +29,7 @@
     Terminal=false
     Categories=System;
   '';
-  
+ 
   # Documentation to help users install
   environment.etc."bloom-nix/docs/installation.txt".text = ''
     Installing Bloom Nix
@@ -42,7 +43,7 @@
     2. Format partitions:
        sudo mkfs.ext4 /dev/sda2
        sudo mkswap /dev/sda1
-       
+     
     3. Mount filesystems:
        sudo mount /dev/sda2 /mnt
        sudo mkdir -p /mnt/boot

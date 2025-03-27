@@ -1,0 +1,62 @@
+=== Bloom Nix Build Log Thu Mar 27 11:54:00 PM +0330 2025 ===
+[23:54:00] Starting Bloom Nix build...
+these 2 derivations will be built:
+  /nix/store/cjla4qf6arsnxc3jmyx7ak84sfgf63yf-squashfs.img.drv
+  /nix/store/mq2qzw68w03xwl5m7c0hvvc58mab72mi-bloom-nix.iso.drv
+building '/nix/store/cjla4qf6arsnxc3jmyx7ak84sfgf63yf-squashfs.img.drv'...
+structuredAttrs is enabled
+Parallel mksquashfs: Using 12 processors
+Creating 4.0 filesystem on /nix/store/aydph1y6y5ncrw1ylkhn6iqdv035ca4z-squashfs.img, block size 1048576.
+
+
+Exportable Squashfs 4.0 filesystem, xz compressed, data block size 1048576
+        compressed data, compressed metadata, compressed fragments,
+        compressed xattrs, compressed ids
+        4k unaligned
+        duplicates are removed
+Filesystem size 2722231.65 Kbytes (2658.43 Mbytes)
+        36.68% of uncompressed filesystem size (7421200.17 Kbytes)
+Inode table size 3864962 bytes (3774.38 Kbytes)
+        20.05% of uncompressed inode table size (19275597 bytes)
+Directory table size 4078464 bytes (3982.88 Kbytes)
+        33.97% of uncompressed directory table size (12005538 bytes)
+Number of duplicate files found 21884
+Number of inodes 444023
+Number of files 246199
+Number of fragments 3206
+Number of symbolic links 125402
+Number of device nodes 0
+Number of fifo nodes 0
+Number of socket nodes 0
+Number of directories 72422
+Number of hard-links 0
+Number of ids (unique uids + gids) 1
+Number of uids 1
+        root (0)
+Number of gids 1
+        root (0)
+building '/nix/store/mq2qzw68w03xwl5m7c0hvvc58mab72mi-bloom-nix.iso.drv'...
+structuredAttrs is enabled
+GNU xorriso 1.5.7 : RockRidge filesystem manipulator, libburnia project.
+
+xorriso : NOTE : Environment variable SOURCE_DATE_EPOCH encountered with value 315532800
+Drive current: -outdev 'stdio:/nix/store/1sxigxq6h88rgxcj2f5snm9as5nm3vk9-bloom-nix.iso/iso/bloom-nix.iso'
+Media current: stdio file, overwriteable
+Media status : is blank
+Media summary: 0 sessions, 0 data blocks, 0 data,  153g free
+xorriso : UPDATE :     241 files added in 1 seconds
+Added 13 items from file 'pathlist'
+xorriso : UPDATE :     241 files added in 1 seconds
+xorriso : NOTE : Copying to System Area: 432 bytes from file '/nix/store/jbgqaayhas19lda76g9qnik7p760nzd1-syslinux-unstable-2019-02-07/share/syslinux/isohdpfx.bin'
+libisofs: NOTE : Automatically adjusted MBR geometry to 1020/171/32
+libisofs: NOTE : Aligned image size to cylinder size by 689 blocks
+xorriso : UPDATE :  8.17% done
+xorriso : UPDATE :  93.21% done
+ISO image produced: 1395360 sectors
+Written to medium : 1395360 sectors at LBA 0
+Writing to 'stdio:/nix/store/1sxigxq6h88rgxcj2f5snm9as5nm3vk9-bloom-nix.iso/iso/bloom-nix.iso' completed successfully.
+
+/nix/store/1sxigxq6h88rgxcj2f5snm9as5nm3vk9-bloom-nix.iso
+[00:01:27] Build successful! ISO created at: /nix/store/1sxigxq6h88rgxcj2f5snm9as5nm3vk9-bloom-nix.iso/iso/bloom-nix.iso
+[00:01:27] Starting QEMU with the ISO...
+[00:03:15] Testing completed.

@@ -1,5 +1,6 @@
 # Theme configuration for Bloom Nix
 # This file handles visual customization for the KDE Plasma desktop
+# with robust package handling for both Plasma 5 and Plasma 6
 { config, lib, pkgs, ... }:
 
 let
@@ -13,26 +14,54 @@ let
     accent = "#00B4D8";     # Cyan accent color
   };
   
-  # Determine which package namespace to use for theming (matches plasma.nix)
-  # This dynamically detects whether Plasma 6 is available
+  # Detect if Plasma 6 is available in the system
+  # This checks if the plasma6 attribute exists in the desktop manager options
   hasPlasma6 = builtins.hasAttr "plasma6" config.services.xserver.desktopManager;
-  usePlasma6 = if hasPlasma6 then config.services.xserver.desktopManager.plasma6.enable else false;
-  pkgNamespace = if usePlasma6 then pkgs.kdePackages else pkgs.libsForQt5;
-in {
-  # Install required theme packages
-  environment.systemPackages = with pkgs; [
-    # Core theming packages
-    pkgNamespace.breeze
-    pkgNamespace.breeze-gtk
-    pkgNamespace.breeze-icons
+  
+  # Determine if Plasma 6 is actually enabled (only if it's available)
+  # This allows for conditional package selection based on the active desktop
+  usePlasma6 = if hasPlasma6 
+               then config.services.xserver.desktopManager.plasma6.enable 
+               else false;
+  
+  # Select the appropriate package namespace based on Plasma version
+  baseNamespace = if usePlasma6 then pkgs.kdePackages else pkgs.libsForQt5;
+  
+  # Helper function to safely get a package from a namespace
+  # If the package doesn't exist in the namespace, use the fallback
+  # This makes the configuration more robust against namespace differences
+  getPackage = namespace: name: fallback:
+    if builtins.hasAttr name namespace
+    then namespace.${name}
+    else fallback;
+  
+  # Helper function to safely get packages from a namespace or return null if not found
+  # This is useful for optional packages that might not be needed
+  getOptionalPackage = namespace: name:
+    if builtins.hasAttr name namespace
+    then namespace.${name}
+    else null;
+  
+  # Create a list of theme packages with appropriate fallbacks
+  # This ensures we always have a working set of theme packages
+  themePackages = with pkgs; [
+    # Breeze theme with fallbacks for different package organizations
+    (getPackage baseNamespace "breeze" 
+      (if usePlasma6 
+       then (if builtins.hasAttr "breeze-qt6" kdePackages then kdePackages.breeze-qt6 else pkgs.breeze) 
+       else (if builtins.hasAttr "breeze-qt5" libsForQt5 then libsForQt5.breeze-qt5 else libsForQt5.breeze or pkgs.breeze)))
     
-    # Additional icon themes
+    # GTK theme integration
+    (getPackage baseNamespace "breeze-gtk" breeze-gtk)
+    
+    # Icon themes
+    (getPackage baseNamespace "breeze-icons" hicolor-icon-theme)
     papirus-icon-theme
     
-    # Cursor themes
-    pkgNamespace.breeze-plymouth
+    # Plymouth boot splash
+    (getPackage baseNamespace "breeze-plymouth" plymouth)
     
-    # Fonts
+    # Fonts - these are standard and not dependent on namespace
     noto-fonts
     noto-fonts-emoji
     noto-fonts-cjk
@@ -40,9 +69,19 @@ in {
     fira-code
     fira-code-symbols
     
-    # Plymouth boot splash theme
+    # Make sure Plymouth is always available
     plymouth
   ];
+in {
+  # Install required theme packages with proper error handling
+  environment.systemPackages = with pkgs; lib.filter (x: x != null) themePackages;
+  
+  # Boot splash configuration (Plymouth)
+  boot.plymouth = {
+    enable = true;
+    # Use a standard theme name that exists in both Plasma 5 and 6
+    theme = "breeze";
+  };
   
   # Font configuration
   fonts = {
@@ -69,6 +108,7 @@ in {
   
   # Configure the SDDM login screen theme
   services.xserver.displayManager.sddm = {
+    # Use the standard breeze theme which is available in both Plasma 5 and 6
     theme = "breeze";
     settings = {
       Theme = {
@@ -84,12 +124,6 @@ in {
     };
   };
   
-  # Configure Plymouth boot splash
-  boot.plymouth = {
-    enable = true;
-    theme = "breeze";
-  };
-
   # Setting up KDE Plasma global theme via config files
   # These files will be placed in the user's home directory during setup
   
@@ -167,9 +201,8 @@ in {
     kwin4_effect_wobblywindowsEnabled=false
   '';
   
-  # Create a custom welcome wallpaper
+  # Create a custom welcome wallpaper configuration
   # In a real implementation, you would provide your own wallpaper file
-  # For now, we'll just create a configuration that would use it
   environment.etc."skel/.config/plasma-org.kde.plasma.desktop-appletsrc".text = ''
     [Containments][1]
     activityId=
@@ -315,12 +348,12 @@ in {
     # Script to apply theme settings for new users
     # These settings will be copied to the home directory of any new user
     
-    # Ensure the themes directory exists
+    # Ensure the necessary directories exist
     mkdir -p /etc/skel/.themes
     mkdir -p /etc/skel/.icons
     mkdir -p /etc/skel/.local/share/konsole
     
-    # Create a file that will set the GTK theme on login
+    # Create GTK theme settings for GTK3
     mkdir -p /etc/skel/.config/gtk-3.0
     echo '[Settings]
     gtk-theme-name=Breeze-Dark
@@ -330,7 +363,7 @@ in {
     gtk-cursor-theme-size=24
     gtk-application-prefer-dark-theme=true' > /etc/skel/.config/gtk-3.0/settings.ini
     
-    # Create similar settings for GTK4
+    # Same settings for GTK4
     mkdir -p /etc/skel/.config/gtk-4.0
     cp /etc/skel/.config/gtk-3.0/settings.ini /etc/skel/.config/gtk-4.0/
   '';

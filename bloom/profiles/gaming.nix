@@ -72,21 +72,7 @@
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
     ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="none"
   '';
-  
-  # Additional kernel parameters for better gaming performance
-  boot.kernelParams = [
-    "noibrs"
-    "noibpb"
-    "nopti"
-    "nospectre_v2"
-    "nospectre_v1"
-    "l1tf=off"
-    "nospec_store_bypass_disable"
-    "no_stf_barrier"
-    "mds=off"
-    "mitigations=off"
-  ];
-  
+
   # Enable 32-bit support (needed for many games)
   hardware.opengl.driSupport32Bit = true;
   
