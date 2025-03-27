@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Simple Bloom Nix build and test script
 
+clear
+
 # Create log file
 LOG_FILE="bloom-build.log"
 echo "=== Bloom Nix Build Log $(date) ===" > "$LOG_FILE"

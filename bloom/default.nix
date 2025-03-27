@@ -16,7 +16,7 @@ let
         # Include the NixOS minimal ISO module
         "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
         ./modules/base.nix
-        ./modules/grub.nix
+        ./modules/branding.nix
         ./modules/hardware-base.nix
         ./modules/plasma.nix
         ./modules/theme.nix
