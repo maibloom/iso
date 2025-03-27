@@ -38,12 +38,12 @@ in {
   };
  
   # Configure GRUB with our branding
-  boot.loader.grub = {
+  boot.loader.grub.devices = {
     # Enable GRUB explicitly to ensure options like splashImage are recognized
-    enable = true;
+    enable = lib.mkForce true;
     
     # Set the splash image after copying it to /boot/grub/splash.png
-    splashImage = "/boot/grub/splash.png";
+    splashImage = lib.mkForce "/boot/grub/splash.png";
     
     # Set timeout
     timeout = lib.mkForce 5;
