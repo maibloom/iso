@@ -1,270 +1,51 @@
-=== Bloom Nix Build Log Fri Mar 28 01:46:33 AM +0330 2025 ===
-[01:46:33] Starting Bloom Nix build...
-these 20 derivations will be built:
-  /nix/store/rd2m5zrqpjhz18lhiscqq372mfa2dmfg-bloom-nix-wallpapers.drv
-  /nix/store/0ixna6g9lqjka1ksb6iw082xrgzzdnvs-system-path.drv
-  /nix/store/czv38dzdq9qn08k78dq68h9hbaxdsvxq-dbus-1.drv
-  /nix/store/7pkw8mq1iv4ic6w2wg3vw0faxgd8ma16-X-Restart-Triggers-dbus.drv
-  /nix/store/as7iaxsl40nirdq9dgsx05nz760zdm25-unit-dbus.service.drv
-  /nix/store/jqbv3d9sqn1qzlxlwbjx34w0ykr0syv1-user-units.drv
-  /nix/store/mz2kmpk7vfbjsm73f3xcbxvdnzxjxyiw-X-Restart-Triggers-polkit.drv
-  /nix/store/517hvfq30nmrgr1gz737hh60zncsxaq0-unit-polkit.service.drv
-  /nix/store/nra5l8wsk6dpmdmnbj62g8fwwnfy8hpb-unit-dbus.service.drv
-  /nix/store/rp9sbfhsq2damlzxzwhsflkb209866ss-unit-accounts-daemon.service.drv
-  /nix/store/jxjrii5qh9lzy4s3x183hn17lgn8rjll-system-units.drv
-  /nix/store/0jb3439ny2p8h62aiplbsz56hn853ygg-etc.drv
-  /nix/store/r8crdphwkvyk4068idj3hbiz9xjid6d8-nixos-system-nixos-23.11.7870.205fd4226592.drv
-  /nix/store/014sbazwnvr88cbc5hfiflka8gr9v24y-isolinux.cfg-in.drv
-  /nix/store/7hygl2dkm4av749nnjlwsb0b3c8v4glb-isolinux.cfg.drv
-  /nix/store/s5qd32v7v6iyhkmdd3z7csh7922h72w2-closure-info.drv
-  /nix/store/kr1w4v437lxpfji3jq0ahfin39kdsvzx-squashfs.img.drv
-  /nix/store/plbm58l33m3mlvymr3sv76rkpfn5afpk-efi-directory.drv
-  /nix/store/qh1l40ccda2qpqs7h0zflwraln3sk9qh-efi-image_eltorito.drv
-  /nix/store/v320v5lqap8gnmbj8pyqpk2h80if8g8a-bloom-nix.iso.drv
-building '/nix/store/rd2m5zrqpjhz18lhiscqq372mfa2dmfg-bloom-nix-wallpapers.drv'...
-building '/nix/store/0ixna6g9lqjka1ksb6iw082xrgzzdnvs-system-path.drv'...
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-render-label' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-render-label'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mkimage' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mkimage'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-menulst2cfg' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-menulst2cfg'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mkrescue' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mkrescue'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mount' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mount'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-script-check' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-script-check'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-editenv' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-editenv'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-file' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-file'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-probe' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-probe'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-sparc64-setup' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-sparc64-setup'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-ofpathname' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-ofpathname'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-macbless' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-macbless'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mkpasswd-pbkdf2' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mkpasswd-pbkdf2'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-reboot' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-reboot'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-kbdcomp' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-kbdcomp'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-set-default' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-set-default'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mknetdir' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mknetdir'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-bios-setup' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-bios-setup'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mkfont' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mkfont'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-syslinux2cfg' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-syslinux2cfg'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mkrelpath' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mkrelpath'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mkstandalone' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mkstandalone'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-glue-efi' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-glue-efi'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-fstest' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-fstest'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mklayout' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mklayout'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-mkconfig' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-mkconfig'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/sbin/grub-install' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/sbin/grub-install'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-render-label' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-render-label'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mkimage' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mkimage'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-menulst2cfg' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-menulst2cfg'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mkrescue' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mkrescue'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mount' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mount'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-script-check' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-script-check'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-editenv' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-editenv'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-file' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-file'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-probe' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-probe'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-sparc64-setup' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-sparc64-setup'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-ofpathname' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-ofpathname'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-macbless' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-macbless'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mkpasswd-pbkdf2' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mkpasswd-pbkdf2'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-reboot' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-reboot'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-kbdcomp' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-kbdcomp'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-set-default' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-set-default'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mknetdir' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mknetdir'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-bios-setup' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-bios-setup'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mkfont' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mkfont'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-syslinux2cfg' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-syslinux2cfg'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mkrelpath' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mkrelpath'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mkstandalone' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mkstandalone'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-glue-efi' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-glue-efi'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-fstest' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-fstest'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mklayout' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mklayout'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-mkconfig' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-mkconfig'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/bin/grub-install' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/bin/grub-install'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/grub/grub-mkconfig_lib' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/grub/grub-mkconfig_lib'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/grub/ascii.h' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/grub/ascii.h'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/grub/ascii.pf2' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/grub/ascii.pf2'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/grub/euro.pf2' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/grub/euro.pf2'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/grub/unicode.pf2' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/grub/unicode.pf2'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/grub/widthspec.h' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/grub/widthspec.h'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/pa/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/pa/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/tr/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/tr/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/de_CH/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/de_CH/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/lg/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/lg/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/en@hebrew/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/en@hebrew/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/ka/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/ka/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/da/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/da/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/pt_BR/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/pt_BR/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/ro/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/ro/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/nl/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/nl/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/sr/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/sr/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/sl/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/sl/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/hr/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/hr/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/en@quot/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/en@quot/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/eo/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/eo/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/zh_TW/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/zh_TW/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/nb/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/nb/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/fr/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/fr/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/es/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/es/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/ja/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/ja/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/de/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/de/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/gl/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/gl/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/it/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/it/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/ast/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/ast/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/fi/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/fi/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/en@piglatin/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/en@piglatin/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/uk/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/uk/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/id/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/id/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/hu/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/hu/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/en@cyrillic/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/en@cyrillic/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/sv/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/sv/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/ca/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/ca/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/ru/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/ru/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/en@greek/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/en@greek/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/de@hebrew/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/de@hebrew/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/en@arabic/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/en@arabic/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/lt/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/lt/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/ko/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/ko/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/pl/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/pl/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/pt/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/pt/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/vi/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/vi/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/share/locale/zh_CN/LC_MESSAGES/grub.mo' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/share/locale/zh_CN/LC_MESSAGES/grub.mo'
-warning: collision between `/nix/store/1y4blwg7fh4n1h3h6sjbp0191yyvx4hy-grub-2.12-rc1/etc/bash_completion.d/grub' and `/nix/store/2bmssmvfgy3vjs4hx1g1psm0zfhh719h-grub-2.12-rc1/etc/bash_completion.d/grub'
-warning: collision between `/nix/store/cplyy75mfi3aj37v3py6a34fmhf9l4qr-vim-9.0.2116/bin/view' and `/nix/store/h5750pc60vrby7zpp6km9yww6gca81mq-vim/bin/view'
-warning: collision between `/nix/store/cplyy75mfi3aj37v3py6a34fmhf9l4qr-vim-9.0.2116/bin/rvim' and `/nix/store/h5750pc60vrby7zpp6km9yww6gca81mq-vim/bin/rvim'
-warning: collision between `/nix/store/cplyy75mfi3aj37v3py6a34fmhf9l4qr-vim-9.0.2116/bin/rview' and `/nix/store/h5750pc60vrby7zpp6km9yww6gca81mq-vim/bin/rview'
-warning: collision between `/nix/store/cplyy75mfi3aj37v3py6a34fmhf9l4qr-vim-9.0.2116/bin/vim' and `/nix/store/h5750pc60vrby7zpp6km9yww6gca81mq-vim/bin/vim'
-warning: collision between `/nix/store/cplyy75mfi3aj37v3py6a34fmhf9l4qr-vim-9.0.2116/bin/vimdiff' and `/nix/store/h5750pc60vrby7zpp6km9yww6gca81mq-vim/bin/vimdiff'
-warning: collision between `/nix/store/cplyy75mfi3aj37v3py6a34fmhf9l4qr-vim-9.0.2116/bin/ex' and `/nix/store/h5750pc60vrby7zpp6km9yww6gca81mq-vim/bin/ex'
-warning: collision between `/nix/store/cplyy75mfi3aj37v3py6a34fmhf9l4qr-vim-9.0.2116/bin/vi' and `/nix/store/h5750pc60vrby7zpp6km9yww6gca81mq-vim/bin/vi'
-created 36890 symlinks in user environment
-gtk-update-icon-cache: Cache file created successfully.
-building '/nix/store/mz2kmpk7vfbjsm73f3xcbxvdnzxjxyiw-X-Restart-Triggers-polkit.drv'...
-building '/nix/store/czv38dzdq9qn08k78dq68h9hbaxdsvxq-dbus-1.drv'...
-building '/nix/store/rp9sbfhsq2damlzxzwhsflkb209866ss-unit-accounts-daemon.service.drv'...
-building '/nix/store/7pkw8mq1iv4ic6w2wg3vw0faxgd8ma16-X-Restart-Triggers-dbus.drv'...
-building '/nix/store/517hvfq30nmrgr1gz737hh60zncsxaq0-unit-polkit.service.drv'...
-building '/nix/store/as7iaxsl40nirdq9dgsx05nz760zdm25-unit-dbus.service.drv'...
-building '/nix/store/nra5l8wsk6dpmdmnbj62g8fwwnfy8hpb-unit-dbus.service.drv'...
-building '/nix/store/jqbv3d9sqn1qzlxlwbjx34w0ykr0syv1-user-units.drv'...
-building '/nix/store/jxjrii5qh9lzy4s3x183hn17lgn8rjll-system-units.drv'...
-building '/nix/store/0jb3439ny2p8h62aiplbsz56hn853ygg-etc.drv'...
-building '/nix/store/r8crdphwkvyk4068idj3hbiz9xjid6d8-nixos-system-nixos-23.11.7870.205fd4226592.drv'...
-building '/nix/store/s5qd32v7v6iyhkmdd3z7csh7922h72w2-closure-info.drv'...
-building '/nix/store/plbm58l33m3mlvymr3sv76rkpfn5afpk-efi-directory.drv'...
-building '/nix/store/014sbazwnvr88cbc5hfiflka8gr9v24y-isolinux.cfg-in.drv'...
-structuredAttrs is enabled
-Building GRUB with modules:
- - fat
- - iso9660
- - part_gpt
- - part_msdos
- - normal
- - boot
- - linux
- - configfile
- - loopback
- - chain
- - halt
- - efifwsetup
- - efi_gop
- - ls
- - search
- - search_label
- - search_fs_uuid
- - search_fs_file
- - echo
- - serial
- - gfxmenu
- - gfxterm
- - gfxterm_background
- - gfxterm_menu
- - test
- - loadenv
- - all_video
- - videoinfo
- - png
-Adding additional modules:
- - efi_uga
-'/nix/store/lm9w1m5zmdpasiv7irzbxhb5v983pckd-refind-0.14.0.2/share/refind/refind_x64.efi' -> '/nix/store/bqgz440njy74s1hjdkx7z8pw9lj9dicm-efi-directory/EFI/boot/refind_x64.efi'
-building '/nix/store/qh1l40ccda2qpqs7h0zflwraln3sk9qh-efi-image_eltorito.drv'...
-building '/nix/store/kr1w4v437lxpfji3jq0ahfin39kdsvzx-squashfs.img.drv'...
-Usage size: 2097152
-Image size: 3145728
-mkfs.fat 4.2 (2021-01-31)
-Copying bootx64.efi
-Copying grub.cfg
-Copying refind_x64.efi
-fsck.fat 4.2 (2021-01-31)
-Checking we can access the last sector of the filesystem
-Boot sector contents:
-System ID "mkfs.fat"
-Media byte 0xf8 (hard disk)
-       512 bytes per logical sector
-      2048 bytes per cluster
-         1 reserved sector
-First FAT starts at byte 512 (sector 1)
-         2 FATs, 12 bit entries
-      2560 bytes per FAT (= 5 sectors)
-Root directory starts at byte 5632 (sector 11)
-       512 root directory entries
-Data area starts at byte 22016 (sector 43)
-      1525 data clusters (3123200 bytes)
-32 sectors/track, 2 heads
-         0 hidden sectors
-      6144 sectors total
-Checking for unused clusters.
-/nix/store/fl448l5sqi85n9qym0d20lsfjz4v8glr-efi-image_eltorito: 6 files, 703/1525 clusters
-building '/nix/store/7hygl2dkm4av749nnjlwsb0b3c8v4glb-isolinux.cfg.drv'...
-structuredAttrs is enabled
-Parallel mksquashfs: Using 12 processors
-Creating 4.0 filesystem on /nix/store/z624npmdv6bzi663kgzbb1xifvlhdg98-squashfs.img, block size 1048576.
+=== Bloom Nix Build Log Fri Mar 28 03:08:13 AM +0330 2025 ===
+[03:08:13] Starting Bloom Nix build...
+error:
+       … while calling the 'derivationStrict' builtin
+         at <nix/derivation-internal.nix>:34:12:
+           33|
+           34|   strict = derivationStrict drvAttrs;
+             |            ^
+           35|
 
+       … while evaluating derivation 'bloom-nix.iso'
+         whose name attribute is located at /nix/store/n7b4kw70xg0mqypyrdqilhizx8s2r19q-nixos/pkgs/stdenv/generic/make-derivation.nix:348:7
 
-Exportable Squashfs 4.0 filesystem, xz compressed, data block size 1048576
-        compressed data, compressed metadata, compressed fragments,
-        compressed xattrs, compressed ids
-        4k unaligned
-        duplicates are removed
-Filesystem size 2723189.94 Kbytes (2659.37 Mbytes)
-        36.69% of uncompressed filesystem size (7422398.19 Kbytes)
-Inode table size 3867386 bytes (3776.74 Kbytes)
-        20.06% of uncompressed inode table size (19277127 bytes)
-Directory table size 4077428 bytes (3981.86 Kbytes)
-        33.96% of uncompressed directory table size (12006147 bytes)
-Number of duplicate files found 21886
-Number of inodes 444056
-Number of files 246214
-Number of fragments 3206
-Number of symbolic links 125410
-Number of device nodes 0
-Number of fifo nodes 0
-Number of socket nodes 0
-Number of directories 72432
-Number of hard-links 0
-Number of ids (unique uids + gids) 1
-Number of uids 1
-        root (0)
-Number of gids 1
-        root (0)
-building '/nix/store/v320v5lqap8gnmbj8pyqpk2h80if8g8a-bloom-nix.iso.drv'...
-structuredAttrs is enabled
-GNU xorriso 1.5.7 : RockRidge filesystem manipulator, libburnia project.
+       … while evaluating attribute 'sources' of derivation 'bloom-nix.iso'
+         at /nix/store/n7b4kw70xg0mqypyrdqilhizx8s2r19q-nixos/nixos/lib/make-iso9660-image.nix:57:3:
+           56|
+           57|   sources = map (x: x.source) contents;
+             |   ^
+           58|   targets = map (x: x.target) contents;
 
-xorriso : NOTE : Environment variable SOURCE_DATE_EPOCH encountered with value 315532800
-Drive current: -outdev 'stdio:/nix/store/3xla3ip38g7sn6wywq1vcllmb54zi9pl-bloom-nix.iso/iso/bloom-nix.iso'
-Media current: stdio file, overwriteable
-Media status : is blank
-Media summary: 0 sessions, 0 data blocks, 0 data,  137g free
-xorriso : UPDATE :     241 files added in 1 seconds
-Added 13 items from file 'pathlist'
-xorriso : UPDATE :     241 files added in 1 seconds
-xorriso : NOTE : Copying to System Area: 432 bytes from file '/nix/store/jbgqaayhas19lda76g9qnik7p760nzd1-syslinux-unstable-2019-02-07/share/syslinux/isohdpfx.bin'
-libisofs: NOTE : Automatically adjusted MBR geometry to 1020/171/32
-libisofs: NOTE : Aligned image size to cylinder size by 213 blocks
-xorriso : UPDATE :  7.41% done
-xorriso : UPDATE :  91.32% done
-ISO image produced: 1395360 sectors
-Written to medium : 1395360 sectors at LBA 0
-Writing to 'stdio:/nix/store/3xla3ip38g7sn6wywq1vcllmb54zi9pl-bloom-nix.iso/iso/bloom-nix.iso' completed successfully.
+       … while evaluating the option `system.build.toplevel':
 
-/nix/store/3xla3ip38g7sn6wywq1vcllmb54zi9pl-bloom-nix.iso
-[01:54:15] Build successful! ISO created at: /nix/store/3xla3ip38g7sn6wywq1vcllmb54zi9pl-bloom-nix.iso/iso/bloom-nix.iso
-[01:54:15] Starting QEMU with the ISO...
-[01:55:51] Testing completed.
+       … while evaluating definitions from `/nix/store/n7b4kw70xg0mqypyrdqilhizx8s2r19q-nixos/nixos/modules/system/activation/top-level.nix':
+
+       … while evaluating the option `system.systemBuilderArgs':
+
+       … while evaluating definitions from `/nix/store/n7b4kw70xg0mqypyrdqilhizx8s2r19q-nixos/nixos/modules/system/activation/activatable-system.nix':
+
+       … while evaluating the option `system.activationScripts.etc.text':
+
+       … while evaluating definitions from `/nix/store/n7b4kw70xg0mqypyrdqilhizx8s2r19q-nixos/nixos/modules/system/etc/etc-activation.nix':
+
+       … while evaluating definitions from `/nix/store/n7b4kw70xg0mqypyrdqilhizx8s2r19q-nixos/nixos/modules/system/etc/etc.nix':
+
+       … while evaluating the option `environment.etc.issue.source':
+
+       … while evaluating definitions from `/nix/store/n7b4kw70xg0mqypyrdqilhizx8s2r19q-nixos/nixos/modules/system/etc/etc.nix':
+
+       … while evaluating the option `environment.etc.issue.text':
+
+       … while evaluating definitions from `/home/orange2/Documents/dev/iso/bloom/modules/branding.nix':
+
+       (stack trace truncated; use '--show-trace' to show the full, detailed trace)
+
+       error: attribute 'fromBase' missing
+       at /home/orange2/Documents/dev/iso/bloom/modules/branding.nix:19:12:
+           18|     b = builtins.substring 5 2 hex;
+           19|     rDec = builtins.fromBase 16 r;
+             |            ^
+           20|     gDec = builtins.fromBase 16 g;
+[03:08:20] Build failed! Check log for details.

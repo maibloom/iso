@@ -1,0 +1,21 @@
+#!/usr/bin/plymouth
+# Load the splash image (you can adjust coordinates and sizes as needed)
+Image splashImage "bloom-splash.png"
+
+# Load the spinner image and position it
+Image spinner "bloom-spinner.png"
+MoveTo spinner 0.5 0.8  # Example: move to center-bottom
+
+# Optionally, add the watermark
+Image watermark "bloom-watermark.png"
+MoveTo watermark 0.9 0.1  # Example: move to top-right
+
+# Create a simple progress bar
+ProgressBar {
+  position = "bottom";
+  width = 400;
+  height = 20;
+  borderWidth = 2;
+  backgroundColor = "black";
+  fillColor = "white";
+}

@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Bloom Nix
+Description=A minimal theme for Bloom Nix showing a splash image and a progress bar.
+ModuleName=script
+
+[script]
+ScriptFile=/usr/share/plymouth/themes/bloom-nix/bloom-nix.script
+ImageDir=/usr/share/plymouth/themes/bloom-nix

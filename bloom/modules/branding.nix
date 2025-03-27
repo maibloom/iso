@@ -10,9 +10,6 @@ let
     highlight = "#ab6470";
     darkPrimary = "#353d5e";
   };
- 
-  # Path to the branding assets directory
-  assetsDir = ./branding/assets;
 in {
   # System identification files - full rebranding from NixOS to Bloom Nix
   environment.etc."os-release".text = ''
@@ -29,83 +26,59 @@ in {
   # Set the system name
   system.nixos.distroName = lib.mkForce "Bloom Nix";
  
-  # Make branding images available to the system through environment.etc
+  # Make branding images available to the system
   environment.etc = {
-    # Logo and icons
-    "bloom-nix/logo.png".source = "${assetsDir}/logo.png";
-    "bloom-nix/icon.png".source = "${assetsDir}/icon.png";
-    "bloom-nix/background.jpg".source = "${assetsDir}/wallpapers/default.jpg";
+    # Logo and icons - using the derivation
+    "bloom-nix/logo.png".source = "${brandingAssets}/logo.png";
+    
+    # Login banner and MOTD
+    "issue".text = ''
+      \e[1;36mBloom Nix\e[0m 1.0 \r (\l)
+       
+      Welcome to \e[1;36mBloom Nix\e[0m!
+    '';
+    
+    "motd".text = ''
+      Welcome to Bloom Nix!
+       
+      For help and information, visit: https://bloom-nix.org
+    '';
   };
  
   # Configure GRUB with our branding
-  boot.loader.grub.devices = {
-    # Enable GRUB explicitly to ensure options like splashImage are recognized
-    enable = lib.mkForce true;
-    
-    # Set the splash image after copying it to /boot/grub/splash.png
-    splashImage = lib.mkForce "/boot/grub/splash.png";
-    
-    # Set timeout
-    timeout = lib.mkForce 5;
-    
-    # Set background color (used if image fails to load)
-    backgroundColor = lib.mkForce colors.primary;
-    
-    # Enhanced GRUB configuration with corrected color syntax
+  boot.loader.grub = {
+    splashImage = lib.mkForce "${brandingAssets}/grub-background.png";
+    backgroundColor = colors.primary;
     extraConfig = ''
-      # Set menu colors to match our theme (no spaces around /)
-      set menu_color_normal=${colors.secondary + "/" + colors.darkPrimary}
-      set menu_color_highlight=${colors.highlight + "/" + colors.secondary}
-      
-      # Ensure splash is enabled
-      splash
-       
-      # Set timeout style and duration
-      set timeout_style=menu
-      set timeout=5
+      set menu_color_normal=${colors.secondary}/black
+      set menu_color_highlight=${colors.highlight}/${colors.secondary}
+      set timeout_style=hidden
     '';
-    
-    # Optional: Add custom boot entries with corrected paths
-    extraEntries = ''
-      menuentry "Bloom Nix - Safe Mode" {
-        linux /boot/vmlinuz-linux root=LABEL=NIXOS nomodeset
-        initrd /boot/initrd.img
-      }
-    '';
-  };
- 
-  # Copy the custom image to /boot/grub/splash.png
-  system.activationScripts.copyGrubImage = {
-    text = ''
-      mkdir -p /boot/grub
-      cp -f ${assetsDir}/grub-background.png /boot/grub/splash.png
-    '';
-  };
- 
-  # Configure Plymouth to use the existing "breeze" theme
-  boot.plymouth = {
-    enable = true;
-    theme = lib.mkForce "breeze";
   };
  
   # Export brand colors so they can be used by other modules
   _module.args.bloomColors = colors;
+  
+  # Export branding assets so they can be used by other modules
+  _module.args.bloomBranding = brandingAssets;
  
-  # Export branding assets path so it can be used by other modules
-  _module.args.bloomBranding = assetsDir;
- 
-  # Customize login banner and MOTD
-  environment.etc."issue".text = ''
-    \e[1;36mBloom Nix\e[0m 1.0 \r (\l)
-    
-    Welcome to \e[1;36mBloom Nix\e[0m!
-  '';
- 
-  environment.etc."motd".text = ''
-    Welcome to Bloom Nix!
-    
-    For help and information, visit: https://bloom-nix.org
-  '';
+  # System branding setup - using the derivation for reliable paths
+  system.activationScripts.bloomBrandingSystem = {
+    text = ''
+      # Make sure all required directories exist
+      mkdir -p /usr/share/pixmaps
+      mkdir -p /usr/share/icons/hicolor/128x128/apps
+      mkdir -p /usr/share/backgrounds/bloom-nix
+     
+      # Copy logo to standard locations
+      cp -f "${brandingAssets}/logo.png" /usr/share/pixmaps/bloom-nix-logo.png || true
+      cp -f "${brandingAssets}/logo.png" /usr/share/icons/hicolor/128x128/apps/bloom-nix-logo.png || true
+     
+      # Set up backgrounds in standard locations
+      cp -f "${brandingAssets}/default.jpg" /usr/share/backgrounds/bloom-nix/ || true
+    '';
+    deps = [];
+  };
  
   # Make brand colors available to the theming system
   environment.variables = {
@@ -115,16 +88,4 @@ in {
     BLOOM_COLOR_HIGHLIGHT = colors.highlight;
     BLOOM_COLOR_DARK_PRIMARY = colors.darkPrimary;
   };
- 
-  # Add Bloom Nix wallpapers to standard locations through a package
-  environment.systemPackages = with pkgs; [
-    (runCommand "bloom-nix-wallpapers" {} ''
-      mkdir -p $out/share/backgrounds/bloom-nix
-      mkdir -p $out/share/wallpapers
-       
-      # Copy the wallpaper using cp from the original location
-      ln -s ${assetsDir}/wallpapers/default.jpg $out/share/backgrounds/bloom-nix/
-      ln -s $out/share/backgrounds/bloom-nix $out/share/wallpapers/bloom-nix
-    '')
-  ];
 }
