@@ -37,7 +37,8 @@ in
 {
   # Replace the operating system identity
   system.nixos.distroName = "Bloom Nix";
-  system.nixos.distroVersion = "1.0";
+  # Remove this line: system.nixos.distroVersion = "1.0";
+  # It's not a valid NixOS option
   
   # Set custom /etc/os-release
   environment.etc."os-release".text = ''
