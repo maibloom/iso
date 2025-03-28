@@ -64,7 +64,7 @@ let
     # Fonts - these are standard and not dependent on namespace
     noto-fonts
     noto-fonts-emoji
-    noto-fonts-cjk
+    noto-fonts-cjk-sans
     liberation_ttf
     fira-code
     fira-code-symbols
