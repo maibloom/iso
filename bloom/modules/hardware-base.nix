@@ -13,12 +13,8 @@
   # Graphics - minimal but universal support
   hardware.opengl.enable = true;
 
-  # Core sound support with PipeWire
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-  };
-  
+
   # Input device support
   services.xserver.libinput = {
     enable = true;

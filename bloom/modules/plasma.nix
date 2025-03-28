@@ -112,21 +112,6 @@ in
     pulse.enable = true;
     jack.enable = true;
   };
-  
-  # Add PipeWire configuration through drop-in files
-  # This is more compatible with different NixOS versions
-  environment.etc."pipewire/pipewire.conf.d/90-bloom-settings.conf".text = ''
-    {
-      context.properties = {
-        link.max-buffers = 16
-        log.level = 2
-        default.clock.rate = 48000
-        default.clock.quantum = 1024
-        default.clock.min-quantum = 32
-        default.clock.max-quantum = 8192
-      }
-    }
-  '';
  
   # Enable XDG portals for better application integration (screen sharing, etc.)
   xdg.portal = {
