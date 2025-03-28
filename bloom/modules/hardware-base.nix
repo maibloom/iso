@@ -11,24 +11,13 @@
   };
   
   # Graphics - minimal but universal support
-  hardware.opengl = {
-    enable = true;
-    driSupport = lib.mkDefault true;
-    
-    # Only include essential packages
-    extraPackages = with pkgs; [
-      mesa
-      intel-media-driver
-      vaapiIntel
-    ];
-  };
-  
+  hardware.opengl.enable = true;
+
   # Core sound support with PipeWire
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
     pulse.enable = true;
   };
   

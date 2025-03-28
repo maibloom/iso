@@ -13,6 +13,9 @@
  
   # Live CD user does not get a password
   users.users.bloom.password = "";
+
+  boot.loader.grub.enable = true;
+  boot.supportedFilesystems = [ "ext4" ];
  
   # Allow the user to log in without a password on the TTY
   # Use mkForce to ensure our value takes precedence over the default "nixos"

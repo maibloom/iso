@@ -1,91 +1,75 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Brand colors
+  # Color palette with proper GRUB color format conversion
   colors = {
-    primary = "#454d6e";
-    secondary = "#f1efee";
-    accent = "#999a5e";
-    neutral = "#989cad";
-    highlight = "#ab6470";
-    darkPrimary = "#353d5e";
+    primary = "#454d6e";  # Background
+    secondary = "#f1efee"; # Text
+    accent = "#999a5e";    # Highlight
+    highlight = "#ab6470"; # Selection
+    darkPrimary = "#353d5e"; # Alternate background
   };
+
+  # Convert hex to GRUB-compatible RGB values (0-255)
+  hexToGrubRGB = hex: let
+    r = builtins.parseInt (builtins.substring 1 2 hex) 16;
+    g = builtins.parseInt (builtins.substring 3 2 hex) 16;
+    b = builtins.parseInt (builtins.substring 5 2 hex) 16;
+  in "${toString r},${toString g},${toString b}";
 in {
-  # System identification files - full rebranding from NixOS to Bloom Nix
-  environment.etc."os-release".text = ''
-    NAME="Bloom Nix"
-    ID=bloomnix
-    VERSION="1.0"
-    VERSION_ID="1.0"
-    PRETTY_NAME="Bloom Nix 1.0"
-    HOME_URL="https://bloom-nix.org/"
-    SUPPORT_URL="https://bloom-nix.org/support"
-    BUG_REPORT_URL="https://bloom-nix.org/issues"
-  '';
- 
-  # Set the system name
-  system.nixos.distroName = lib.mkForce "Bloom Nix";
- 
-  # Make branding images available to the system
-  environment.etc = {
-    # Logo and icons - using the derivation
-    "bloom-nix/logo.png".source = "${brandingAssets}/logo.png";
-    
-    # Login banner and MOTD
-    "issue".text = ''
-      \e[1;36mBloom Nix\e[0m 1.0 \r (\l)
-       
-      Welcome to \e[1;36mBloom Nix\e[0m!
-    '';
-    
-    "motd".text = ''
-      Welcome to Bloom Nix!
-       
-      For help and information, visit: https://bloom-nix.org
-    '';
+  boot.loader = {
+    grub = {
+      enable = lib.mkForce true;
+      efiSupport = true;
+      device = "nodev"; # UEFI systems
+      useOSProber = true; # Detect other OSes
+      copyKernels = true; # Maintain kernel backups
+      fsIdentifier = "uuid";
+      configurationName = "Bloom-Nix"; # Unique identifier
+      extraEntries = ''
+        # Example chainloading entry
+        menuentry "Arch Linux" {
+          set root=(hd0,gpt2)
+          chainloader /EFI/arch/grubx64.efi
+        }
+      '';
+    };
+    systemd-boot.enable = lib.mkForce false; # Explicitly disable
+    efi.canTouchEfiVariables = true; # Required for UEFI modifications
   };
- 
-  # Configure GRUB with our branding
+
   boot.loader.grub = {
-    splashImage = lib.mkForce "${brandingAssets}/grub-background.png";
-    backgroundColor = colors.primary;
     extraConfig = ''
-      set menu_color_normal=${colors.secondary}/black
-      set menu_color_highlight=${colors.highlight}/${colors.secondary}
-      set timeout_style=hidden
+      # Color scheme using GRUB's native RGB format
+      set color_normal=${hexToGrubRGB colors.accent}/${hexToGrubRGB colors.darkPrimary}
+      set color_highlight=${hexToGrubRGB colors.highlight}/${hexToGrubRGB colors.secondary}
+      set menu_color_normal=${hexToGrubRGB colors.secondary}/${hexToGrubRGB colors.primary}
+      set menu_color_highlight=${hexToGrubRGB colors.highlight}/${hexToGrubRGB colors.secondary}
+
+      # Terminal configuration
+      set terminal_output gfxterm
+      set terminal_gfxmode=1920x1080,auto
+      set gfxpayload=keep
+      set timeout_style=menu
+      set timeout=5
+      set pager=1
+
+      # Custom menu entries
+      menuentry "Reboot" { reboot }
+      menuentry "Poweroff" { halt }
+
+      # Optional advanced settings
+      set menu_color_border=${hexToGrubRGB colors.primary}
+      set menu_color_title=${hexToGrubRGB colors.highlight}
+      set menu_color_sel=${hexToGrubRGB colors.highlight}/${hexToGrubRGB colors.secondary}
     '';
   };
- 
-  # Export brand colors so they can be used by other modules
-  _module.args.bloomColors = colors;
-  
-  # Export branding assets so they can be used by other modules
-  _module.args.bloomBranding = brandingAssets;
- 
-  # System branding setup - using the derivation for reliable paths
-  system.activationScripts.bloomBrandingSystem = {
+
+  system.activationScripts.grubCleanup = {
     text = ''
-      # Make sure all required directories exist
-      mkdir -p /usr/share/pixmaps
-      mkdir -p /usr/share/icons/hicolor/128x128/apps
-      mkdir -p /usr/share/backgrounds/bloom-nix
-     
-      # Copy logo to standard locations
-      cp -f "${brandingAssets}/logo.png" /usr/share/pixmaps/bloom-nix-logo.png || true
-      cp -f "${brandingAssets}/logo.png" /usr/share/icons/hicolor/128x128/apps/bloom-nix-logo.png || true
-     
-      # Set up backgrounds in standard locations
-      cp -f "${brandingAssets}/default.jpg" /usr/share/backgrounds/bloom-nix/ || true
+      # Remove legacy GRUB files
+      rm -rf /boot/grub1 /boot/grub.d
+      sed -i '/^GRUB_BACKGROUND=/d' /etc/default/grub || true
     '';
-    deps = [];
-  };
- 
-  # Make brand colors available to the theming system
-  environment.variables = {
-    BLOOM_COLOR_PRIMARY = colors.primary;
-    BLOOM_COLOR_SECONDARY = colors.secondary;
-    BLOOM_COLOR_ACCENT = colors.accent;
-    BLOOM_COLOR_HIGHLIGHT = colors.highlight;
-    BLOOM_COLOR_DARK_PRIMARY = colors.darkPrimary;
   };
 }
