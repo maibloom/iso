@@ -40,29 +40,4 @@
 
   # Allow passwordless sudo in the live environment
   security.sudo.wheelNeedsPassword = false;
-
-  # Enable essential services
-  services = {
-    # SSH for remote access (disabled by default)
-    openssh.enable = lib.mkForce false;
-    
-    # Basic device management
-    udisks2.enable = true;
-    
-    # Network time synchronization
-    timesyncd.enable = true;
-  };
-
-  # System stability options
-  nix = {
-    settings = {
-      auto-optimise-store = true;
-      allowed-users = [ "@wheel" ];
-    };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 30d";
-    };
-  };
 }

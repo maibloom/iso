@@ -1,4 +1,3 @@
-# modules/plasma.nix
 { config, lib, pkgs, ... }:
 
 {
@@ -12,34 +11,34 @@
     sddm = {
       enable = true;
       wayland.enable = true;
-      theme = "breeze";
+      theme = "ChromeOS-dark";
     };
     autoLogin = {
       enable = true;
-      user = "bloom";
+      user = lib.mkForce "bloom";
     };
     defaultSession = "plasma";
   };
 
-  # Essential packages
+  # Essential packages - using kdePackages namespace for Plasma 6
   environment.systemPackages = with pkgs; [
-    plasma-workspace
-    plasma-desktop
-    plasma-nm
-    plasma-pa
-    kwayland
-    kwin
-    powerdevil
-    dolphin
-    konsole
-    kate
-    ark
-    spectacle
-    gwenview
-    okular
+    kdePackages.plasma-workspace
+    kdePackages.plasma-desktop
+    kdePackages.plasma-nm
+    kdePackages.plasma-pa
+    kdePackages.kwayland
+    kdePackages.kwin
+    kdePackages.powerdevil
+    kdePackages.dolphin
+    kdePackages.konsole
+    kdePackages.kate
+    kdePackages.ark
+    kdePackages.spectacle
+    kdePackages.gwenview
+    kdePackages.okular
     firefox-wayland
-    breeze-icons
-    breeze-gtk
+    kdePackages.breeze-icons
+    kdePackages.breeze-gtk
     wl-clipboard
     xdg-desktop-portal
     vlc
@@ -54,10 +53,10 @@
     jack.enable = true;
   };
 
-  # XDG portals (FIXED)
+  # XDG portals
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ]; # Use kdePackages namespace
+    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
     config.common.default = "kde";
   };
 
