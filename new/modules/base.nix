@@ -15,11 +15,8 @@
   users.users.nixos = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
-    initialPassword = "nixos"; # Set a default password for testing
+    initialPassword = "bloom"; # Set a default password for testing
   };
-
-  # Enable NetworkManager for networking support in live environment
-  networking.networkmanager.enable = true;
 
   # Enable basic firewall settings
   networking.firewall.enable = true;

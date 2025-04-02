@@ -9,12 +9,6 @@
 
   # OpenGL and graphics support
   hardware.opengl.enable = true;
-  
-  # Enable sound support
-  sound.enable = true;
-  
-  # Enable Pulseaudio for audio management in live session
-  hardware.pulseaudio.enable = true;
 
   # Enable Bluetooth support (optional)
   hardware.bluetooth.enable = true;
