@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Mai Bloom Setup
+Comment=Initial setup for Mai Bloom Linux
+Exec=python /usr/local/bin/internet-checker.py
+Icon=/usr/share/pixmaps/logo.png
+Terminal=false
+Categories=System;
+StartupNotify=true
+X-KDE-autostart-phase=1

@@ -1,0 +1,14 @@
+[Unit]
+Description=Mai Bloom Installer
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python /usr/local/bin/mai_bloom_installer.py
+WorkingDirectory=/usr/local/bin/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=nobody
+
+[Install]
+WantedBy=multi-user.target

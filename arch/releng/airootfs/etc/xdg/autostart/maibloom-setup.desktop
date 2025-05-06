@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Mai Bloom Setup
+Comment=Initial setup for Mai Bloom Linux
+Exec=/usr/bin/python /usr/local/bin/boot-installer.py
+Icon=/usr/share/pixmaps/maibloom-setup.png
+Terminal=false
+Categories=System;
+StartupNotify=true
