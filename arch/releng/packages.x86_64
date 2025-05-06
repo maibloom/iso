@@ -146,6 +146,7 @@ xorg-server
 xorg-xwayland
 zsh
 
+git
 fuse2
 chromium
 breeze-icons
