@@ -1,6 +1,6 @@
-# Welcome to Mai Bloom OS! 🌸
+# Welcome to Mai Bloom OS! 🏵
 
-**Mai Bloom OS** is an exciting new operating system currently in its early development stages. This guide will walk you through the installation process.
+**Mai Bloom OS** is a newly launched, Arch Linux-based distribution that seamlessly integrates the innovative technologies developed by Mai Bloom Tech Studio, delivering an unparalleled and user-friendly computing experience designed to simplify everyday tasks. 
 
 ---
 
