@@ -188,8 +188,6 @@ pipewire-jack
 noto-fonts
 ttf-dejavu
 phonon-qt6-mpv
-# calamares
-yay
 os-prober
 
 # omnipkg
