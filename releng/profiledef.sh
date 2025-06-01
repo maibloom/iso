@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
-iso_name="maibloom os"
+iso_name="maibloom-os"
 iso_label="ARCH_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
 iso_publisher="Mai Bloom Tech Studio <https://maibloom.github.io>"
 iso_application="Mai Bloom os Live/Rescue DVD"
