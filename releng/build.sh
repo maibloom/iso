@@ -1,15 +1,12 @@
 #!/bin/bash
-# changer.sh - Final working version
+# changer.sh
 
-# Clean duplicate entries
-#sort -u packages.x86_64 -o packages.x86_64
+WORK_DIR="$HOME/maibloom-temp/work"
+OUT_DIR="$HOME/maibloom-temp/out"
 
-sudo mkdir -p /tmp/maibloom-temp/work/
-sudo mkdir -p /tmp/maibloom-temp/out/
+sudo mkdir -p "$WORK_DIR"
+sudo mkdir -p "$OUT_DIR"
 
-# Build command
 sudo mkarchiso -v \
-  -w /tmp/maibloom-temp/work/ \
-  -o /tmp/maibloom-temp/out/ .
-
-
+  -w "$WORK_DIR" \
+  -o "$OUT_DIR" .
