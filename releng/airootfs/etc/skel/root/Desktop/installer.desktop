@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Mai Bloom Installer
-Exec=chmod +x /usr/local/bin/base.py && python /usr/local/bin/base.py
+Exec=konsole -e bash -c "chmod +x /usr/local/bin/base.py && python /usr/local/bin/base.py; exec bash"
 Icon=system-software-install
 Type=Application
 Categories=Utility;
