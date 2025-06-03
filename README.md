@@ -15,12 +15,10 @@ Please be aware that Mai Bloom OS is **highly experimental** and under developme
 * Patience and a willingness to troubleshoot if issues arise.
 
 ---
-## Post Installation
+## Pre Installation
 
 1.  **Prepare your USB Drive:**
-    * Download the Mai Bloom OS `.iso` file.
-    * You will need a USB drive that you **do not need** for other purposes, as its contents will be erased.
-    * Use a tool like [Rufus](https://rufus.ie/), [balenaEtcher](https://www.balena.io/etcher/), or `dd` (for Linux/macOS users) to "burn" or write the `.iso` file to your USB drive. This makes the USB drive bootable.
+    * Download the current latest release and follow the instructions to prepare your USB drive.
 
 2.  **Boot from USB:**
     * Reboot your computer.
