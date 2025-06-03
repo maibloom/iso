@@ -4,15 +4,16 @@
 
 ---
 
-## ⚠️ IMPORTANT: MAI BLOOM OS IS IN EARLY STAGES! ⚠️
+> [!CAUTION]
+> **IMPORTANT: MAI BLOOM OS IS IN EARLY STAGES!**  
+> Please be aware that Mai Bloom OS is currently in beta and under development—meaning it can be highly experimental. > You may encounter bugs, unexpected behavior, or incomplete features.  
+> **We strongly recommend:**  
+> - **Not using this on a primary machine or for critical data.**  
+> - **Backing up any important data** on both your system and the USB drive you will be using, as it will be erased.  
+> - Exercising patience and being prepared to troubleshoot should issues arise.
 
-Please be aware that Mai Bloom OS is **highly experimental** and under development. You may encounter bugs, unexpected behavior, or incomplete features.
-
-**We strongly recommend:**
-
-* **Not using this on a primary machine or for critical data.**
-* **Backing up any important data** on the USB drive you will be using, as it will be erased.
-* Patience and a willingness to troubleshoot if issues arise.
+> [!CAUTION]
+> The required storage for this distrobution haven't been determined accurately yet, but we recommend a storage large enough to install >6G operating system plus ~>=10G [AI module](https://github.com/maibloom/maibloom-aicore)
 
 ---
 ## Pre Installation
@@ -24,6 +25,9 @@ Please be aware that Mai Bloom OS is **highly experimental** and under developme
     * Reboot your computer.
     * As your computer starts, enter your system's BIOS or Boot Menu. (Common keys include `F2`, `F10`, `F12`, `DEL`, or `ESC`. This varies by manufacturer, so check your computer's documentation if unsure.)
     * Select your USB drive from the boot options.
+
+> [!NOTE]
+> You can use Virtual Machines as well.
 
 3.  **Log into the Live Environment:**
     * You should be greeted by the KDE Plasma 6 login screen.
@@ -45,7 +49,7 @@ Follow these steps carefully to install Mai Bloom OS:
 
       And this is the installer's kernel window:
       ![Screenshot_20250602_225358](https://github.com/user-attachments/assets/eb7d61f7-5de0-4d1c-805d-2cc925a9970a)
-> [!WARNING]
+> [!CAUTION]
 > **IMPORTANT: DO NOT CLOSE ANY OF THESE TERMINAL WINDOWS MANUALLY.** They are all critical to the installation process.
 
 6.  **Installation Process Begins:**
@@ -59,11 +63,13 @@ Follow these steps carefully to install Mai Bloom OS:
        * **IMPORTANT: DO NOT CLOSE ANY OF THESE TERMINAL WINDOWS MANUALLY.** They are all critical to the installation process.
   
 > [!TIP]
-> You can put these windows alongside each other for better accessibility.
+> You can put these windows alongside eFor a stable and complete installation, we recommend using the "Best Effort" ext4 disk configuration with the "home" directory enabled.ach other for better accessibility.
 > ![Screenshot_20250602_225501](https://github.com/user-attachments/assets/eedd6eaa-717c-48b5-914e-48e02b2bf388)
 
 7.  **Install Arch Linux Base:**
     * Focus on the terminal window labeled "Arch Install" or similar (it will be running `archinstall`).
+> [!WARNING]
+> For a stable and complete installation, we recommend using the "Best Effort" ext4 disk configuration with the "home" directory enabled.
     * Follow the on-screen prompts within this terminal to install the Arch Linux base system. This forms the foundation of Mai Bloom OS.
 
 8.  **Mai Bloom OS Build:**
