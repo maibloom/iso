@@ -19,7 +19,7 @@
 ## Pre Installation
 
 1.  **Prepare your USB Drive:**
-    * Download the current latest release and follow the instructions to prepare your USB drive.
+    * [Download the current latest release and follow the instructions to prepare your USB drive.](https://github.com/maibloom/iso/releases/tag/v.1.0.0-alpha)
 
 2.  **Boot from USB:**
     * Reboot your computer.
