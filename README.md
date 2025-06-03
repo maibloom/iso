@@ -6,7 +6,7 @@
 
 ## ⚠️ IMPORTANT: MAI BLOOM OS IS IN EARLY STAGES! ⚠️
 
-Please be aware that Mai Bloom OS is **highly experimental** and under active development. You may encounter bugs, unexpected behavior, or incomplete features.
+Please be aware that Mai Bloom OS is **highly experimental** and under development. You may encounter bugs, unexpected behavior, or incomplete features.
 
 **We strongly recommend:**
 
@@ -15,10 +15,7 @@ Please be aware that Mai Bloom OS is **highly experimental** and under active de
 * Patience and a willingness to troubleshoot if issues arise.
 
 ---
-
-## Installation Steps 🛠️
-
-Follow these steps carefully to install Mai Bloom OS:
+## Post Installation
 
 1.  **Prepare your USB Drive:**
     * Download the Mai Bloom OS `.iso` file.
@@ -36,30 +33,52 @@ Follow these steps carefully to install Mai Bloom OS:
     * Leave the password field blank.
     * Click "Login" or press Enter.
 
-4.  **Launch the Installer:**
-    * Once you reach the desktop, locate and click the "Install Mai Bloom OS" icon or button.
+## Installation Steps 🛠️
 
-5.  **Initial Setup & Installer Download:**
-    * The installer application will first guide you to check your internet connection.
-    * It will then proceed to download the latest version of the installer components. Please ensure you have a stable internet connection.
+Follow these steps carefully to install Mai Bloom OS:
+
+1.  **Launch the Installer:**
+    * Once you reach the desktop, locate and click the "Install Mai Bloom OS" icon or button.
+      ![Screenshot_20250602_225324](https://github.com/user-attachments/assets/977585fd-0719-4c23-98e1-759640dcdd40)
+
+2.  **Initial Setup & Installer Download:**
+    * The installer application will first guide you to check your internet connection. It will then proceed to download the latest version of the installer components. Please ensure you have a stable internet connection.
+      ![Screenshot_20250602_225349](https://github.com/user-attachments/assets/77e68c85-cce0-4777-b80a-cbaecf21d168)
+
+      And this is the installer's kernel window:
+      ![Screenshot_20250602_225358](https://github.com/user-attachments/assets/eb7d61f7-5de0-4d1c-805d-2cc925a9970a)
+> [!WARNING]
+> **IMPORTANT: DO NOT CLOSE ANY OF THESE TERMINAL WINDOWS MANUALLY.** They are all critical to the installation process.
 
 6.  **Installation Process Begins:**
-    * After you click the "Install" button within the GUI, three terminal windows will appear:
-        * One displaying a Firefox web page (likely for information or help).
-        * One running Arch Linux's `archinstall` script.
-        * One for the Mai Bloom OS builder script.
-    * **IMPORTANT: DO NOT CLOSE ANY OF THESE TERMINAL WINDOWS MANUALLY.** They are all critical to the installation process.
+       * After you click the "Proceed" button within the GUI, three terminal windows will be visible:
+          * One displaying this web page (With its own blank terminal)
+            ![Screenshot_20250602_225435](https://github.com/user-attachments/assets/1fd978be-1a9a-48e4-85ac-02c874095e72)
+          * One running Arch Linux's `archinstall` script.
+            ![Screenshot_20250602_225449](https://github.com/user-attachments/assets/74528c6b-5fbd-4fc8-a061-64db4a3c4d6a)
+          * And one is the installer terminal which has mentionend.
+       
+       * **IMPORTANT: DO NOT CLOSE ANY OF THESE TERMINAL WINDOWS MANUALLY.** They are all critical to the installation process.
+  
+> [!TIP]
+> You can put these windows alongside each other for better accessibility.
+> ![Screenshot_20250602_225501](https://github.com/user-attachments/assets/eedd6eaa-717c-48b5-914e-48e02b2bf388)
 
 7.  **Install Arch Linux Base:**
     * Focus on the terminal window labeled "Arch Install" or similar (it will be running `archinstall`).
     * Follow the on-screen prompts within this terminal to install the Arch Linux base system. This forms the foundation of Mai Bloom OS.
 
 8.  **Mai Bloom OS Build:**
-    * Once the Arch Linux installation (Step 7) is complete, you can safely close its specific terminal window.
+    * Once the Arch Linux installation (Step 7) is complete, you first press "Exit archinstall" and then you can safely close its specific terminal window.
+      ![Screenshot_20250602_231154](https://github.com/user-attachments/assets/8a9965a6-a4f9-4dca-9c9b-4bde23dca4a3)
+
     * The Mai Bloom OS builder terminal window will then automatically resume and continue building the rest of the operating system.
+      ![Screenshot_20250602_231205](https://github.com/user-attachments/assets/86ac8f27-198d-459b-b44d-75f22155343d)
+
 
 9.  **Installation Complete & Reboot:**
     * When the Mai Bloom OS builder finishes, a dialog box will appear, informing you that the installation is complete.
+      ![Screenshot_20250602_235940](https://github.com/user-attachments/assets/92c059eb-2fe8-4198-acac-198a606b517a)
     * At this point, you can safely restart your computer.
     * **Remember to remove the USB drive** as your computer restarts to ensure you boot into your new Mai Bloom OS installation.
 
