@@ -90,6 +90,9 @@ Follow these steps carefully to install Mai Bloom OS:
     We hope you enjoy exploring Mai Bloom OS.
 
 ---
+## Post Installation
+   * Search for "Welcome to Mai Bloom" application. Then, you can customize your experience by installing packages based on your usage:
+     ![Screenshot from 2025-06-03 23-05-26](https://github.com/user-attachments/assets/f17e3476-c6cb-409a-aef4-6a909977440e)
 
 ## Feedback & Contributions
 
